@@ -2,7 +2,7 @@
 
 [ES2](https://zh.wikipedia.org/zh-tw/%E6%9D%B1%E6%96%B9%E6%95%85%E4%BA%8B2_%E5%A4%A9%E6%9C%9D%E5%B8%9D%E5%9C%8B) is a LPMud started by
 [Annihilator](https://github.com/taedlar) since 1994. It is the first open source LPMud in Taiwan (and in the whole Chinese culture).
-There are many Chinese MUD thereafter started base on its code base and developed their own contents.
+There are many Chinese MUDs thereafter started base on its code base and developed their own contents.
 
 ## License
 The original release of ES2 mudlib is licensed under a roughly written notice that forbids commercial-use and requires displaying the name
@@ -18,8 +18,8 @@ With the change of license, please note:
 
 However, a LPMud mudlib requires a compatible LPMud driver to run on. Currently ES2 mudlib is known compatible with MudOS and
 [Neolith](https://github.com/taedlar/neolith) (a MudOS fork, specially customized for ES2 mudlib), while both of them do not allow commercial-use.
-It might be possible to run ES2 mudlib with popular [FluffOS](https://github.com/fluffos/fluffos) with some efforts.
-And maybe future releases ES2 mudlib will eventually support certain LPMud drivers that allows commercial-use.
+It might be possible to run ES2 mudlib on popular [FluffOS](https://github.com/fluffos/fluffos), with some efforts.
+And maybe future releases of ES2 mudlib will eventually support certain LPMud drivers that allows commercial-use.
 
 ### Displaying "ES2 mudlib"
 
@@ -30,5 +30,5 @@ disclaimer that ES2 mudlib is PROVIDED AS-IS and SHALL NOT BE LIABLE TO ANY DAMA
 
 ### Open Source
 
-You are **not required** to open source your MUD built on ES2 mudlib. This is technically the same in old license, and this is why MIT license is
-choosed rather than GPL.
+You are **not required** to open source your MUD game built on ES2 mudlib. This is technically the same in old license and in MIT license,
+and this is why MIT license is choosed rather than GPL.
