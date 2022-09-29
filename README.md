@@ -14,7 +14,7 @@ With the change of license, please note:
 
 ### Commercial Use
 
-Yes, the ES2 mudlib under MIT licnese allows commercial-use.  
+**Yes**, the ES2 mudlib under MIT licnese allows commercial-use.  
 
 However, a LPMud mudlib requires a compatible LPMud driver to run on. Currently ES2 mudlib is known compatible with MudOS and
 [Neolith](https://github.com/taedlar/neolith) (a MudOS fork, specially customized for ES2 mudlib), while both of them do not allow commercial-use.
@@ -23,7 +23,12 @@ And maybe future releases ES2 mudlib will eventually support certain LPMud drive
 
 ### Displaying "ES2 mudlib"
 
-You are no longer required to display the name of ES2 mudlib if you start a mud with the ES2 mudlib. Annihilator still hold the copyright
+You are **no longer required** to display the name of ES2 mudlib if you start a mud with the ES2 mudlib. Annihilator still hold the copyright
 of the name "ES2 mudlib". Since the original license requires (and grant user the rights) to display the name, changing to MIT license should
 not affect how old users use the name. Annihilator grant you the PERMISSION TO DISPLAY "ES2 mudlib" in you MUD's login screen with the
 disclaimer that ES2 mudlib is PROVIDED AS-IS and SHALL NOT BE LIABLE TO ANY DAMAGE possibly caused by the software to your assets or users.
+
+### Open Source
+
+You are **not required** to open source your MUD built on ES2 mudlib. This is technically the same in old license, and this is why MIT license is
+choosed rather than GPL.
