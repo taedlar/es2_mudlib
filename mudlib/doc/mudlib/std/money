@@ -1,0 +1,15 @@
+□ MONEY
+ 
+inherit COMBINED_ITEM;
+ 
+int value() 
+傳回錢幣的價值. 由數量及幣值計算. 單位為文.
+
+string query_autoload() 
+傳回物件的數量, 由 save() 呼叫並儲存.
+ 
+void autoload(string param)
+載入錢幣的數量, 由 restore() 呼叫.
+
+Elon@ES2
+07-05-95: drafted.

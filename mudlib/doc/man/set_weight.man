@@ -1,0 +1,22 @@
+.TH set_weight 5 "11 Apr 1996" ES2 "ES2 Mudlib Functions"
+
+.SH NAME
+set_weight() - sets/changes the net weight of an item.
+
+.SH SYNOPSIS
+void set_weight(int weight);
+
+.SH DESCRIPTION
+set_weight() sets/changes the net weight of an item and keeps track of
+the actual weight of its container. Note that the actual weight of an
+item includes the total weight of its inventory. Changing the weight
+of an item when the item is contained by another item will also updates
+the actual weight of its container(s).
+
+The actual weight of an item can be obtained by calling weight().
+
+.SH APPLIED
+F_MOVE
+
+.SH SEE ALSO
+weight(), query_weight()

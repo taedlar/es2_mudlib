@@ -1,0 +1,7 @@
+□ 說明文件
+
+這個目錄下的檔案全都是說明文件﹐包括 MudOS driver 的 efun、LPC 的介紹﹐以及
+有關 ES2 mudlib 的一些設定﹐其中 help 子目錄下的文件玩家可以經由  help 指令
+讀取。
+
+By Annihilator(07/06/95)

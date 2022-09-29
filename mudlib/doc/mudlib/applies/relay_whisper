@@ -1,0 +1,23 @@
+ 
+    relay_whisper()   Eastern Stories II (19 Oct 1995)   relay_whisper()
+ 
+    NAME
+        relay_whisper -- interface for whisper
+ 
+    SYNOPSIS
+        void relay_whisper(object me, string arg);
+ 
+    DESCRIPTION
+	relay_whisper, if present in the target object, will be called
+	by the whisper command and the content of the whisper string
+	will be passed as parameter along with the object who initiated
+	the whisper.
+
+        This is used as an interface for NPC to handle any interaction 
+	triggered by the whisper command.
+ 
+    SEE ALSO
+        relay_emote(), relay_channel(), relay_say()
+ 
+    Page 1                                              
+ 

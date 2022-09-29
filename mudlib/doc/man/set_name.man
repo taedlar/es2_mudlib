@@ -1,0 +1,19 @@
+.TH set_name 5 "11 Apr 1996" ES2 "ES2 Mudlib Functions"
+
+.SH NAME
+set_name() - sets the names of an item that have physical appearance.
+
+.SH SYNOPSIS
+void set_name( string name, string *id );
+
+.SH DESCRIPTION
+This function sets the name of an item which is used in messages related
+to the item. The argument id gives the item a list of identities for user
+to indicate this item in commands. Also, the first element of id is set
+as the "id" property of the item.
+
+.SH APPLIED
+F_NAME
+
+.SH SEE ALSO
+name(), short(), long()

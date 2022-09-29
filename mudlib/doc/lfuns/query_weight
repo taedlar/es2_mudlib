@@ -1,0 +1,26 @@
+
+query_weight(5)        ES2 Mudlib Functions       query_weight(5)
+
+NNAAMMEE
+       query_weight() - get the net weight of an item.
+
+SSYYNNOOPPSSIISS
+       int query_weight();
+
+DDEESSCCRRIIPPTTIIOONN
+       This  function  returns  the  net weight of an item set by
+       set_weight(). The actual weight can be obtained by calling
+       weight(),  which  should  be  used  in most case that uses
+       weight of an item.
+
+       (Actual weight includes the total  weight  of  the  item's
+       inventory)
+
+AAPPPPLLIIEEDD
+       F_MOVE
+
+SSEEEE AALLSSOO
+       set_weight(), weight()
+
+ES2                        11 Apr 1996                          1
+

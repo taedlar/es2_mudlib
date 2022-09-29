@@ -1,0 +1,22 @@
+
+Mon Mar  4 17:34:38 1996 By Annihilator
+
+    Added signature support to bboard.c, it will append the
+    string this_player()->link()->query("signature") to the
+    text to be posted. Later I'll add a regular way to set 
+    this string.
+
+Thu Apr 11 22:34:24 1996 By Annihilator
+
+    Added MUCH better check on wandering NPCs created by room
+    objects. Now rooms with wandering NPCs in other room won't
+    clean up as long as these NPCs keep wandering. If the room
+    is force destructed, these wandering NPCs are also force
+    destructed as well with proper message. (Currently this 
+    could only happen when some wiz dest or update a room
+    manually.)
+
+Mon May  6 15:49:23 1996 By Annihilator
+
+    Added busy state checking in move() of char.c to prevent
+    moving with add_action's to avoid busy penalty.

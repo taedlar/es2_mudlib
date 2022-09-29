@@ -1,0 +1,12 @@
+
+□ F_SAVE
+
+int save()
+判定物件的存檔檔名並將該物件存檔。
+
+int restore()
+將物件的資料由檔案內載入。
+
+Elon@ES2
+06-06-95 drafted.
+

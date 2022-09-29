@@ -1,0 +1,62 @@
+□ 設定 Intermud
+ 
+服務項目: channels, who, finger, mudlist
+ 
+ES2 對外釋出的函式庫的基本設定是把 DNS 的功能關閉的。當你第一次使用時 ,
+你可以在任何 Intermud 的頻道送出訊息來載入, 或是直接載入在
+/adm/daemons/net 這個目錄下面的 dns_master.c 。 如果你想要在每次
+MUD 啟動時都直接載入 dns_master.c 的話 , 就把 /adm/etc/prelord 這個
+檔案中載入 dns_master 那行的註解字元消掉就好了。
+ 
+在你連上 Intermud 之前, 請『務必確定』所有的設定都是正確的。
+如果因為某些因素造成了設定的錯誤, 你這個Mud 將會對網路上的其他MUD
+造成困擾, 並造成很多的問題。
+ 
+就ES2 mud函式庫而言, 相關檔案都在 /adm/daemons/network/*
+/include/net/* 和 mudlib.h 這個檔中。這其中最重要的是 mudlib.h
+目前而言, 你可以忽略這部份。除非你的 mudlib.h IOS 設定是正確的
+而你的 Intermud 卻沒有作用。(詳見 Debug 小節)
+ 
+mudlib.h 各項設定說明:
+MUDLIB_NAME -- Mudlib 的名稱, 一般來說除非你已重寫超過 50% 的 mudlib
+               (注意, 不是房間, 是系統) 否則你沒有權利修改此項設定。
+MUDLIB_VERSION_NUMBER -- 同上, 不過你可以加些識別碼用來跟原始版區分。
+INTERMUD_MUD_NAME -- Mudlist 上所看到的名字, 注意, 這個名字一定不能跟
+                     list 上現有的名字相同。基於網路禮節, 也請不要用
+                     中文.
+ 
+Intermud 頻道:
+gwiz - 網際巫師 - 這個頻道全球所有連線的 mud 都會收到, 除非必要,
+                  請不要在此用中文碼。
+twiz - 台灣巫師 - 所有連線的 mud, 只要位於 140.* 的都會收到。
+es   - 東方故事 - 這個是由 MUDLIB_NAME 判定的, 所有使用 Eastern
+                  Stories Mudlib (版本不限) 或是想加入此頻道而修
+                  改 mudlib.h 的 mud 都會收到。
+以上頻道除了 es 以外只有巫師可以用。
+ 
+Intermud 簡介:
+ 
+Protocol (I2)
+(未完...)
+ 
+Debug:
+files: /log/dns_warning, /log/dns_fake, /include/net/config.h,
+/include/net/services.h
+ 
+如果你"肯定"你的 mudlib.h 設定正確而intermud 卻沒有作用時 ,
+先鍵入"mudlist",看看你是否收到全 intermud 的列表。 正常而言, 你會在
+載入 dns_master 後五分鐘內收到六十到八十個 Mud 的資料。
+如果沒出現預期的情形, 請去檢查 /include/net/config.h 並確定 MUDLIST_DNS
+, MUDLIST_BAK 或 LISTNODES 三種mud 列表中的MUD 至少有一個正在運作。
+如果沒有, 試著找個你確知已經正在執行的 MUD , 並跟據它來設定你的資料。
+當你完成後,重編譯並載入 dns_master。
+ 
+如果依然沒又作用, 檢查 /log/dns_warning , 看看有沒有出現"socket啟動失敗"
+("fail to open socket")的訊息, 如果有 , 就可能是基本設定中的 DNS 埠
+被其它的給用掉了使得 dns_master 無法使用 。 ES2 函式庫的 DNS 埠的基本設
+定是在 mud 埠+4 的位置。需要的話可以在 /include/net/services.h 這個
+檔案中修改。
+ 
+初稿: Elon@ES2 10-24-95
+中文: Indra@ES2
+ 

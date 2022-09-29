@@ -1,0 +1,25 @@
+
+set_name(5)            ES2 Mudlib Functions           set_name(5)
+
+NNAAMMEE
+       set_name()  - sets the names of an item that have physical
+       appearance.
+
+SSYYNNOOPPSSIISS
+       void set_name( string name, string *id );
+
+DDEESSCCRRIIPPTTIIOONN
+       This function sets the name of an item which  is  used  in
+       messages  related  to  the item. The argument id gives the
+       item a list of identities for user to indicate  this  item
+       in  commands.  Also, the first element of id is set as the
+       "id" property of the item.
+
+AAPPPPLLIIEEDD
+       F_NAME
+
+SSEEEE AALLSSOO
+       name(), short(), long()
+
+ES2                        11 Apr 1996                          1
+

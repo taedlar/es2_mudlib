@@ -1,0 +1,16 @@
+□APPRENTICE
+
+int is_apprentice_of(object ob)
+判定指定入物件是否為傳入物件的弟子.
+
+void assign_apprentice(string title, int privs)
+設定物件在所屬門派地位及抬頭. -1 表示物件為掌門人, 0 表是物件為弟子.
+
+void create_family(string family_name, int generation, string title)
+建立一個 mapping 來儲存物件的門派資料, 並設定指定物件為掌門人.
+
+int recruit_apprentice(object ob)
+設定傳入物件為指定物件的弟子並設定相關資料.
+
+Elon@ES2
+drafted: 07-13-95

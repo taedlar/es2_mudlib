@@ -1,0 +1,31 @@
+.TH start_busy 5 "9 Sep 1997" ES2 "ES2 Mudlib Functions"
+
+.SH NAME
+start_busy() - set the character into busy state by waiting or calling
+specific function in its heart_bear, ignoring original tasks done by
+heart_beat (combat...etc.).
+
+.SH SYNOPSIS
+varargs void start_busy( int hb_count | function busy_func, int
+min_count | function intr_func );
+
+.SH DESCRIPTION
+If the first argument is an integer, the character will be busy for hb_count
+heart beats. If the first argument is a function, the function is called
+every heart beat until it returns zero. Some commands and/or actions check
+for a characrter's busy state before they take further process of command,
+and prevent players from doing something when busy. For the busy-state
+system to work correctly, any actions yielding a busy state must check for
+busy state before they set player into busy state.
+
+The second argument is optional, which specifies the minimum heart beats
+before the busy state can be interrupted. If it is an integer, interrupt
+will be accepted after min_count'th heart beats of this busy. If it is a
+function, interrupt will be accepted only if the evaluation of intr_func
+returns non-zero.
+
+Note that some interrupt are non-ignorable: all interrupt reasons started
+with '*' are always accepted.
+
+.SH APPLIED
+F_ACTION

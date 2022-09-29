@@ -1,0 +1,14 @@
+□ F_AUTLOAD
+ 
+void clean_up_autoload()
+將 autoload 陣列清除掉.
+ 
+void save_autoload()
+過慮所有在某物件 inventory 中的物品, 如果 query_autoload() 有傳回
+值則將物品的檔案名稱及其傳回值存入 autoload 陣列中.
+
+void restore_autoload()
+讀取一個物件的 autoload 陣列並試圖複製所存的物品. 若失敗則會顯示錯
+誤訊息並將訊息存入 /log/AUTOLOAD 檔中.
+ 
+Elon@ES2 03-04-95

@@ -1,0 +1,13 @@
+
+Mon Mar  4 18:03:35 1996 By Annihilator
+
+    The command 'version' now also displays mudlib version.
+
+Fri Apr  5 10:10:57 1996 By Annihilator
+
+    Fixed 'skills' command to display those skills with only
+    learning points without level. (Unachived skills)
+
+Tue Apr 21 23:10:35 1996 By Karrimor
+
+    Added commands "hp" and "chfn"'s help

@@ -1,0 +1,31 @@
+
+Sat Mar  9 10:20:18 1996 By Annihilator
+
+    Changed equip.c to implement wear() and wield() in a more
+    felxible way and with more generality. Meanwhile, method
+    of implementing two-handed weapon and secondhand weapon
+    also changed that it requires another skill for such case
+    now. (i.e. using a dagger as main weapon and as secondary
+    weapon now requires different skill)
+
+Fri Apr 19 16:20:04 1996 By Annihilator
+
+    Fixed a logical error in checking eq wear_as and wield_as
+    procedure. (a really silly one)
+
+Sat Mar  8 15:04:13 1997 By Annihilator
+
+    inflict_damage() in equip.c was not counting the damage
+    apply from query_temp("apply/damage"). Now fixed.
+
+Sat Mar  8 15:05:09 1997 By Annihilator
+
+    Added a HP (hit points) statistic implementation in
+    statistic.c
+
+Tue Mar 11 12:48:44 1997 By Annihilator
+
+    Changed statistic health_regenerator to NOT regenerate in
+    combat. Because the unlimited advancing system, some player
+    may got too high statistics that can fight lower level npc
+    even in sleep! Add this to make them risk exhausting.

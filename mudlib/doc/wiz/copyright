@@ -1,0 +1,73 @@
+□ 著作權注意事項
+
+請巫師在每個檔案的開頭加上類似以下格式的註解：
+
+/*  move.c - supply moving ability for an object
+
+    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
+
+    This program is a part of ES2 mudlib. Permission is granted to use,
+    modify, copy or distribute this program provided this copyright notice
+    remains intact and subject to the restriction that this program MAY
+    NOT be used in any way for monetary gain.
+
+    Details of terms and conditions is available in the Copyright.ES2 file.
+    If you don't receive this file along with this program, write to the
+    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
+*/
+
+註解的第一行是檔名，你也可以加一些簡單的敘述說明一下這個程式的用途。
+
+這裡簡單地解釋一下這段著作權聲明的意義。
+
+Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
+
+這一行是國際通用的著作權表示法(伯恩公約)，前面的 Copyright (C) 表示著作權的
+歸屬，較正式的寫法是一個圈圈裡面一個字母 C，但是因為標準的 ASCII 沒有這個符
+號，所以現在法律上也承認 (C) 的寫法。
+
+1994-2000 的意思是表示這個著作於 1994 年「首次發表」，並且自 1994 年開始到
+2000 年持續有改版，後面的 Annihilator <annihilator@muds.net> 是著作權所有人
+，加上 Email 地址是我自己的習慣，以方便聯絡，如果你不寫 Email 地址，最好加上
+其他的聯絡方式。
+
+後面這段文字大意和 ES2 的版權聲明差不多，但是我重新用比較正式的寫法寫出來，
+以後這段文字就是 ES2 一般的授權範圍。其中文意思如下：
+
+
+	本程式是 ES2 mudlib 的一部分。在保留本著作權聲明之文字不
+	變，以及遵守不得將本程式使用於獲取金錢用途之限制前提下，
+	允許使用、修改、重製或散佈本程式。
+
+	詳細的授權內容及限制條款規定於 Copyright.ES2 這個檔案中，
+	如果你沒有伴隨這個程式取得該檔案，請寫信給 ES2 mudlib 的
+	原作者 Annihilator <annihilator@muds.net>
+
+
+這一整段的文字內容就是「著作權聲明」，未經著作權人許可不允許做任何修改( 包
+括 Annihilator 的名字 :P )，如果有任何巫師不同意將這段文字放在程式碼中，則
+ES2 mudlib 將不會包含該程式。
+
+更詳細的授權內容以及條限制條款，會另外寫在 Copyright.ES2 中，除了對上面的
+著作權聲明作較嚴謹的定義外，基本上會採取 GPL 和 Artistic 兩種公共授權的精
+神。
+
+
+□ 著作權代理行使
+
+另外，關於「ES2 mudlib 的原作者」這一項，表示 Annihilator 為 ES2 mudlib
+整個 package 的著作權所有者。使用這份著作權聲明的程式，表示程式的作者同意
+由 Annihilator 對這個程式，作為 ES2 mudlib 的一部分時，行使著作權。但單獨
+之程式其著作權仍屬原作者所有。
+
+舉例來說，當我們提到 ES2 mudlib 時說它的「作者」是 Annihilator，表示由
+Annihilator 代理所有 ES2 mudlib 中的程式作者行使著作人格權。因為隨著 ES2
+mudlib 的不斷發展，如果每個貢獻一小段程式的人都要列在作者名單，這樣名單可
+能會越來越長，長到不切實際的地步。至於這份名單，ES2 mudlib 將以 Credits 的
+方式建立。
+
+ES2 mudlib 的著作財產權，以不交付或質押為原則。換句話說，就是 ES2 mudlib
+的著作財產權是「供」起來的，不會賣斷、質押、或提供擔保給任何人。其他的著作
+財產權行使方式則視實際情況而定。
+
+By Annihilator (03/06/2000)

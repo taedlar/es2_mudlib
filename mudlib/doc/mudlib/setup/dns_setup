@@ -1,0 +1,64 @@
+□ Setting up Intermud
+ 
+Service: channels, who, finger, mudlist
+ 
+ES2 mudlib release default has DNS disabled, you can load it for the
+first time by sending message through any of the intermud channel or by
+loading dns_master.c located in /adm/daemons/network, if you want the
+mud to load dns_master everytime the mud restarts, uncomment the line
+that loads dns_master in /adm/etc/preload.
+ 
+Before you connect yourself to the Intermud, please make sure everything
+is setup correctly, if for some reason they are not setup right, your mud
+will confuse other muds on the network and cause a lot of problems.
+ 
+For ES2 mudlib, the relating files are /adm/daemons/network/*,
+/include/net/* and mudlib.h, among them, the most important one is
+mudlib.h, and you can ignore the rest, for now, unless your intermud
+doesn't work and your mudlib.h ios setup correctly. (See Debug section)
+ 
+defines in mudlib.h:
+MUDLIB_NAME -- Name of the mudlib this mud is using. Unless you've
+               changed at least 50% of the mudlib codes, it is better
+               to ask for permission before you change this item.
+MUDLIB_VERSION_NUMBER -- Version for the mudlib you were using, you can
+               change this to reflect the status of your mudlib.
+INTERMUD_MUD_NAME -- The name that will appear on the mudlist, please
+               note, not everyone on the intermud can read/interpret big5
+               characters, so don't use it.
+ 
+Intermud channels:
+gwiz - general wiz channel - This is the general channel for wiz on the
+               intermud, all the muds will receive messages sending from
+               this channel, so please don't use any big5 code.
+twiz - taiwan wiz channel  - a wiz only channal for all the connecting muds
+               belong to the 140.* domains.
+es - general player channel for eastern stories series mudlib - this is the
+               channel for players to communicate with each other across
+               the mud that runs eastern stories mudlibs. (any version)
+ 
+Intermud intro:
+ 
+Protocol (I2)
+(unfinished...)
+ 
+Debug:
+files: /log/dns_warning, /log/dns_fake, /include/net/config.h,
+/include/net/services.h
+ 
+If your intermud doesn't work, and you are *sure* mudlib.h is set up
+correctly, type mudlist and see if you are getting any mudlist at all,
+normally you should be getting 6x - 8x muds within 5 minutes of loading
+dns_master. If this is not the case, check /include/net/config.h and make
+sure that at least one of the muds listed in MUDLIST_DNS, MUDLIST_BAK or
+LISTNODES is up, if not, try to find a mud that you know is up for sure
+and set the addresses accordingly. Update dns_master when you are done.
+ 
+If this still doesn't work, check /log/dns_warning to see if there's any
+"fail to open socket" message, if so, then perhaps the default DNS port
+is used by some other process and can not be opened by dns_master, default
+DNS port is set to mud port +4 for ES2 mudlib, and can be changed in
+/include/net/services.h
+ 
+Elon@ES2 10-24-95
+ 

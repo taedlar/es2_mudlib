@@ -1,0 +1,22 @@
+
+weight(5)              ES2 Mudlib Functions             weight(5)
+
+NNAAMMEE
+       weight() - Retuens the actual weight of an item.
+
+SSYYNNOOPPSSIISS
+       int weight();
+
+DDEESSCCRRIIPPTTIIOONN
+       This  function  returns  the  actual  weight  of  an item,
+       including its net weight and total weight  of  its  inven-
+       tory.
+
+AAPPPPLLIIEEDD
+       F_MOVE
+
+SSEEEE AALLSSOO
+       set_weight(), query_weight()
+
+ES2                        11 Apr 1996                          1
+

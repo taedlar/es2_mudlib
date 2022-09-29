@@ -1,0 +1,13 @@
+
+□ F_EDIT
+
+int edit(function callback)
+開始編輯程式。
+
+void input_line(string line, string text, function callback)
+由編輯程式呼叫此函數，將使用者所輸入的文字或指令作適當的回應，當使用者結
+述輸入時，傳入的函數 callback 將會被執行。
+
+Elon@ES2
+06-11-95 drafted.
+

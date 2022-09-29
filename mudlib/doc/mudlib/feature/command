@@ -1,0 +1,37 @@
+
+□ F_COMMAND
+ 
+init_command_hook()
+經由 add_action, 將所有 user 輸入東西傳入 command_hook() 這個函數.
+本函數沒有傳回值.
+ 
+find_command(string verb)
+呼叫 command daemon (COMMAND_D) 看看在指定路徑內是否有跟 verb 同名
+的檔案, 若有, 傳回檔名.
+ 
+command_hook(string arg)
+一但使用者輸入一行文字, driver 會將除了第一 個字以外的文字當成參數
+(arg) 並傳至此函數. 輸入的第一個字就是所謂的動詞 (verb). 通常是 一
+個指令.接下來我們經由 query_verb()  得到 這個動詞, 也就是使用者所輸
+入的第一個字.然後開始判定使用者輸入這行文字的目的. 首先我們將動詞傳
+入 find_command()看看在使用者的路徑設定中是否有與這個動詞相同的指令
+檔名, 如果有, 則試著以call_other()  去呼叫 該檔名的 main() 函數並傳
+入參數 arg 及動作人 物件.如果成功, 則結束離開. 不符合上述條件者, 本
+函數在此呼叫 EMOTE_D ( emotedaemon), 判別這個動詞是不是 emote 之一,
+如果不是的話則呼叫管理交談頻道的 daemon, (CHANNEL_D) 看看這個是不是
+交談頻道用的指令. 最後, 我們來判定這是不是使用者用來移動的 的指令 (
+如: 東, 南, 西, 北等等). 如果以上皆非, 那我們就傳回 0, 有可能這個使
+用者輸入了一個不存在的指令.
+ 
+如果 PROFILE_COMMANDS 有定義的話, 有關這個指令的使用情形會由
+PROFILE_D記錄下來並存於指定檔案中.
+ 
+set_path(string *p)
+將 *p 指定為路徑. *p 為陣列型態.
+ 
+force_me(string cmd)
+強迫動作物件執行一個指令, 呼叫此函數的物件需要有 ROOT UID 才會成功.
+ 
+By Elon@ES2
+12-13-94 drafted.
+06-01-95 revised.

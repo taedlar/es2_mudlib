@@ -1,0 +1,25 @@
+
+do_chat(5)             ES2 Mudlib Functions            do_chat(5)
+
+NNAAMMEE
+       do_chat() - set the message to say or function to evaluate
+       in next heart_beat of a NPC.
+
+SSYYNNOOPPSSIISS
+       void do_chat( string s | function f );
+
+DDEESSCCRRIIPPTTIIOONN
+       This function allows you to specify a message s for a  NPC
+       to  'say'  it in next heart_beat. Instead of a string, you
+       can also specify a function for the NPC to be evaluated in
+       next heart_beat.
+
+       Note  that  if  you called do_chat() more that once during
+       the period of heart_beat calls, only the last one have  an
+       effect.
+
+AAPPPPLLIIEEDD
+       F_SUPPORT
+
+ES2                        11 Apr 1996                          1
+

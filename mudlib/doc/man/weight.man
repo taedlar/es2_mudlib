@@ -1,0 +1,17 @@
+.TH weight 5 "11 Apr 1996" ES2 "ES2 Mudlib Functions"
+
+.SH NAME
+weight() - Retuens the actual weight of an item.
+
+.SH SYNOPSIS
+int weight();
+
+.SH DESCRIPTION
+This function returns the actual weight of an item, including its net
+weight and total weight of its inventory.
+
+.SH APPLIED
+F_MOVE
+
+.SH SEE ALSO
+set_weight(), query_weight()

@@ -1,0 +1,5 @@
+
+Wed Apr 17 14:54:50 1996 By Annihilator
+
+    Fixed edit.c to ckeck validity of callback function.
+    

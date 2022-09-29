@@ -1,0 +1,19 @@
+.TH do_chat 5 "11 Apr 1996" ES2 "ES2 Mudlib Functions"
+
+.SH NAME
+do_chat() - set the message to say or function to evaluate in next
+heart_beat of a NPC.
+
+.SH SYNOPSIS
+void do_chat( string s | function f );
+
+.SH DESCRIPTION
+This function allows you to specify a message s for a NPC to 'say' it
+in next heart_beat. Instead of a string, you can also specify a 
+function for the NPC to be evaluated in next heart_beat. 
+
+Note that if you called do_chat() more that once during the period of
+heart_beat calls, only the last one have an effect.
+
+.SH APPLIED
+F_SUPPORT

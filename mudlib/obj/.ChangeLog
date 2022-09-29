@@ -1,0 +1,9 @@
+
+Fri Apr 12 17:48:05 1996 By Annihilator
+
+    Fixed user object to turn off heart beat when link dead.
+
+Sat Apr 20 12:14:04 1996 By Annihilator
+
+    Added check to only receive messages when login object is
+    interactive.

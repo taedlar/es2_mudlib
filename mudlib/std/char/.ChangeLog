@@ -1,0 +1,6 @@
+
+Fri Mar 21 11:14:43 1997 By Annihilator
+
+    Added check of sizeof(msg) to fix an index out of bound
+    error in npc.c:chat() when chat_msg or combat_chat_msg
+    is an empty array.

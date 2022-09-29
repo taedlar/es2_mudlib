@@ -1,0 +1,14 @@
+□ 遊戲系統整體性 DAEMON
+
+這個目錄下放的是跟遊戲有關, 而且是整體性的 DAEMON。
+
+什麼是 DAEMON 呢？也許學電腦的人都知道, 不過這裡還是解釋一下, DAEMON 是一種
+在系統中默默工作, 提供各種服務(services)的程式, 在 es2 mudlib 中, DAEMON 也
+一些提供(services)的物件, 平常我們不需要特意去將它 new 或 load 進來, 我們呼
+叫 DAEMON 的方式通常是 xxx_D->function(...), 這些 xxx_D 大多數定義在 MudOS
+的 global include file, (es2 中為 <globals.h>) 裡, 以方便使用。
+
+有許多跟系統相關的 DAEMON 被放在 /adm/daemons 下, 而這個目錄存放的則是和遊戲
+本身定義直接相關的 DAEMON。
+
+By Annihilator(03/15/96)

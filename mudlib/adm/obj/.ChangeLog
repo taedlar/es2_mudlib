@@ -1,0 +1,10 @@
+
+Sat Mar  9 15:41:08 1996 By Annihilator
+
+    Fixed the '0' prefix on runtime error message bug. A really
+    silly one ... :P
+
+Mon Sep 20 11:31:42 1999 By Annihilator
+
+    Changed connect() of master object to static, so only driver
+    and master object itself can call connect() now.

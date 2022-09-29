@@ -1,0 +1,28 @@
+
+set_weight(5)          ES2 Mudlib Functions         set_weight(5)
+
+NNAAMMEE
+       set_weight() - sets/changes the net weight of an item.
+
+SSYYNNOOPPSSIISS
+       void set_weight(int weight);
+
+DDEESSCCRRIIPPTTIIOONN
+       set_weight()  sets/changes  the  net weight of an item and
+       keeps track of the actual weight of  its  container.  Note
+       that  the  actual  weight  of  an  item includes the total
+       weight of its inventory. Changing the weight  of  an  item
+       when  the  item  is  contained  by  another item will also
+       updates the actual weight of its container(s).
+
+       The actual weight of an item can be  obtained  by  calling
+       weight().
+
+AAPPPPLLIIEEDD
+       F_MOVE
+
+SSEEEE AALLSSOO
+       weight(), query_weight()
+
+ES2                        11 Apr 1996                          1
+

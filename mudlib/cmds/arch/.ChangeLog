@@ -1,0 +1,5 @@
+
+Fri Apr  5 10:32:29 1996 By Annihilator
+
+    Fixed 'rehash' command to allow new security check in
+    COMMAND_D.

@@ -1,0 +1,17 @@
+□ CHAR_D (人物精靈)
+
+這個精靈物件用來對人物物件(包括玩家與 NPC)的 setup() 做最後的系統性設定﹐以
+及處理一些和人物標準物件(CHAR)相關的瑣事。
+
+void setup_char(object ob)
+
+  標準人物物件在執行玩 setup() 之後會呼叫這個系統人物設定函數﹐以對人物的
+  設定做最後的檢查或補充。
+
+varargs object make_corpse(object victim, object killer)
+
+  人物的死亡程序之一﹐由 F_DAMAGE 中的 die() 呼叫這個函數以造出人物的屍體
+  ﹐由於 killer 不一定存在( 死於中毒、重傷等 )﹐因此第二個參數可有可無。
+
+Elon@ES2 drafted: 07-13-95
+Annihilator (07/28/95)

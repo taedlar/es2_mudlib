@@ -1,0 +1,15 @@
+
+□ F_FINANCE
+
+int can_afford(int amount)
+這個函數是用來判定一個物件 (this_object()) 是否付得起 amount 這個價錢.
+若傳回 0 表示這個物件並沒有這麼多錢, 傳回 1 表示物件有這麼多錢, 而且
+有正確的錢幣種類. 傳回 2 則表示此物件雖然有足夠的錢, 卻沒有正確的錢幣
+種類.
+
+int pay_money(int amount)
+(未完)
+
+Elon@ES2
+06-11-95 drafted.
+

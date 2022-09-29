@@ -1,0 +1,13 @@
+◎ 有關容器
+
+es2 中要判斷一個物件是否為容器，可以用 accept_object 這個函數來檢查( 在 NPC 
+的情況也可以用來檢查這個 NPC 是否願意接受一個物件 )，如果一個物件的
+accept_object 傳回 1，則這個物件是一個容器，並且處於打開的狀態。
+
+要將一個物件從某容器拿出來之前，應先呼叫原容器的 hold_object 檢查是否可以拿
+出來。
+
+可以盛裝液體的容器會設定 liquid_container 這個 flag，用
+query("liquid_container") 檢查。
+
+- Annihilator -

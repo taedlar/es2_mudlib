@@ -1,0 +1,17 @@
+
+Fri Jan 10 13:11:43 1997 By Annihilator
+
+    Changed killer structure in attack.c to mapping. That is,
+    number of enemies of certain id we are killing is also
+    kept for killing state check. This is to fix the bug about
+    killing state canceled when killing enemies of same id in
+    the same room.
+    
+    By Annihilator
+    ,
+
+Sat Mar 15 11:31:36 1997 By Annihilator
+
+    Added abandon_skill() to let player stop learning specific
+    skill. (This is implemented by setting an abandon flag on
+    skill_flag, original skill level is still kept)

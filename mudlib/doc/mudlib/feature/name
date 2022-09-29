@@ -1,0 +1,43 @@
+□ F_NAME
+ 
+void set_name(string name, string *id)
+ 
+將 name 字串設入物件的 name 屬性中. 如果該物件還沒有設 id 屬性,
+則取傳入之 id 陣列的第一個 (id[0]) 元素為該物件的 id. 並將 my_id 
+陣列設為傳入之 id 陣列的值.
+ 
+int id(string str)
+如果 "apply/id" 這個臨時屬性存在且不是空字串的話, 表示這個物件正在假冒
+別的物件, 我們就用 applied_id 裏的內容來當這個物件的 id, 如果有找到的
+話傳回 1. 否則傳回 0. 這樣可以避免「冒牌貨」在 id 指令下見光死.
+如果沒有 "apply/id", 則以 my_id 的內容來判定. 如果 str 與 my_id 陣列中
+的某個元素相同, 則傳回 1, 否則傳回 0.
+ 
+string *parse_command_id_list() { return my_id; }
+如果 "apply/id" 這個臨時屬性存在且不是空字串的話, 傳回 applied_id 陣列
+的所有內容. 否則傳回 my_id 陣列的內容.
+ 
+varargs string name(int raw)
+如果物件有 "apply/name" 這個臨時屬性而且不是空的的話, 則傳回值為 mask
+這個陣列的倒數第二項元素.
+如果物件有 "name" 這個屬性, 傳回值為 "name" 的內容. 否則傳回這個物件的
+檔名.
+ 
+varargs string short(int raw)
+如果該物件設有 short 這個屬性, 則傳回字串為 short 的內容加上 id. 否則
+傳回字串為該物件 name 屬性的內容加上 id. 如果該物件不是人物 (由
+is_chaaracter() 判定) 則在此傳回字串的內容.
+如果這個物件有 "apply/short" 這個臨時屬性且內容不是空的, 則傳回字串被
+設為 "apply/short" 陣列的倒數第二個元素. 否則傳回字串會將物件的 nickname
+及 title 等屬性加以組合. 最後判定這個物件是否在斷線中, 輸入文字中, 編
+輯檔案中或是昏迷不醒, 並將適當的字串加入先前的字串一起傳回.
+ 
+varargs string long(int raw)
+如果這個物件有 "apply/long" 這個臨時屬性且內容不是空的, 則傳回 "apply/long"
+陣列的倒數第二個元素. 否則傳回 "long" 這個屬性的內容. 若該物件沒有 "long"
+這個屬性, 則呼叫並傳回 short() 函數的內容並加上 "。\n".
+ 
+by Elon@ES2
+03-03-95 drafted.
+06-02-95 revised.
+

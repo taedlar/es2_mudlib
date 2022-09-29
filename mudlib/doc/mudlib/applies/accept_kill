@@ -1,0 +1,20 @@
+ 
+    accept_kill()       Eastern Stories II (19 Oct 1995)        accept_kill()
+ 
+    SYNOPSIS
+        void accept_kill(object killer);
+ 
+    APPLIED
+        /cmds/std/kill
+ 
+    DESCRIPTION
+	accept_kill() is called by the kill command to use as an 
+        interface before starting a fight. The killer is passed as a 
+	parameter.
+
+	If there is no accept_kill() defined in the target object, the
+	kill command will simply ignore it.
+
+    SEE ALSO
+ 
+    Page 1

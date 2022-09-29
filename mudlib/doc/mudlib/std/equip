@@ -1,0 +1,13 @@
+□ EQUIP
+
+inherit ITEM;
+inherit F_EQUIP;
+ 
+void setup()
+暫時沒用.
+ 
+string query_verb()
+傳回這個物件所使用的動詞, 如果沒有定義則用 "hit".
+
+Elon@ES2
+07-05-95: drafted.

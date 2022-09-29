@@ -1,0 +1,4 @@
+#! /bin/sh
+
+echo -n '目前註冊使用者人數: '
+find login -name '*.o' | wc --lines

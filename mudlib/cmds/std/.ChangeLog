@@ -1,0 +1,11 @@
+
+Mon Mar  4 17:56:29 1996 By Annihilator
+
+    Changed go.c to use query("exits/" + dir) as destination
+    room instead of treating query("exits") as a mapping. This
+    should be more OOP than old implementation and allows exits
+    destination as function. See /obj/void.c for example.
+
+Fri Apr  5 13:32:40 1996 By Annihilator
+
+    Added 'eat' command to support food items.

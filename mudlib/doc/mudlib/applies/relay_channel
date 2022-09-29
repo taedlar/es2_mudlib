@@ -1,0 +1,27 @@
+ 
+    relay_channel()    Eastern Stories II (19 Oct 1995)   relay_channel()
+ 
+    NAME
+        relay_channel -- interface for channel message
+ 
+    SYNOPSIS
+        void relay_channel(object ob, string msg);
+ 
+    DESCRIPTION
+        relay_channel, if present in the object, will be called whenever
+	a message is sent to the channel that this object is registered
+	with. The entire channel message and the object who says it will
+	be passed as the parameters. 
+        
+	In order for a non-player control object to receive channel 
+	message, the object has to call register_relay_channel and pass 
+	the name of the desired channel as an argument.
+	
+	This is used as an interface for NPC to handle any interaction 
+	triggered by the said channel messages.
+ 
+    SEE ALSO
+        relay_emote(), relay_say(), relay_whisper()
+ 
+    Page 1                                                  
+ 

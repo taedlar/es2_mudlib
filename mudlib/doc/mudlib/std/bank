@@ -1,0 +1,12 @@
+□ BANK -- 錢莊
+
+inherit ROOM;
+
+void init() 
+將兌換錢幣的指令 convert 加給使用者.
+
+int do_convert(string arg)    
+換算錢幣.
+
+Elon@ES2 
+drafted: 07-06-95

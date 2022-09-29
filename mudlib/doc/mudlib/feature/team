@@ -1,0 +1,33 @@
+□ team
+
+int set_leader(object ob)
+將傳入物件設為該隊伍的領隊。
+
+object query_leader()
+傳回隊伍的領隊物件。
+
+int follow_path(string dir)
+讓指定物件執行移動指令，方向以傳入值為主。
+
+int follow_me(object ob, string dir)
+
+int add_team_member(object ob)
+將指定物件加入隊伍中。如果隊伍還不存在，則會建立一個新的隊伍，並把呼叫此函
+數的物件和傳入物件納入隊伍之中。
+
+int set_team(object *t)
+設定隊伍。（註：此函數沒有傳回值。）(未完)
+
+varargs int dismiss_team(object ob)
+解散隊伍。若解散人為這個隊伍的領隊，則整個隊伍會被解散。否則僅該成
+員離開隊伍。
+
+object *query_team()
+傳回隊伍裏所有隊員。
+
+int is_team_leader()
+測試指定物件是否為一個隊伍的領隊。
+
+Elon@ES2
+06-06-95 drafted.
+

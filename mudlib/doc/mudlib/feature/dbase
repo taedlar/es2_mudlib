@@ -1,0 +1,40 @@
+□ F_DBASE 物件資料特性
+ 
+mixed set(string prop, mixed data)
+將屬性 prop 的內容設為 data 並存入 dbase mapping 中, 如果 dbase
+不存在的話則會建立一個新的 dbase.
+ 
+varargs mixed query(string prop, int raw)
+傳回屬性 prop 的內容, 如果該屬性不存在或是 dbase 不存在則傳回 0.
+第二個傳入值可有可無, 如果 raw 值為 1, 則傳回值為 prop 所呼叫的
+函式名稱, 否則傳回該函式的傳回值.
+ 
+int delete(string prop)
+將屬性 prop 從 dbase 中刪除.
+ 
+mixed add(string prop, mixed data)
+將 data 加入屬性 prop 的內容, 如果該屬性不存在, 則呼叫與
+set(prop, data) 相同.
+ 
+int set_temp(string prop, mixed data)
+將臨時屬性 prop 的內容設為 data 並存入 tmp_dbase mapping 中, 如果
+tmp_dbase 不存在的話則會建立一個新的 tmp_dbase.
+tmp_dbase 為臨時性的資料庫.
+ 
+ mixed query_temp(string prop)
+傳回臨時屬性 prop 的內容.
+ 
+int delete_temp(string prop)
+將臨時屬性 prop 從 tmp_dbase 中刪除.
+ 
+mixed add_temp(string prop, mixed data)
+將 data 加入臨時屬性 prop 的內容, 如果該屬性不存在, 則與呼叫
+set(prop, data) 相同.
+ 
+mapping query_entire_dbase()
+傳回整個 dbase 的內容.
+ 
+void set_default_object(mixed ob)
+ 
+
+Elon@ES2 (3-5-95)

@@ -1,0 +1,21 @@
+□ SKILL
+這是標準的技能物件, 所有的技能檔都需繼承此物件.
+
+inherit F_CLEAN_UP;
+ 
+void create()
+設定物件的 effective user id.
+ 
+int valid_learn(object me) { return 1; }
+判定傳入物件可否學習此一技能, 預設值為 1.
+ 
+int valid_effect(object me, object weapon, string action_name, int skill)
+判定招式是否有效. 預設值為 1.
+
+string type() { return "martial"; }
+傳回物件的質料.
+ 
+void skill_improved(object me)
+
+Elon@ES2 
+drafted: 07-06-95

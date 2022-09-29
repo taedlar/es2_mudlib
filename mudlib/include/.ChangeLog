@@ -1,0 +1,12 @@
+
+Tue Mar  5 10:28:17 1996 By Annihilator
+
+    Added SAVE_USER option in login.h. Undefing it prevents
+    user from saving data (connection object and body object).
+
+Tue Mar 12 10:59:16 1996 By Annihilator
+
+    Fixed the way dbase_security.h checks for euid. Now only
+    checks calls from call_other for euid of previous_object().
+    This will allow all local functions to use set() without
+    security check and make better performance.

@@ -1,0 +1,38 @@
+
+carry_object(5)        ES2 Mudlib Functions       carry_object(5)
+
+NNAAMMEE
+       carry_object()  - create an item and move it to the inven-
+       tory of the NPC.
+
+SSYYNNOOPPSSIISS
+       object carry_object( string file );
+
+DDEESSCCRRIIPPTTIIOONN
+       Clone specified object in filename and move to  the  NPC's
+       inventory.  Normally, it does the following work:
+
+       object ob = new(file); ob->move(this_object());
+
+       carry_object() also supports items that inherits F_UNIQUE.
+       When an unique item is to be created with  carry_object(),
+       and  another copy of such item already exists, the replica
+       object will be created instead. (If no replica defined  in
+       the unique item, 0 is returned)
+
+AAPPPPLLIIEEDD
+       F_SUPPORT
+
+TTEECCHHNNIICCAALL NNOOTTEE
+       carry_object()  only  "actually"  creates  the  item  when
+       called in an cloned NPC. When called in a master  copy  of
+       NPC,  it  just  returns  VOID_OB and thus you can use this
+       function in create() like this:
+
+       carry_object(__DIR__"obj/sword")->wield();
+
+       The reason for such design is to save memory used by those
+       items to use them).
+
+ES2                        11 Apr 1996                          1
+

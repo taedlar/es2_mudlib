@@ -1,0 +1,54 @@
+==========================================================================
+以下為天朝帝國 Celestial Empire 之主要參考文件資料列表:
+
+topics-
+rules--	wiz_rules	robot	wiz_policy	bug
+cmds---	channels
+	board
+
+newbie-	newbie.xone
+	newbie.alc
+start--	survive	quest	quest2
+	combat
+
+setup--	health	skill		race---	human	woochan	jiaojao
+	rank	guild			yenhold	rainnar	ashura
+	class	damage			headless yaksa	blackteeth
+	combat	weapon
+	armor	martial		class--	commoner	fighter
+	magic	lifecycle		taoist		alchemist
+	stats	attribute		soldier		thief	(scholar)
+	clan
+					
+story--	peoples	chin_palace
+	world	sheol
+	theme	history
+	myth	myth.1
+	myth.2
+
+一些技能背景:
+alchemy		alchemy-medication	celestial	chaos-steps
+chivi		essencemagic		fonxansword	gouyee
+hainmay_force	iceforce		liuh-ken	longyeforce
+lotusforce	mysterrier		necromancy	perception
+six-chaos-sword	su-uen			tiger_force
+taoism		taoism-fire		taoism-freeze	taoism-storm
+
+另有一些為巫師創作時之隨寫筆記:
+alignment	element		government	life	material
+reagents	tech		thief_plan
+
+以下為巫師創作時的一些參考文件:(/doc/wiz/)
+all	container	emote	new_wiz	new_wiz.english
+npc_applies	qc_1	qc_2	taoism-spells	taoist-plan
+wizcmds
+
+其它
+color
+
+新加 doc 時, 若是給 wiz 看的, 請置於 /doc/wiz 下, 並更新   /doc/wiz/all。
+若是給 player 的, 請置於 /doc/help/ or /doc/skill/, 並更新 /doc/wiz/all 及
+/doc/help/all 兩檔。其他資訊請看 help help。
+
+Grain@ES2
+==========================================================================

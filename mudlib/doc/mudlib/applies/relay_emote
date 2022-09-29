@@ -1,0 +1,22 @@
+ 
+    relay_emote()      Eastern Stories II (19 Oct 1995)     relay_emote()
+ 
+    NAME
+        relay_emote - interface for emote
+ 
+    SYNOPSIS
+        void relay_emote(object me, string verb);
+ 
+    DESCRIPTION
+        relay_emote, if present in the target object, will be called
+	and the emote verb used against this object will be passed 
+	along with the acting object.
+
+        This is used as an interface to handle any interaction triggered
+        by the system emote daemon.
+ 
+    SEE ALSO
+        relay_say(), relay_channel(), relay_whisper()
+ 
+    Page 1                                                  
+ 

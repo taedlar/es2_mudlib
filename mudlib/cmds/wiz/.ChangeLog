@@ -1,0 +1,24 @@
+
+Mon Mar  4 17:22:21 1996 By Annihilator
+
+    Added a new wizard command 'log', to log changes in the
+    file '.ChangeLog'. Currently it checks wizard's access
+    write to the current directory.
+
+Sat Mar  9 10:31:21 1996 By Annihilator
+
+    removed 'stat' command.
+
+Sat Mar  9 11:04:33 1996 By Annihilator
+
+    Changed 'ilist' command to out formated tree graph of
+    inheritence.
+
+Fri Apr  5 11:18:37 1996 By Annihilator
+
+    Changed 'mudlist' to list muds using ES mudlib. If wish to
+    list all muds, use mudlist -a.
+
+Tue Apr 23 16:00:30 1996 By Karrimor
+
+    Added command log's help
