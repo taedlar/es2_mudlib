@@ -1,0 +1,7 @@
+/mudlib/log
+/mudlib/bin
+/mudlib/static
+
+# vim
+*.swp
+
