@@ -47,7 +47,7 @@ file_owner(string file)
  *  ES2 目前對 uid 的發放方式請參考程式碼中的註解。
  */
 string
-creator_file(string file)
+virtual_creator_file(string file)
 {
     string *path, euid;
 

@@ -19,7 +19,7 @@
 private void
 create()
 {
-    write("master: loaded successfully.\n");
+    debug_message ("master object is created successfully.");
 }
 
 private object
@@ -27,25 +27,32 @@ connect(int port)
 {
     object ob;
     mixed err;
+    string ip;
 
-    /* 配置一個新的連線物件用來作為登入程序的使用者物件 */
+    ip = query_ip_number();
+    debug_message (sprintf ("new connection from ip address \"%s\"", ip));
+
     switch(port)
     {
     case MUD_PORT:
 	err = catch(ob = new(LOGIN_OB));
-	if( err ) {
-	    write("使用者登入程式正在維修中，請稍候再來。\n");
-	    if( query_ip_number()=="127.0.0.1" ) write(err);
+	if (err) {
+	    write ("Oops, something goes wrong. Please try again later.");
+	    if (ip == "127.0.0.1")
+		write (err);
 	    return 0;
 	}
 	return ob;
     case HTTP_PORT:
 	err = catch(ob = new(HTTP_OB));
-	if( err ) {
-	    write(HTTP_VERSION + " 503 Service Unavailable" CRLF CRLF ":P");
+	if (err) {
+	    write (HTTP_VERSION " 503 Service Unavailable" CRLF CRLF ":P");
 	    return 0;
 	}
 	return ob;
+    default:
+	debug_message("connection from unexpected port " + port);
+	return 0;
     }
 }
 
@@ -67,39 +74,24 @@ crash(string error, object command_giver, object current_object)
 {
     efun::shout("系統核心發出一聲慘叫：哇 ....\n");
     efun::shout("系統核心告訴你﹕要當機了﹐自己保重吧﹗\n");
-    log_file("static/CRASHES", sprintf("[%s] %s\n", ctime(time()), error) );
+    log_file("CRASHES", sprintf("[%s] %s\n", ctime(time()), error) );
     if (command_giver)
-	log_file("static/CRASHES", sprintf("  this_player: %O\n", command_giver));
+	log_file("CRASHES", sprintf("  this_player: %O\n", command_giver));
     if (current_object)
-        log_file("static/CRASHES", sprintf("  this_object: %O\n", current_object));
+        log_file("CRASHES", sprintf("  this_object: %O\n", current_object));
 }
 
 static string *
-read_config(string file)
+epilog (int load_empty)
 {
-    string str;
-
-    str = read_file(file);
-    if (!str) return ({});
-
-    return filter( explode(str, "\n"), (: strlen($1) && ($1[0] != '#') :));
-}
-
-static string *
-epilog(int load_empty)
-{
-    return read_config(CONFIG_DIR + "preload");
+    return filter (explode (read_file (CONFIG_DIR + "preload"), "\n"), (: strlen($1) && ($1[0] != '#') :));
 }
 
 static void
-preload(string file)
+preload (string file)
 {
-    string err;
-
-    write("Preloading : " + file );
-    err = catch(load_object(file));
-    if( err ) log_file("preload.log",
-        sprintf("[%s] %s: %s", ctime(time()), file, err) );
+    debug_message ("preloading " + file);
+    load_object (file);
 }
 
 private int
@@ -151,12 +143,9 @@ get_bb_uid()
 }
 
 static string
-creator_file(string str)
+creator_file (string str)
 {
-    object ob;
-
-    catch(ob = load_object(SIMUL_EFUN_OB));
-    return ob ? (string)ob->creator_file(str) : "NONAME";
+    return virtual_creator_file(str) || "NONAME";
 }
 
 string
@@ -173,23 +162,27 @@ standard_trace(mapping error)
     string res = "";
 
     /* keep track of number of errors per object...if you're into that */
-    res += sprintf("執行時段錯誤：%s物件：%O:%s\n程式：%s:%i\n",
-	error["error"],
+    res += sprintf("%O: %s: %s:%d: %s\n",
 	error["object"],
 	error["program"],
 	error["file"],
-	error["line"]);
+	error["line"],
+	error["error"]);
 
-    res += "函數呼叫回溯:\n";
-    foreach(mapping trace in error["trace"]) {
-	res += sprintf("%-25O %-20s %s:%i\n",
-	    trace["object"],
-	    trace["function"],
-	    trace["program"]==trace["file"] ? trace["program"]
-		: trace["file"] + "(" + trace["program"] + ")",
-	    trace["line"] );
+    /*
+    if (error["trace"]) {
+	res += "\t[\n";
+	foreach(mapping trace in error["trace"]) {
+	    res += sprintf("%-25O %-20s %s:%i\n",
+		trace["object"],
+		trace["function"],
+		trace["program"]==trace["file"] ? trace["program"]
+			: trace["file"] + "(" + trace["program"] + ")",
+		trace["line"] );
+	}
+	res += "\t]\n";
     }
-    res += "\n";
+    */
 
     return res;
 }
@@ -200,16 +193,17 @@ error_handler( mapping error, int caught )
     string report;
     object player;
 
-    if( caught ) return 0;
+    if (caught)
+        return 0;
 
-    report = standard_trace(error);
+    report = standard_trace (error);
 
     player = this_player();
 
-    if( objectp(player) && interactive(player) ) efun::write(report);
+    if (objectp(player) && interactive(player))
+	efun::write (report);
 
-    /* 傳回的字串會被紀錄在 debug.log */
-    return report;
+    return report; // goes to debug.log
 }
 
 static void
@@ -314,3 +308,4 @@ valid_bind(object binder, object old_owner, object new_owner)
         binder, old_owner, new_owner) );
     return 0;
 }
+/*  master.c */
