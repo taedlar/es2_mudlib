@@ -126,7 +126,7 @@ create()
     seteuid(getuid());
     set("channel_id", "安全系統");
 
-    wizlist = explode(read_file(WIZLIST), "\n");
+    wizlist = explode (read_file (WIZLIST) || "", "\n");
     wiz_status = allocate_mapping(sizeof(wizlist));
     foreach(entry in wizlist) {
 	if( entry[0]=='#'

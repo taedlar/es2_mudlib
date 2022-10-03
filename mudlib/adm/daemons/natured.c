@@ -33,6 +33,7 @@ private void init_day_phase();
 private void
 create()
 {
+    seteuid (MUDLIB_UID);
     day_phase = read_table("/adm/etc/nature/day_phase");
     init_day_phase();
 }

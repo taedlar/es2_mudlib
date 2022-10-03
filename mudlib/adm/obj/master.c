@@ -142,16 +142,65 @@ get_bb_uid()
    return BACKBONE_UID;
 }
 
-static string
-creator_file (string str)
+// creator_file()
+//
+// This function is responsible to give object UID (in ES2, UID means highest privilege of the object).
+// The actuao privilege is assigned in EUID, where a higher privilege object can lower its privilege
+// temporarily to restrict its access when it acts as an delegate of operations from users.
+//
+// If creator_file() returns -1, the LPMud driver will destruct the object.
+static mixed
+creator_file (string file)
 {
-    return virtual_creator_file(str) || "NONAME";
+    string *dirs, euid;
+
+    dirs = explode (file, "/");
+    if (!arrayp(dirs) || (sizeof(dirs) < 2))
+	return -1; // forbids object in root directory of mudlib
+
+    switch (dirs[0]) {
+	case "adm":
+	case "cmds":
+	    // administrator objects with highest privileges
+	    return ROOT_UID;
+
+	case "d":
+	    // domain objects that can alter user status, but not allowed to write files
+  	    return DOMAIN_UID;
+
+	case "u":
+	case "open":
+	    // wizard objects that receive the wizard's id as UID if it is loaded by the wizard.
+	    // otherwise, give it the lowest privilege as NONAME
+	    if (this_player(1)) {
+		euid = getuid (this_player(1));
+		if (euid == dirs[1])
+		    return euid;
+	    }
+            return "NONAME";
+
+	case "obj":
+	    // utility objects is granted the EUID of the caller.
+	    // if the caller owns ROOT_UID, degrade to NONAME.
+	    if (previous_object(1)) {
+		euid = geteuid (previous_object(1));
+		if (euid == ROOT_UID)
+		    return "NONAME";
+		return euid;
+	    }
+	    return -1;
+
+	case "daemon":
+	default:
+	    // others
+	    return MUDLIB_UID;
+    }
 }
 
 string
-object_name(object ob)
+object_name (object ob)
 {
-    if( !objectp(ob) ) return 0;
+    if (!objectp(ob)) return 0;
     return getuid(ob);
 }
 
@@ -187,6 +236,7 @@ standard_trace(mapping error)
     return res;
 }
 
+#if 0
 string
 error_handler( mapping error, int caught )
 {
@@ -205,6 +255,7 @@ error_handler( mapping error, int caught )
 
     return report; // goes to debug.log
 }
+#endif
 
 static void
 log_error(string file, string message)
@@ -266,28 +317,39 @@ valid_save_binary( string filename ) { return 1; }
 // valid_write: write privileges; called with the file name, the object
 //   initiating the call, and the function by which they called it. 
 static int
-valid_write( string file, mixed user, string func )
+valid_write (string file, mixed user, string func)
 {
     object ob;
+    int ret = 0;
 
-    if( !catch(ob = load_object(SECURITY_D))
-    &&    objectp(ob) )
-        return (int)SECURITY_D->valid_write(file, user, func);
+    if (user == master())
+	return 1; // always allow master object to write anything
 
-    return 0;
+    if (!catch(ob = load_object(SECURITY_D)) && objectp(ob)) {
+        ret = (int)SECURITY_D->valid_write (file, user, func);
+    	if (0 == ret)
+	    debug_message (sprintf ("denied writing %s for %O", file, user));
+    }
+
+    return ret;
 }
 
-// valid_read: read privileges; called exactly the same as valid_write()
 static int
 valid_read( string file, mixed user, string func )
 {
     object ob;
+    int ret = 1;
 
-    if( !catch(ob = load_object(SECURITY_D))
-    &&    objectp(ob) )
-        return (int)SECURITY_D->valid_read(file, user, func);
+    if (user == master() || geteuid(user)==MUDLIB_UID)
+	return 1; // always allow master object to read anything
 
-    return 1;
+    if (!catch(ob = load_object(SECURITY_D)) && objectp(ob)) {
+        ret = (int)SECURITY_D->valid_read (file, user, func);
+	if (0 == ret)
+	    debug_message (sprintf ("denied reading %s for %O", file, user));
+    }
+
+    return ret;
 }
 
 static int
