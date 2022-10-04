@@ -340,7 +340,7 @@ valid_read( string file, mixed user, string func )
     object ob;
     int ret = 1;
 
-    if (user == master() || geteuid(user)==MUDLIB_UID)
+    if ((user == master()) || (geteuid(user) == ROOT_UID))
 	return 1; // always allow master object to read anything
 
     if (!catch(ob = load_object(SECURITY_D)) && objectp(ob)) {
