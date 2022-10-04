@@ -113,11 +113,9 @@ do_channel(object me, string verb, string arg, int emote)
                     emote_arg = "";
                 }
                 arg = EMOTE_D->do_emote(me, vb, emote_arg, 1);
-                if(!arg)
-                    if(is_chinese(vb))
-                        arg=(string)me->name(1)+vb+" "+emote_arg+"\n";
-                    else
-                        return 0;
+                if(!arg) {
+                    arg=(string)me->name(1)+vb+" "+emote_arg+"\n";
+		}
                 if( channels[verb]["anonymous"] )
                     arg = replace_string(arg, me->name(1), channels[verb]["anonymous"]);
             }

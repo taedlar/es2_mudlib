@@ -30,13 +30,6 @@ to_chinese(string str)
     return CHINESE_D->chinese(str);
 }
 
-int
-is_chinese(string str)
-{
-    if( strlen(str)>=2 && str[0] > 160 ) return 1;
-    return 0;
-}
-
 string
 break_chinese_string(string str, int len, mixed indent)
 {
@@ -57,10 +50,6 @@ break_chinese_string(string str, int len, mixed indent)
     while( strlen(str) > cntr + len ) {
         int br, i;
         for(i=0; i<len;) {
-            if( is_chinese(str[cntr+i..<1]) ) {
-                br = cntr+i;
-                i++;
-            }
             if( str[cntr+i]==' ' )
                 br = cntr+i;
             i++;

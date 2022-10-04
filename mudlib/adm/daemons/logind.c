@@ -804,31 +804,27 @@ check_legal_name(string name)
 
     i = strlen(name);
 
-    if( (strlen(name) < 2) || (strlen(name) > 12 ) ) {
-        write("對不起，您的中文名字必須是 1 到 6 個中文字。\n");
+    if( (strlen(name) < 3) || (strlen(name) > 18 ) ) {
+        write("您的顯示名稱必須使用長度 3 到 18 的合法 UTF-8 文字。\n");
         return 0;
     }
     while(i--) {
         if( name[i]<=' ' ) {
-            write("對不起﹐您的中文名字不能用控制字元。\n");
-            return 0;
-        }
-        if( i%2==0 && !is_chinese(name[i..<0]) ) {
-            write("對不起﹐請您用「中文」取名字。\n");
+            write("您的顯示名稱不能用控制字元。\n");
             return 0;
         }
         if( name[i..i+1]=="　" ) {
-            write("對不起﹐請不要用空白字元取名字。\n");
+            write("請不要用空白字元取名字。\n");
             return 0;
         }
     }
     if( member_array(name, banned_name)!=-1 ) {
-        write("對不起﹐這種名字會造成其他人的困擾。\n");
+        write("這種名字會造成其他人的困擾。\n");
         return 0;
     }
     foreach(bname in banned_rude_name)
         if( strsrch( name, bname )>-1 ) {
-            write("對不起, 這種名子會引起不必要的誤會。\n");
+            write("這種名會引起不必要的誤會。\n");
             return 0;
         }
     return 1;

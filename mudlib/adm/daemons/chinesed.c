@@ -40,6 +40,10 @@ void create()
 {
     seteuid(getuid());
     restore();
+    if (mapp(dict))
+        debug_message (sprintf ("dictionary restored %d words", sizeof(dict)));
+    else
+	debug_message ("dictionary initialized.");
 }
 
 void remove() { save(); }
