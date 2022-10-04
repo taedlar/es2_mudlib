@@ -154,7 +154,7 @@ creator_file (string file)
 {
     string *dirs, euid;
 
-    dirs = explode (file, "/");
+    dirs = explode (file, "/") - ({""});
     if (!arrayp(dirs) || (sizeof(dirs) < 2))
 	return -1; // forbids object in root directory of mudlib
 
