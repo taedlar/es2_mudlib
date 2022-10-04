@@ -2,11 +2,13 @@
 
 void cat(string file)
 {
+    seteuid (getuid (previous_object ()));
     write(read_file(file));
 }
 
 void log_file(string file, string text)
 {
+    seteuid (getuid (previous_object ()));
     write_file(LOG_DIR + file, text);
 }
 
@@ -15,6 +17,7 @@ assure_file(string file)
 {
     string path, dir, *dirs;
 
+    seteuid (getuid (previous_object ()));
     if( file_size(file)!=-1 ) return;
 
     dirs = explode(file, "/");
