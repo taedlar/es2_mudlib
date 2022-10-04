@@ -19,6 +19,7 @@ int main(object me, string arg)
     string s;
     int cnt, t;
 
+    seteuid(getuid());
     s = read_file("/adm/etc/visitor.cnt");
     if( !s ) return 0;
     sscanf(s, "%d %d", t, cnt);
