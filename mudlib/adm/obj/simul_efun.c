@@ -11,8 +11,9 @@
 // This must be after gender.c
 #include "/adm/simul_efun/message.c"
 
-void create()
+static void
+create()
 {
-	seteuid(ROOT_UID);
-	write("simul_efun loaded successfully.\n");
+    debug_message ("simul_efun loaded successfully.");
+
 }
