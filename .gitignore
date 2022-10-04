@@ -1,6 +1,10 @@
 /mudlib/log
 /mudlib/bin
 /mudlib/static
+/mudlib/data/login
+/mudlib/data/user
+/mudlib/data/daemon.o
+/mudlib/adm/etc/visitor.cnt
 
 # vim
 *.swp
