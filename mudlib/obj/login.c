@@ -36,14 +36,10 @@ int clean_up()
     return 1;
 }
 
-/*  logon()
- *
- *  這個函數在使用者首次連線進來後，由系統叫用這個函數執行登入的動作。
- */
 private void
-logon()
+logon ()
 {
-    seteuid(getuid());
+    seteuid (getuid());
 
     if( load_object(LOGIN_D) ) {
 	call_out( "time_out", LOGIN_TIMEOUT );
@@ -56,7 +52,7 @@ logon()
 
     /* 無法載入 LOGIN_D ... */
     receive("系統登入功能整修中，請稍後再嘗試連線。\n");
-    destruct(this_object());
+    destruct (this_object());
 }
 
 private void

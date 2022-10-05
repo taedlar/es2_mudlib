@@ -23,7 +23,7 @@ create()
 }
 
 private object
-connect(int port)
+connect (int port)
 {
     object ob;
     mixed err;
@@ -42,7 +42,9 @@ connect(int port)
 		write (err);
 	    return 0;
 	}
+	export_uid (ob); // grant ROOT_UID temporarily
 	return ob;
+
     case HTTP_PORT:
 	err = catch(ob = new(HTTP_OB));
 	if (err) {
@@ -50,6 +52,7 @@ connect(int port)
 	    return 0;
 	}
 	return ob;
+
     default:
 	debug_message("connection from unexpected port " + port);
 	return 0;
@@ -200,8 +203,13 @@ creator_file (string file)
 string
 object_name (object ob)
 {
-    if (!objectp(ob)) return 0;
-    return getuid(ob);
+    if (!objectp(ob))
+	return 0;
+
+    if (getuid(ob) == geteuid(ob))
+	return getuid(ob);
+
+    return getuid(ob) + "/" + geteuid(ob);
 }
 
 string
@@ -325,10 +333,14 @@ valid_write (string file, mixed user, string func)
     if (user == master())
 	return 1; // always allow master object to write anything
 
+    if (file_name(user) == SIMUL_EFUN_OB)
+	user = previous_object(1); // simul_efun has no uid, use caller's
+
     if (!catch(ob = load_object(SECURITY_D)) && objectp(ob)) {
         ret = (int)SECURITY_D->valid_write (file, user, func);
     	if (0 == ret)
-	    debug_message (sprintf ("denied writing %s for %O", file, user));
+	    //error (sprintf ("%s: denied writing %s for %O", func, file, user));
+	    debug_message (sprintf ("%s: denied writing %s for %O", func, file, user));
     }
 
     return ret;
@@ -343,10 +355,14 @@ valid_read( string file, mixed user, string func )
     if ((user == master()) || (geteuid(user) == ROOT_UID))
 	return 1; // always allow master object to read anything
 
+    if (file_name(user) == SIMUL_EFUN_OB)
+	user = previous_object(1); // simul_efun has no uid, use caller's
+
     if (!catch(ob = load_object(SECURITY_D)) && objectp(ob)) {
         ret = (int)SECURITY_D->valid_read (file, user, func);
 	if (0 == ret)
-	    debug_message (sprintf ("denied reading %s for %O", file, user));
+	    //error (sprintf ("%s: denied reading %s for %O", func, file, user));
+	    debug_message (sprintf ("%s: denied reading %s for %O", func, file, user));
     }
 
     return ret;

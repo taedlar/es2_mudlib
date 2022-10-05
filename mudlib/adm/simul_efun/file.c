@@ -1,35 +1,43 @@
 // file.c
 
-void cat(string file)
+void
+cat (string file)
 {
     seteuid (getuid (previous_object ()));
-    write(read_file(file));
-}
-
-void log_file(string file, string text)
-{
-    seteuid (getuid (previous_object ()));
-    write_file(LOG_DIR + file, text);
+    write (read_file(file));
 }
 
 void
-assure_file(string file)
+log_file (string file, string text)
+{
+    seteuid (getuid (previous_object ()));
+    write_file (LOG_DIR + file, text);
+}
+
+void
+assure_file (string file)
 {
     string path, dir, *dirs;
 
     seteuid (getuid (previous_object ()));
-    if( file_size(file)!=-1 ) return;
+    if (file_size (file) != -1)
+	return;
 
-    dirs = explode(file, "/");
+    dirs = explode (file, "/");
     path = "";
-    seteuid(ROOT_UID);
-    foreach(dir in dirs[0..<2]) {
-	if( dir=="" ) continue;
+    seteuid (ROOT_UID);
+    foreach (dir in dirs[0..<2]) {
+	if (dir == "")
+	    continue;
 	path += "/" + dir;
-	switch( file_size(path) ) {
-	case -1: mkdir(path); break;
-	case -2: continue;
-	default: return;
+	switch (file_size (path)) {
+	case -1:
+	    mkdir(path);
+	    break;
+	case -2:
+	    continue;
+	default:
+	    return;
 	}
     }
 }

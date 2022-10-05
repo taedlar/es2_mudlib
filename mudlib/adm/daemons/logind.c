@@ -112,21 +112,27 @@ reset()
 }
 
 void
-logon(object ob)
+logon (object ob)
 {
     object *usr;
     int i, wiz_cnt, ppl_cnt, login_cnt;
 
+    if (getuid(ob) != ROOT_UID) {
+	// only allow trusted login object
+	return;
+    }
+
 #ifdef ENABLE_ANTISPAM
-    if( spammer_ip[query_ip_number(ob)] >= 10 ) {
+    if (spammer_ip[query_ip_number(ob)] >= 10) {
         write("從您連線的主機創造的人物太多了﹐您的主機將被拒絕往來一段時間。\n");
         destruct(ob);
         return;
     }
 #endif
 
-    seteuid(getuid());
-    efun::write(read_file(WELCOME) + "");
+    seteuid (getuid());
+    efun::write (read_file(WELCOME) + "\n");
+
     UPTIME_CMD->main();
     VISITOR_CMD->main();
 
@@ -145,26 +151,33 @@ logon(object ob)
     printf("目前共有 %d 位巫師、%d 位玩家在線上﹐以及 %d 位使用者嘗試連線中。\n\n",
         wiz_cnt, ppl_cnt, login_cnt );
 
-    write("您的使用者代號：");
-    input_to( "get_id", ob );
+    write ("您的使用者代號：");
+    input_to ("get_id", ob);
 }
 
 private void
-get_id(string arg, object ob)
+get_id (string arg, object ob)
 {
     object ppl;
 
-    arg = lower_case(arg);
-    if( !check_legal_id(arg)) {
+    // user id will be used as object uid for all objects created by the user.
+    // the id string must be converted too all lower case, while objects created by backend are assigned
+    // an uid with first character captialized. Thus we prevents a user called himself 'root' to become
+    // privileged.
+    arg = lower_case (arg);
+
+    if (!check_legal_id(arg)) {
 	write("您的使用者代號：");
-	input_to("get_id", ob);
+	input_to ("get_id", ob);
 	return;
     }
 
-    /* 設定連線物件的權限等級 */
-    seteuid(arg);
-    export_uid(ob);
-    seteuid(getuid());
+    if (getuid (ob) != ROOT_UID)
+	return;
+    seteuid (arg);
+    export_uid (ob);
+    seteuid (getuid());
+
     ob->set("id", arg);
 
 #ifdef MAX_USERS
@@ -189,14 +202,14 @@ get_id(string arg, object ob)
 	ip = query_ip_number(ob);
 	foreach(pattern in banned_ip)
 	    if( ip==pattern || sscanf(ip, pattern) ) {
-		write("對不起，您的連線位置目前不接受使用者登入。\n");
+		write("您的連線位置目前不接受使用者登入。\n");
 		destruct(ob);
 		return;
 	    }
 	ip = query_ip_name(ob);
 	foreach(pattern in banned_hostname)
 	    if( ip==pattern || sscanf(ip, pattern) ) {
-		write("對不起，您的連線位置目前不接受使用者登入。\n");
+		write("您的連線位置目前不接受使用者登入。\n");
 		destruct(ob);
 		return;
 	    }
@@ -204,15 +217,15 @@ get_id(string arg, object ob)
 #endif	/* ENABLE_BAN_SITE */
 
 #ifdef WIZ_LOCK_LEVEL
-    if( (int)wiz_level(arg) < (int)wiz_lock_level ) {
-        write("對不起﹐" + MUD_NAME + "目前限制巫師等級 " + WIZ_LOCK_LEVEL
+    if ((int)wiz_level(arg) < (int)wiz_lock_level) {
+        write(MUD_NAME + "目前限制巫師等級 " + WIZ_LOCK_LEVEL
             + " 以上的人才能連線。\n");
         destruct(ob);
         return;
     }
 #endif
 
-    if( arg=="guest" ) {
+    if (arg=="guest") {
         // If guest, let them create the character.
         get_email( "guest@" + query_ip_name(ob), ob);
         return;
@@ -679,21 +692,25 @@ enter_world(object ob, object user, int silent)
     object room;
     string startroom, err;
 
-    /* 將使用者從連線物件 exec 到使用者物件上 */
     user->set_link(ob);
     ob->set_body(user);
-    exec(user, ob);
 
-    if( !silent ) write("目前權限﹕" + wizhood(user) + "\n");
+    // finished logon, transfer the interactive user from logon to user body
+    exec (user, ob);
+
+    if (!silent)
+	write ("目前權限﹕" + wizhood(user) + "\n");
+
     user->setup();
     increment_visitor_count();
 
 #ifdef SAVE_USER
-    /* 在這裡儲存，讓新創造的人物被存下來 */
+    // save newly created user
     user->save();
 #endif
 
-    if( silent ) return;
+    if (silent)
+	return;
 
     cat(MOTD);
     IDENT_D->query_userid((string)user->query("id"));
@@ -778,18 +795,18 @@ net_dead(object ob)
 }
 
 int
-check_legal_id(string id)
+check_legal_id (string id)
 {
     int i;
 
-    i = strlen(id);
-    if( (strlen(id) < 3) || (strlen(id) > 12 ) ) {
-        write("對不起﹐您的英文名字必須是 3 到 12 個英文字母。\n");
+    i = strlen (id);
+    if ((i < 3) || (i > 12 )) {
+        write ("您的使用者代號必須是 3 到 12 個英文字母。\n");
         return 0;
     }
-    while(i--)
-        if( id[i]<'a' || id[i]>'z' ) {
-            write("對不起﹐您的英文名字只能用英文字母。\n");
+    while (i--)
+        if ((id[i]<'a') || (id[i]>'z')) {
+            write("您的使用者代號只能由 a 到 z 的英文字母組成。\n");
             return 0;
         }
 
@@ -945,14 +962,14 @@ private void
 increment_visitor_count()
 {
     int t, cnt;
-    string s = read_file(VISITOR_COUNTER_FILE);
+    string s = read_file (VISITOR_COUNTER_FILE);
 
-    if( !s ) 
+    if (!s) 
         s = sprintf("%d 1", time());
     else {
         sscanf(s, "%d %d", t, cnt);
-        if( ! t ) { t = time(); cnt = 0; }
+        if (! t) { t = time(); cnt = 0; }
         s = sprintf("%d %d", t, cnt+1);
     }
-    write_file(VISITOR_COUNTER_FILE, s, 1);
+    write_file (VISITOR_COUNTER_FILE, s, 1);
 }

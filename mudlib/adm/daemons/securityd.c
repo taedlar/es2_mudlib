@@ -289,10 +289,8 @@ valid_read(string file, mixed user, string func)
     /* 允許 ROOT_UID 讀取任何檔案 */
     if( euid==ROOT_UID ) return 1;
 
-    /* 允許使用者讀取存檔 */
-    if( func=="restore_object"
-    &&  (file==user_data(euid) || file==login_data(euid)
-	|| file==mail_data(euid)) )
+    // allow operations on user data of the same euid
+    if (file==user_data(euid) || file==login_data(euid) || file==mail_data(euid))
 	return 1;
 
     path = explode(file, "/") - ({ "" });
