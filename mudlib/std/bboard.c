@@ -1,16 +1,5 @@
-/*  bboard.c - the buuletin board object
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: syntax=lpc
+#pragma save_binary
 
 #include <ansi.h>
 
@@ -20,7 +9,15 @@
 inherit ITEM;
 inherit F_SAVE;
 
-void setup()
+private string usage = "你可以在留言板使用以下命令：\n"
+"\t" UNDL "post" NOR " <標題>\n"
+"\t" UNDL "read" NOR " new|next|<編號>\n"
+"\t" UNDL "discard" NOR " <標題>\n"
+"\t" UNDL "followup" NOR " <編號> <標題>\n"
+;
+
+void
+setup()
 {
     string loc;
 
@@ -32,8 +29,10 @@ void setup()
     restore();
 }
 
-void init()
+private void
+init()
 {
+    add_action("do_help", "help");
     add_action("do_post", "post");
     add_action("do_read", "read");
     add_action("do_discard", "discard");
@@ -41,7 +40,8 @@ void init()
     add_action("do_followup", "followup");
 }
 
-string query_save_file()
+string
+query_save_file()
 {
     string id;
 
@@ -49,14 +49,15 @@ string query_save_file()
     return DATA_DIR + "board/" + id + __SAVE_EXTENSION__;
 }
 
-string short()
+string
+short()
 {
     mapping *notes;
     int i, unread, last_read_time;
 
     notes = query("notes");
     if( !pointerp(notes) || !sizeof(notes) )
-	return ::short() + " [ 沒有任何留言 ]";
+	return ::short() + " [沒有任何留言]";
 
     if( this_player() && this_player()->link() ) {
 	last_read_time = (int)this_player()->link()->query("board_last_read/" + (string)query("board_id"));
@@ -64,12 +65,13 @@ string short()
 	    if( notes[i]["time"] <= last_read_time ) break;
     }
     if( unread )
-	return sprintf("%s [ %d 張留言﹐%d 張未讀 ]", ::short(), sizeof(notes), unread);
+	return sprintf("%s [%d 張留言﹐%d 張未讀]", ::short(), sizeof(notes), unread);
     else
-	return sprintf("%s [ %d 張留言 ]", ::short(), sizeof(notes));
+	return sprintf("%s [%d 張留言]", ::short(), sizeof(notes));
 }
 
-string long()
+string
+long()
 {
     mapping *notes;
     int i, last_time_read;
@@ -79,7 +81,7 @@ string long()
     msg = query("long");
     if( !msg ) msg = "";
     if( !pointerp(notes) || !sizeof(notes) )
-	return msg += query("name") + "使用方法請見 help board。\t容量約 (" +BOARD_CAPACITY+ ") 篇\n";
+	return msg += query("name") + "使用方法請見 help board，留言板約可容納 " +BOARD_CAPACITY+ " 篇留言。\n";
 
     last_time_read = this_player()->link()->query("board_last_read/" + (string)query("board_id"));
     for(i=0; i<sizeof(notes); i++)
@@ -90,12 +92,23 @@ string long()
 	    notes[i]["author"],
 	    ctime(notes[i]["time"])[0..9]
 	);
-    return msg += "\n=== " + query("name") + "使用方法請見 help board，留言版容量：" +BOARD_CAPACITY+ " 篇 ===\n";
+    return msg += "\n=== " + query("name") + "使用方法請見 help board，留言版約可容納 " +BOARD_CAPACITY+ " 篇留言 ===\n";
+}
+
+int
+do_help(string arg)
+{
+  if (arg != "board")
+    return 0;
+
+  write(usage);
+  return 1;
 }
 
 // This is the callback function to process the string returned from the
 // editor defined in F_EDIT of player object.
-void done_post(object me, mapping note, string text)
+void
+done_post(object me, mapping note, string text)
 {
     mapping *notes;
     string sig;
@@ -120,7 +133,8 @@ void done_post(object me, mapping note, string text)
     return;
 }
 
-int do_post(string arg)
+int
+do_post(string arg)
 {
     mapping note;
     if(!arg) return notify_fail("留言請指定一個標題。\n");
@@ -140,7 +154,8 @@ int do_post(string arg)
     return 1;
 }
 
-int do_read(string arg)
+int
+do_read(string arg)
 {
     int num,tmp;
     mapping *notes, last_read_time;
@@ -187,7 +202,8 @@ int do_read(string arg)
 }
 
 
-int do_discard(string arg)
+int
+do_discard(string arg)
 {
     mapping *notes;
     int num;
@@ -209,7 +225,8 @@ int do_discard(string arg)
     return 1;
 }
 
-int do_save_article(string arg)
+int
+do_save_article(string arg)
 {
     int num;
     string file;
@@ -231,7 +248,8 @@ int do_save_article(string arg)
     return 1;
 }
 
-int do_followup(string str)
+int
+do_followup(string str)
 {
     mapping *notes, note;
     string *text, title;

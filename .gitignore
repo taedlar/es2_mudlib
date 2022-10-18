@@ -1,8 +1,10 @@
 /mudlib/log
 /mudlib/bin
 /mudlib/static
+/mudlib/data/board
 /mudlib/data/login
 /mudlib/data/user
+/mudlib/data/daemon
 /mudlib/data/daemon.o
 /mudlib/adm/etc/visitor.cnt
 
