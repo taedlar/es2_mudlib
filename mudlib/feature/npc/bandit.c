@@ -6,7 +6,8 @@ varargs string name(int raw);
 void kill_ob(object ob);
 varargs int is_fighting(object ob);
 
-int accept_fight(object ob)
+int
+accept_fight(object ob)
 {
 	if( is_fighting() ) {
 		do_chat( name() + "說道﹕哼 ... 倚多為勝不是好漢﹐待會兒再陪你玩﹗\n");
@@ -17,7 +18,26 @@ int accept_fight(object ob)
 	return 1;
 }
 
-void accept_kill(object ob)
+void
+accept_kill(object ob)
 {
 	do_chat( name() + "「哼」地一聲﹐說道﹕那得瞧你有沒有這個本事﹗\n");
 }
+
+string
+rank (string politness, int raw)
+{
+	if (!politness)
+		return "土匪";
+
+	switch (politness) {
+		case "self":
+			return "咱家";
+		case "respectful":
+			return "好漢爺";
+		case "rude":
+		default:
+			return "狗賊";				
+	}
+}
+

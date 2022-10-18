@@ -1,16 +1,4 @@
-/*  attack.c - the attack routines
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: syntax=lpc
 
 #include <ansi.h>
 #include <dbase.h>
@@ -20,13 +8,13 @@
 
 #define MAX_OPPONENT    4
 
-static object charge_target = 0;
-static object guarding = 0, *guarded = ({});
-static object *enemy = ({});
-static mapping killer = ([]);
-static int attack_patience;
+private object charge_target = 0;
+private object guarding = 0, *guarded = ({});
+private object *enemy = ({});
+private mapping killer = ([]);
+private int attack_patience;
 
-static object current_target;
+private object current_target;
 
 void fight_ob(object ob);
 void kill_ob(object ob);
@@ -171,7 +159,7 @@ void kill_ob(object ob)
 {
     if( userp(ob) ) {
 	if( living(ob) && undefinedp(killer[ob->query("id")]) )
-	    tell_object(ob, HIR "看起來" + this_object()->name() + "想殺死你﹗\n" NOR);
+	    tell_object(ob, HIR "看起來" + this_object()->name() + "想殺死你！\n" NOR);
 	killer[ob->query("id")] = time();
     }
     else

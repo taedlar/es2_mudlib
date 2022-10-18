@@ -8,7 +8,7 @@ void create()
 {
 	set_name("黑衣老人", ({ "oldman" }) );
 	set_race("human");
-	set_class("thief");
+	set_class("commoner");
 	set_level(7);
 	set_stat_maximum("gin", 70);
 	set_stat_maximum("sen", 50);

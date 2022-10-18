@@ -15,7 +15,7 @@ void create()
     set_attr("int", 22);
     set_attr("dex", 26);
     set_race("human");
-    set_class("fighter");
+    set_class("commoner");
     set_level(55);
 
     set_skill("sword", 140);

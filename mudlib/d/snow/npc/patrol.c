@@ -8,7 +8,7 @@ void create()
 {
     set_name("巡邏官兵", ({ "patrol garrison", "patrol", "garrison" }) );
     set_race("human");
-    set_class("fighter");
+    set_class("commoner");
     set_level(15);
     set_skill("sword", 60);
     set_skill("parry", 60);

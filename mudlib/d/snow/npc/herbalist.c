@@ -9,7 +9,7 @@ void create()
 {
 	set_name("藥鋪掌櫃", ({"herbalist"}));
 	set_race("human");
-	set_class("alchemist");
+	set_class("commoner");
 	set_level(3);
 	set_skill("unarmed", 5);
 	set_skill("parry", 5);

@@ -12,7 +12,7 @@ void create()
 	set_attr("cor", 22);
 	set_attr("str", 19);
 	set_race("human");
-	set_class("thief");
+	set_class("commoner");
 	set_level(44);
 
 	set_skill("staff", 40);

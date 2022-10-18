@@ -27,12 +27,12 @@ inherit F_CLEAN_UP;
 inherit F_DBASE;
 
 string *catch_hunt_msg = ({
-    HIW "$N和$n仇人相見分外眼紅，立刻打了起來﹗\n" NOR,
-    HIW "$N對著$n大喝﹕「可惡，又是你﹗」\n" NOR,
-    HIW "$N和$n一碰面，二話不說就打了起來﹗\n" NOR,
-    HIW "$N一眼瞥見$n，「哼」的一聲衝了過來﹗\n" NOR,
-    HIW "$N喝道﹕「狗賊﹗別跑」\n" NOR,
-    HIW "$N喝道﹕「納命來﹗」\n" NOR
+    HIW "$N和$n仇人相見分外眼紅，立刻打了起來！\n" NOR,
+    HIW "$N對著$n大喝﹕「可惡，又是你！」\n" NOR,
+    HIW "$N和$n一碰面，二話不說就打了起來！\n" NOR,
+    HIW "$N一眼瞥見$n，「哼」的一聲衝了過來！\n" NOR,
+    HIW "$N喝道﹕「狗賊！別跑」\n" NOR,
+    HIW "$N喝道﹕「納命來！」\n" NOR
 });
 
 string *dead_msg = ({
@@ -77,27 +77,27 @@ string damage_msg(int damage, string type)
     case "割傷":
         if( damage < 5 ) return "結果只是輕輕地劃破$p的皮肉。\n";
         else if( damage < 10 ) return "結果在$p$l劃出一道細長的血痕。\n";
-        else if( damage < 20 ) return "結果「嗤」地一聲劃出一道傷口﹗\n";
-        else if( damage < 40 ) return "結果「嗤」地一聲劃出一道血淋淋的傷口﹗\n";
-        else if( damage < 60 ) return "結果「嗤」地一聲劃出一道又長又深的傷口，濺得$N滿臉鮮血﹗\n";
-        else return "結果只聽見$n一聲慘嚎，$w已在$p$l劃出一道深及見骨的可怕傷口﹗﹗\n";
+        else if( damage < 20 ) return "結果「嗤」地一聲劃出一道傷口！\n";
+        else if( damage < 40 ) return "結果「嗤」地一聲劃出一道血淋淋的傷口！\n";
+        else if( damage < 60 ) return "結果「嗤」地一聲劃出一道又長又深的傷口，濺得$N滿臉鮮血！\n";
+        else return "結果只聽見$n一聲慘嚎，$w已在$p$l劃出一道深及見骨的可怕傷口！！\n";
         break;
     case "刺傷":
         if( damage < 5 ) return "結果只是輕輕地刺破$p的皮肉。\n";
         else if( damage < 10 ) return "結果在$p$l刺出一個創口。\n";
-        else if( damage < 20 ) return "結果「噗」地一聲刺入了$n$l寸許\﹗\n";
-        else if( damage < 40 ) return "結果「噗」地一聲刺進$n的$l，使$p不由自主地退了幾步﹗\n";
-        else if( damage < 60 ) return "結果「噗嗤」地一聲，$w已在$p$l刺出一個血肉糢糊的血窟窿﹗\n";
-        else return "結果只聽見$n一聲慘嚎，$w已在$p的$l對穿而出，鮮血濺得滿地﹗﹗\n";
+        else if( damage < 20 ) return "結果「噗」地一聲刺入了$n$l寸許！\n";
+        else if( damage < 40 ) return "結果「噗」地一聲刺進$n的$l，使$p不由自主地退了幾步！\n";
+        else if( damage < 60 ) return "結果「噗嗤」地一聲，$w已在$p$l刺出一個血肉糢糊的血窟窿！\n";
+        else return "結果只聽見$n一聲慘嚎，$w已在$p的$l對穿而出，鮮血濺得滿地！！\n";
         break;
     case "瘀傷":
         if( damage < 2 ) return "結果「啪」地一聲擊中，可是似乎傷害不大。\n";
         else if( damage < 5 ) return "結果在$p的$l造成一處瘀青。\n";
-        else if( damage < 10 ) return "結果一擊命中，$n的$l登時腫了一塊老高﹗\n";
-        else if( damage < 20 ) return "結果一擊命中，$n悶哼了一聲顯然吃了不小的虧﹗\n";
-        else if( damage < 40 ) return "結果「砰」地一聲，$n退了兩步﹗\n";
-        else if( damage < 60 ) return "結果這一下「砰」地一聲打得$n連退了好幾步，差一點摔倒﹗\n";
-        return "結果重重地擊中，$n「哇」地一聲吐出一口鮮血﹗\n";
+        else if( damage < 10 ) return "結果一擊命中，$n的$l登時腫了一塊老高！\n";
+        else if( damage < 20 ) return "結果一擊命中，$n悶哼了一聲顯然吃了不小的虧！\n";
+        else if( damage < 40 ) return "結果「砰」地一聲，$n退了兩步！\n";
+        else if( damage < 60 ) return "結果這一下「砰」地一聲打得$n連退了好幾步，差一點摔倒！\n";
+        return "結果重重地擊中，$n「哇」地一聲吐出一口鮮血！\n";
         break;
     default:
         if( damage < 2 ) str =  "結果只是勉強造成一處輕微";

@@ -22,7 +22,7 @@ void create()
     set_attr("str", 20);
     set_attr("con", 20);
     set_race("human");
-    set_class("fighter");
+    set_class("commoner");
     set_level(20);
 
     set_skill("sword", 70);

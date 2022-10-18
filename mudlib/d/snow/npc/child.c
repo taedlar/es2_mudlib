@@ -14,7 +14,7 @@ void create()
 	set_attr("dex", 19);
 	set_attr("con", 17);
 	set_race("human");
-	set_class("thief");
+	set_class("commoner");
 	set_level(10);
 
 	set_skill("stealing", 40);

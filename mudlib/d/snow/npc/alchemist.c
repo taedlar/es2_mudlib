@@ -16,7 +16,7 @@ void create()
 	set_attr("con", 20);
 	set_race("human");
 	set_level(30);
-	set_class("alchemist");
+	set_class("commoner");
 	set_skill("unarmed", 60);
 	set_skill("sword", 60);
 	set_skill("parry", 80);
