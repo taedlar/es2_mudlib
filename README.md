@@ -18,10 +18,14 @@ To run ES2 Mudlib,
 ```
 neolith -f neolith.conf
 ```
+5. Then you shall be able to connect to the mud by `telnet localhost 4000`. Enjoy.
 
 ### Differences from v1.3
-- Changed to UTF-8
-- Tested with Neolith only
+- Changed to UTF-8. No longer use Big-5 encoding.
+- Tested with Neolith only.
+- Favors `git` based source control than in-game programming. May remove certain wizard commands in the future.
+- Favors `vim` editor for its ability to [syntax highlight](docs/syntax_highlight.md) LPC programs.
+- No longer release as specific version. If you plan to stick on particular version of ES2 Mudlib, use git commit id instead.
 
 ## License
 
