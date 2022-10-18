@@ -72,6 +72,8 @@
 #define HOME	ESC "[H"	/* Move cursor left-top of scren */
 
 #define BOLD	ESC "[1m"	/* Bold mode */
+#define ITALIC	ESC "[3m"	/* Italic mode */
+#define UNDL	ESC "[4m"	/* Underline mode */
 #define REF	CLR HOME	/* Clear screen, move cursor to left-top */
  
 #endif	/* ANSI_ESCAPE_H */

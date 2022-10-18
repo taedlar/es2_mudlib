@@ -32,7 +32,7 @@ inherit F_TEAM;
 
 // variables
 
-static int tick;
+private int tick;
 
 // implementations
 
@@ -72,7 +72,7 @@ setup()
  * 這個函式的內容。
  */
 
-static void
+private void
 heart_beat()
 {
   mapping f;
@@ -128,7 +128,7 @@ heart_beat()
 }
 
 void
-lose_fight(object opponent)
+lose_fight (object opponent)
 {
     if( opponent ) opponent->win_fight(this_object());
 }
@@ -137,7 +137,8 @@ lose_fight(object opponent)
 //
 // This is an apply support by F_STATISTIC which is called by heart_beat()
 // when statistic_notification is detected.
-int notify_stat(mapping flag)
+int
+notify_stat (mapping flag)
 {
     mapping exits;
     string *dirs, default_dir;
@@ -161,7 +162,7 @@ int notify_stat(mapping flag)
 }
 
 varargs void
-revive(int quiet)
+revive (int quiet)
 {
     object ob;
     string arg, arg2;
@@ -169,13 +170,13 @@ revive(int quiet)
     remove_call_out("revive");
 
     /* 如果這個人物被其他人物攜帶著，移動到攜帶者的外面 */
-    while( environment()->is_character() )
+    while (environment()->is_character())
         this_object()->move(environment(environment()));
 
     enable_player();
     delete_temp("block_msg/all");
 
-    if( !quiet ) {
+    if (!quiet) {
         COMBAT_D->announce(this_object(), "revive");
         message("system", HIY "\n慢慢地你終於又有了知覺....\n\n" NOR,
             this_object());
@@ -196,7 +197,8 @@ die()
     dismiss_team();
 
     /* 停止任何正在進行的動作 */
-    if( is_busy() ) interrupt(this_object(), INTR_DEATH);
+    if (is_busy())
+	interrupt(this_object(), INTR_DEATH);
 
     /* 清除所有的 condition */
     clear_condition();
@@ -207,9 +209,10 @@ die()
     /* 如果這名人物在昏迷中，讓他「安靜地」醒過來，這樣才看得到自
      * 己死亡的訊息
      */
-    if( !living(this_object()) ) revive(1);
+    if (!living(this_object()))
+	revive(1);
 
-    if ( query("life_form") == "ghost") {
+    if (query("life_form") == "ghost") {
         tell_object(this_object(), HIR "\n你已經魂飛魄散了！！！\n\n" NOR);
         message("vision", this_object()->name() + "化成一陣煙，消失了 ...\n",
             environment(this_object()), this_object());
@@ -218,20 +221,21 @@ die()
 
     // 加上死亡提示敘述 -dragoon
     tell_object(this_object(), HIR "\n你死了！！\n\n" NOR);
-    if( objectp(corpse = CHAR_D->make_corpse(this_object())) )
+    if (objectp(corpse = CHAR_D->make_corpse(this_object())) )
 	corpse->move(environment());
 }
 
 varargs void
-unconcious(string reason)
+unconcious (string reason)
 {
     object ob, me=this_object();
 
     /* 已經昏迷 ? */
-    if( !living(me) ) return;
+    if (!living(me))
+	return;
 
     /* 巫師不能昏迷 */
-    if ( wizardp(this_object()) ) {
+    if (wizardp(this_object())) {
         message("system", HIW "\n你的巫師能力治癒了身上全部的傷害 ....\n\n" NOR,
 		me);
         me->set_stat_current("gin", me->query_stat_maximum("gin"));
@@ -403,11 +407,12 @@ long(int raw)
 }
 
 varargs string
-rank(string politeness, int raw)
+rank (string politeness, int raw)
 {
     string c, r;
 
-    if( c = this_object()->query_class() )
+    c = this_object()->query_class();
+    if (c)
         r = CLASS_D(c)->query_rank(this_object(), politeness);
     else
         r = ::rank(politeness, raw);

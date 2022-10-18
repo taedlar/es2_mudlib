@@ -1,14 +1,15 @@
-// inn.c
+// vim: syntax=lpc
 
 #include <daemon.h>
 
 inherit ROOM;
 
-void setup()
+void
+setup()
 {
-	::setup();
-	set("valid_startroom", 1);
-	set("no_fight", 1);
+  ::setup();
+  set("valid_startroom", 1);
+  set("no_fight", 1);
 
-	TRAVELER_D->register_travel_site();
+  TRAVELER_D->register_travel_site();
 }

@@ -1,16 +1,4 @@
-/*  room.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: syntax=lpc
 
 #pragma save_binary
 
@@ -21,10 +9,14 @@
 inherit F_DBASE;
 inherit F_CLEAN_UP;
 
-static mapping doors;
-static mapping guards;
+private mapping doors;
+private mapping guards;
 
-int receive_object(object ob, int from_inventory) { return 1; }
+int
+receive_object(object ob, int from_inventory)
+{
+  return 1;
+}
 
 // clean_up()
 //
@@ -33,7 +25,8 @@ int receive_object(object ob, int from_inventory) { return 1; }
 // outside, and create another copy of the same NPC when next time
 // the room is loaded.
 
-int clean_up(int inherit_flag)
+int
+clean_up(int inherit_flag)
 {
     mapping items;
     string file;
@@ -57,7 +50,8 @@ int clean_up(int inherit_flag)
     return ::clean_up(inherit_flag);
 }
 
-void remove()
+void
+remove()
 {
     mapping items;
     string file;
@@ -97,7 +91,8 @@ make_inventory(string file)
     return ob;
 }
 
-void reset()
+void
+reset()
 {
     mapping ob_list, ob;
     string file;
@@ -134,7 +129,8 @@ void reset()
 }
 
 // Redirect item_desc of the door to this function in default.
-string look_door(string dir)
+string
+look_door(string dir)
 {
     if( !mapp(doors) || undefinedp(doors[dir]) || doors[dir]["status"]&DOOR_HIDDEN)
 	return "你要看什麼﹖\n";
@@ -277,7 +273,7 @@ check_door(string dir, mapping door)
 }
 
 varargs void
-create_door(string dir, mixed data, string other_side_dir, int status)
+create_door(string dir, mixed data, string other_side_dir, int door_status)
 {
     mapping d, item_desc;
     object ob;
@@ -292,7 +288,7 @@ create_door(string dir, mixed data, string other_side_dir, int status)
 	d["name"] = data;
 	d["id"] = ({ dir, data, "door" });
 	d["other_side_dir"] = other_side_dir;
-	d["status"] = status;
+	d["status"] = door_status;
     // Compelete specification mode.
     } else if( mapp(data) )
 	d = data;
@@ -311,7 +307,11 @@ create_door(string dir, mixed data, string other_side_dir, int status)
     else doors[dir] = d;
 }
 
-mapping query_doors() { return doors; }
+mapping
+query_doors()
+{
+  return doors;
+}
 
 mixed
 query_door(string dir, string prop)
