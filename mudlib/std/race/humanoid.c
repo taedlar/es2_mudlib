@@ -1,16 +1,4 @@
-/*  humanoid.c - standard race daemon of humanoid type
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: syntax=lpc
 
 #define BASE_WEIGHT 40000
 
@@ -49,7 +37,8 @@ string* wear_type = ({
 // to his race daemon. The properties we set here can be used as
 // common default properties for characters of this race.
 
-void create()
+private void
+create()
 {
     seteuid(getuid());
     set("karma", 5);                // karma cost to select human when reincarnate
@@ -305,15 +294,15 @@ statistic_exhausted(object ob, mapping flag)
 	switch( ob->query("life_form") )
 	{
 	case "ghost":
-	    log_file("GHOST_DIE",
-		sprintf("[%s] %s destroyed by %s\n",
-			ctime(time()), ob->short(1), killer->short(1)));
+	    //log_file("GHOST_DIE",
+		//sprintf("[%s] %s destroyed by %s\n",
+			//ctime(time()), ob->short(1), killer->short(1)));
 	    CHAR_D->make_mist(ob);
 	    break;
 	case "living":
-	    log_file("PLAYER_DIE",
-		sprintf("[%s] %s killed by %s\n",
-			ctime(time()), ob->short(1), killer->short(1)));
+	    //log_file("PLAYER_DIE",
+		//sprintf("[%s] %s killed by %s\n",
+			//ctime(time()), ob->short(1), killer->short(1)));
 	    CHAR_D->make_ghost(ob);
 	    break;
 	}

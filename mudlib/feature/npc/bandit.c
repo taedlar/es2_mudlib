@@ -24,20 +24,3 @@ accept_kill(object ob)
 	do_chat( name() + "「哼」地一聲﹐說道﹕那得瞧你有沒有這個本事﹗\n");
 }
 
-string
-rank (string politness, int raw)
-{
-	if (!politness)
-		return "土匪";
-
-	switch (politness) {
-		case "self":
-			return "咱家";
-		case "respectful":
-			return "好漢爺";
-		case "rude":
-		default:
-			return "狗賊";				
-	}
-}
-

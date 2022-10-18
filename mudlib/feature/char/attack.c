@@ -31,12 +31,14 @@ object query_charging() { return charge_target; }
 object query_guarding() { return guarding; }
 object query_opponent() { return current_target; }
 
-varargs int is_fighting(object ob)
+varargs int
+is_fighting (object ob)
 {
     return ob ? (member_array(ob, enemy) >= 0) : sizeof(enemy);
 }
 
-varargs int is_killing(mixed id)
+varargs int
+is_killing (mixed id)
 {
     if( !killer ) return 0;
     if( !id ) return sizeof(killer);
@@ -53,7 +55,8 @@ varargs int is_killing(mixed id)
 //
 // Let someone guard us when another one try to kill us.
 
-void add_guard(object ob)
+void
+add_guard (object ob)
 {
     if( member_array(ob, guarded) >= 0 ) return;
 
@@ -65,7 +68,8 @@ void add_guard(object ob)
 //
 // Remove someone who is not guarding us any more.
 
-void remove_guard(object ob)
+void
+remove_guard (object ob)
 {
     if( member_array(ob, guarded) < 0 ) return;
 
@@ -79,7 +83,8 @@ void remove_guard(object ob)
 // This function returns awaken guards that is not yet fighting specific
 // enemy. Visibility of enemy and presence of guard is also checked.
 
-object *wake_guard(object target)
+object *
+wake_guard (object target)
 {
     return filter(guarded, (:
 	objectp($1)
@@ -95,7 +100,8 @@ object *wake_guard(object target)
 // Activate guarding action upon specific target. Default action is to fight
 // target.
 
-void activate_guard(object target)
+void
+activate_guard (object target)
 {
     fight_ob(target);
 }
@@ -105,7 +111,7 @@ void activate_guard(object target)
 // Set this character to guard someone. guard_ob(0) to clear guarding status.
 
 void
-guard_ob(object ob)
+guard_ob (object ob)
 {
     if( objectp(guarding) && (guarding != ob) ) {
 	tell_object(guarding, HIY + name() + "不再保護你了。\n" NOR);
@@ -120,7 +126,8 @@ guard_ob(object ob)
 //
 // Start fighting someone.
 
-void fight_ob(object ob)
+void
+fight_ob (object ob)
 {
     object *guard;
 
@@ -155,7 +162,8 @@ void fight_ob(object ob)
 //
 // This function starts killing between this_object() and ob
 
-void kill_ob(object ob)
+void
+kill_ob (object ob)
 {
     if( userp(ob) ) {
 	if( living(ob) && undefinedp(killer[ob->query("id")]) )
@@ -176,7 +184,7 @@ void kill_ob(object ob)
 //
 // This function promotes ob to the first target to attack.
 void
-charge_ob(object ob)
+charge_ob (object ob)
 {
     if( ! ob ) { charge_target = 0; return; }
 
@@ -189,7 +197,8 @@ charge_ob(object ob)
 // remove_enemy()
 //
 // Stop fighting specific object. (Might fight again on next encounter)
-int remove_enemy(object ob)
+int
+remove_enemy (object ob)
 {
     if( is_killing(ob) ) return 0;
     enemy -= ({ ob });
@@ -200,7 +209,8 @@ int remove_enemy(object ob)
 //
 // Stop fighting specific object no matter if he is a killer or not.
 
-void remove_killer(object ob)
+void
+remove_killer (object ob)
 {
     map_delete(killer, userp(ob) ? ob->query("id") : ob);
     remove_enemy(ob);
@@ -210,7 +220,8 @@ void remove_killer(object ob)
 //
 // Stop charging specific object;
 
-int remove_charge()
+int
+remove_charge ()
 {
     charge_target = 0;
 }
@@ -219,7 +230,8 @@ int remove_charge()
 //
 // Stop all fighting, but killer remains.
 
-void remove_all_enemy()
+void
+remove_all_enemy ()
 {
     enemy = filter(enemy,
 	(: objectp($1) && $1->remove_enemy($(this_object()))==0 :));
@@ -229,7 +241,8 @@ void remove_all_enemy()
 //
 // Remove all enemies at once, killer or not.
 
-void remove_all_killer()
+void
+remove_all_killer ()
 {
     object ob;
 
@@ -247,7 +260,7 @@ void remove_all_killer()
  * 表示尚有敵人。
  */
 int
-clean_up_enemy()
+clean_up_enemy ()
 {
     enemy = filter(enemy, (:
 	objectp($1)
@@ -313,12 +326,13 @@ select_opponent()
  */
 
 varargs int
-attack(object opponent)
+attack (object opponent)
 {
     string skill;
     mapping wielded_weapon;
 
-    if( !living(this_object()) ) return 0;
+    if (!living(this_object()))
+	return 0;
 
     /* 若沒有指定目標，則選定一個目標。一般而言指定目標的呼叫方式是給
      * 特殊技能用的，沒有指定目標的方式是給 heart_beat 用的。

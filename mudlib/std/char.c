@@ -1,17 +1,4 @@
-/*  char.c - standard character body
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
-
+// vim: syntax=lpc
 #pragma save_binary
 
 #include <login.h>
@@ -88,48 +75,56 @@ setup()
 static void
 heart_beat()
 {
-    mapping f;
-    int f_altered = 0;
+  mapping f;
+  int f_altered = 0;
 
-    if( mapp(f=query_destroyed()) && sizeof(f) ) {
-	f_altered++;
-	RACE_D(query_race())->statistic_destroyed(this_object(), f);
-        if( !this_object() ) return;
-    }
-
-    if( mapp(f=query_exhausted()) && sizeof(f) ) {
-	f_altered++;
-	RACE_D(query_race())->statistic_exhausted(this_object(), f);
-        if( !this_object() ) return;
-    }
-
-    if( mapp(f=query_notified()) && sizeof(f) ) {
-	f_altered++;
-	this_object()->notify_stat(f);
-        if( !this_object() ) return;
-    }
-
-    if( f_altered ) clear_statistic_flags();
-
-    /* 戰鬥回合的控制 */
-    if( living(this_object()) )
+  if (mapp(f=query_destroyed()) && sizeof(f))
     {
-	if( is_fighting() ) clean_up_enemy();
-
-	if( is_busy() ) continue_action();
-	else if( is_fighting() ) attack();
+      f_altered++;
+      RACE_D(query_race())->statistic_destroyed(this_object(), f);
+      if (!this_object())
+	return;
     }
 
-    /* 以下是 tick 時間到的時候才會執行的部分。 */
-    if( tick-- ) return;
+  if (mapp(f=query_exhausted()) && sizeof(f))
+    {
+      f_altered++;
+      RACE_D(query_race())->statistic_exhausted(this_object(), f);
+      if (!this_object())
+	return;
+    }
 
-    /* 下一個 tick 的時間間隔取亂數，將所有生物的 heart beat 錯開，以免造
-     * 成系統的負擔過於集中在特定的 tick。
-     */
-    tick = 5 + random(10);
+  if (mapp(f=query_notified()) && sizeof(f))
+    {
+      f_altered++;
+      this_object()->notify_stat(f);
+      if (!this_object())
+	return;
+    }
 
-    update_condition();
-    regenerate();
+  if (f_altered)
+    clear_statistic_flags();
+
+  /* 戰鬥回合的控制 */
+  if (living(this_object()))
+    {
+      if (is_fighting())
+	clean_up_enemy();
+
+      if (is_busy())
+	continue_action();
+      else if (is_fighting())
+	attack();
+    }
+
+  if (tick--)
+    return;
+
+  // shuffle number of ticks until next update
+  tick = 5 + random(10);
+
+  update_condition();
+  regenerate();
 }
 
 void

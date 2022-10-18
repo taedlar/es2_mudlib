@@ -1,20 +1,4 @@
-/*  combatd.c - combat arbitrator daemon
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
-
-// MudOS v21.6 #pragma optimize's jump threading has bug! (line 200)
-//#pragma optimize
-
+// vim: syntax=lpc
 #pragma save_binary
 
 #include <ansi.h>
@@ -43,14 +27,16 @@ string *dead_msg = ({
     "\n$N趴在地上，無力地掙扎了一會兒，隨即死去。\n\n",
 });
 
-void create()
+private void
+create()
 {
     seteuid(getuid());
     set("name", "戰鬥精靈");
     set("id", "combatd");
 }
 
-string damage_msg(int damage, string type)
+string
+damage_msg (int damage, string type)
 {
     string str;
 
@@ -114,7 +100,8 @@ string damage_msg(int damage, string type)
 #endif
 }
 
-string eff_status_msg(int ratio)
+string
+eff_status_msg (int ratio)
 {
     if( ratio==100 ) return HIG "( $N看起來並沒有受傷。 )\n" NOR;
     if( ratio > 95 ) return HIG "( $N似乎受了點輕傷，不過光從外表看不大出來。 )\n" NOR;
@@ -129,7 +116,8 @@ string eff_status_msg(int ratio)
     return HIR "( $N受傷過重，已經有如風中殘燭，隨時都可能斷氣。 )\n" NOR;
 }
 
-string status_msg(int ratio)
+string
+status_msg (int ratio)
 {
     if( ratio==100 ) return HIG "( $N看起來對這種程度的攻擊一點也不在乎。 )\n" NOR;
     if( ratio > 95 ) return HIG "( $N似乎有些疲憊，但也許\是誘敵之計，你無法確定。 )\n" NOR;
@@ -143,7 +131,8 @@ string status_msg(int ratio)
     return HIR "( $N已經陷入半昏迷狀態，隨時都可能摔倒暈去。 )\n" NOR;
 }
 
-varargs void report_status(object ob, int effective)
+varargs void
+report_status (object ob, int effective)
 {
     if( !ob->query_stat_maximum("kee") ) return;
     if( effective ) 
@@ -161,7 +150,7 @@ varargs void report_status(object ob, int effective)
 // etc.
 
 varargs int
-fight(object me, object victim, string skill, mapping action, object weapon)
+fight (object me, object victim, string skill, mapping action, object weapon)
 {
     int ability, strength, damage, gin_cost, force_bonus;
     string msg, force_skill;
@@ -266,7 +255,7 @@ fight(object me, object victim, string skill, mapping action, object weapon)
         absorb_msg = me->query_temp("absorb_message");
         me->add_combat_message( "，" );
         me->add_combat_message( stringp(absorb_msg) ? absorb_msg
-                : "但是被$n格開");
+                : "$n嘗試將$N這一擊格開");
 
         /* 若力道未完全被吸收，則產生傷害。 */
         /* 產生傷害，則視攻擊方式給予少數精熟度 -Dragoon */
@@ -337,7 +326,8 @@ fight(object me, object victim, string skill, mapping action, object weapon)
 // This function is to start an automatically fight. Currently this is
 // used in "aggressive", "vendetta", "hatred", "berserk" fight.
 
-void auto_fight(object me, object obj, string type)
+void
+auto_fight (object me, object obj, string type)
 {
     // Don't let NPC autofight NPC.
     if( !userp(me) && !userp(obj) ) return;
@@ -348,7 +338,7 @@ void auto_fight(object me, object obj, string type)
 
 // add check net connection of player, testing work or not -Dragoon
 void
-start_hatred(object me, object obj)
+start_hatred (object me, object obj)
 {
     if( !me || !obj ) return;   // Are we still alive(not becoming a corpse)?
 
@@ -367,7 +357,7 @@ start_hatred(object me, object obj)
 }
 
 void
-start_vendetta(object me, object obj)
+start_vendetta (object me, object obj)
 {
     if( !me || !obj ) return;   // Are we still exist( not becoming a corpse )?
 
@@ -386,7 +376,8 @@ start_vendetta(object me, object obj)
     me->attack(obj);
 }
 
-void start_aggressive(object me, object obj)
+void
+start_aggressive (object me, object obj)
 {
     int def;
 
@@ -423,7 +414,8 @@ void start_aggressive(object me, object obj)
 
 // This function is to announce the special events of the combat.
 // This should be moved to another daemon in the future.
-void announce(object ob, string event)
+void
+announce (object ob, string event)
 {
     switch(event)
     {

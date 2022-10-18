@@ -1,16 +1,5 @@
-/*  combat.c - the combat ability feature
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: syntax=lpc
+#pragma save_binary
 
 #include <attack.h>
 #include <dbase.h>
@@ -19,7 +8,7 @@
 #include <statistic.h>
 #include <combat.h>
 
-static string combat_message = "";
+private string combat_message = "";
 
 void set_combat_message(string s) { combat_message = s; }
 void add_combat_message(string s) { combat_message += s; }
@@ -34,7 +23,8 @@ varargs int query_attr(string,int);
 // implements a convert based on human attributes. Human strength ranged
 // from 13 to 18, yielding the strength range from 16.9 kg to 32.4 kg.
 
-int query_strength(string application)
+int
+query_strength (string application)
 {
     if( !living(this_object()) ) return 0;
     switch(application) {
@@ -65,7 +55,8 @@ int query_strength(string application)
 // natural attack ability ranges from 21 to 70 (an ultimate wimpy in dying
 // status versus an top ace in perfect condition) in the UNIT OF SKILL LEVEL.
 
-int query_ability(string application)
+int
+query_ability (string application)
 {
     if( !living(this_object()) ) return 0;
 
@@ -160,7 +151,8 @@ int query_ability(string application)
  * 應該無效。若傳回 0 表示這個人物無法防禦，或防禦失敗。
  */
 
-int defend(int ability, int strength, object from)
+int
+defend (int ability, int strength, object from)
 {
     string sk;
     int counter_ability, chance;
@@ -199,7 +191,8 @@ int defend(int ability, int strength, object from)
  * absorb 應該傳回一個整數值，表示有多少攻擊的強度被「吸收」了。
  */
 
-int absorb(int ability, int strength, object from)
+int
+absorb (int ability, int strength, object from)
 {
     string sk;
 
@@ -234,7 +227,8 @@ int absorb(int ability, int strength, object from)
 // For more information about the task of this function, see F_EQUIP for
 // the comments of inflict_damage().
 
-int inflict_damage(int strength, object victim)
+int
+inflict_damage (int strength, object victim)
 {
     int damage;
     string force_sk;
@@ -272,7 +266,8 @@ int inflict_damage(int strength, object victim)
 // This function returns the non-initiative defense against all physical
 // damage to this object. 
 
-int resist_damage(int damage, object from_ob)
+int
+resist_damage (int damage, object from_ob)
 {
     return query_temp("apply/armor");
 }
@@ -286,7 +281,7 @@ int resist_damage(int damage, object from_ob)
 // statistics system into gin/kee/sen statistic system.
 
 varargs int
-receive_damage(int damage, object from, object attacker)
+receive_damage (int damage, object from, object attacker)
 {
     int max, kill_mode = 0;
     mapping flag;
