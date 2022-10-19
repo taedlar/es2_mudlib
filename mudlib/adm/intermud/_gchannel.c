@@ -61,17 +61,8 @@ receive(mapping info)
     encoding = info["ENCODING"];
     if( !encoding && mapp(m) ) encoding = m["ENCODING"];
 
-    // 需要的話進行轉碼。
-    if( encoding && encoding != MUDLIB_LOCALE ) {
-	if( encoding=="GB" && MUDLIB_LOCALE=="BIG5" ) {
-	    id = LANGUAGE_D->GB2Big5(id);
-	    msg = LANGUAGE_D->GB2Big5(id);
-	}
-	else if( encoding=="BIG5" && MUDLIB_LOCALE=="GB" ) {
-	    id = LANGUAGE_D->Big52GB(id);
-	    msg = LANGUAGE_D->Big52GB(id);
-	}
-    }
+    if( encoding && encoding != MUDLIB_LOCALE )
+	return;
 
     // 執行頻道訊息。
     CHANNEL_D->do_channel(this_object(), info["CHANNEL"], msg, info["EMOTE"] );

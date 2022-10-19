@@ -42,7 +42,6 @@
 #define ENHANCE_D	"/adm/daemons/enhanced.c"
 #define FINGER_D	"/adm/daemons/fingerd.c"
 #define IDENT_D		"/adm/daemons/userid.c"
-#define LANGUAGE_D	"/adm/daemons/languaged.c"
 #define LOGIN_D		"/adm/daemons/logind.c"
 #define NATURE_D	"/adm/daemons/natured.c"
 #define PROFILE_D	"/adm/daemons/profiled.c"

@@ -36,7 +36,7 @@
  * 常使用 GB 碼，ES2 mudlib 釋出時以 BIG5 碼為主，如果有人願意轉碼成 GB 版
  * 歡迎和我聯絡。
  */
-#define MUDLIB_LOCALE		"BIG5"
+#define MUDLIB_LOCALE		"UTF-8"
 
 /* 這個名稱是在 intermud 上的 mud 名稱，由於 intermud 會和國際上的其他 mud
  * 相通連，所以請勿使用 ASCII 以外的字元(中文碼)。
