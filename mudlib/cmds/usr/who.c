@@ -1,19 +1,6 @@
-/*  who.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: syntax=lpc
 
 #include <ansi.h>
-#include <net/dns.h>
 
 inherit F_CLEAN_UP;
 
@@ -23,9 +10,14 @@ int i, j;
 
 void msg_format(string arg);
 
-void create() { seteuid(getuid()); }
+private void
+create()
+{
+  seteuid(getuid());
+}
 
-mixed main(object me, string arg, int remote)
+mixed
+main(object me, string arg, int remote)
 {
     int center_lv;
 
@@ -163,11 +155,10 @@ mixed main(object me, string arg, int remote)
 	    msg_format("50");
 	    break;
 	default :
-	    if( objectp(me) && wizardp(me)
-	    &&  arg[0]=='@' ) {
-		RWHO_Q->send_rwho_q(arg[1..sizeof(arg)], me, 0);
-		write("網路訊息已送往 " + arg[1..sizeof(arg)] + " 請稍候。\n");
-		return 1;
+	    if( objectp(me) && wizardp(me) &&  arg[0]=='@' ) {
+		//RWHO_Q->send_rwho_q(arg[1..sizeof(arg)], me, 0);
+		//write("網路訊息已送往 " + arg[1..sizeof(arg)] + " 請稍候。\n");
+		return notify_fail("遠端查詢功能已關閉。\n");
 	    }
 	    return notify_fail("指令格式更新﹕請看 help who。\n");
         }
@@ -188,7 +179,8 @@ mixed main(object me, string arg, int remote)
     return 1;
 }
 
-int sort_user(object ob1, object ob2)
+int
+sort_user(object ob1, object ob2)
 {
     int ord;
 
@@ -198,7 +190,8 @@ int sort_user(object ob1, object ob2)
     return ord;
 }
 
-void msg_format(string arg)
+void
+msg_format(string arg)
 {
     if( !arg || arg=="" )    return;
 
@@ -264,7 +257,8 @@ void msg_format(string arg)
     }
 }
 
-int help(object me)
+int
+help(object me)
 {
     write(@HELP
 指令格式 : who [選項]
