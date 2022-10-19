@@ -1,16 +1,4 @@
-/*  quit.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: syntax=lpc
 
 #include <command.h>
 #include <login.h>
@@ -19,29 +7,30 @@
 inherit F_DBASE;
 inherit F_CLEAN_UP;
 
-void create() 
+private void
+create() 
 {
-    seteuid(getuid());
-    set("channel_id", "離線指令");
+  seteuid(getuid());
+  set("channel_id", "離線指令");
 }
 
-int main(object me, string arg)
+int
+main(object me, string arg)
 {
     int i;
     object link_ob, ob;
 
-    if( me->is_busy() ) {
+    if (me->is_busy()) {
 // 此功能可使玩家用來消去start_busy的作用, cancel interrupt by dragoon
 //        me->interrupt(me, INTR_QUIT);
         write("你正忙著呢, 請試著停下所忙的事。\n");
         return 1;
     }
 
-    if( me->query("life_form") == "ghost" && arg != "!" )
-	return notify_fail("你現在離開將會無法復活﹐如果確定要離開\n"
-		"請用 'quit !'。\n");
+    if (me->query("life_form") == "ghost" && arg != "!")
+	return notify_fail("你現在離開將會無法復活﹐如果確定要離開請用 'quit !'。\n");
 
-    if( me->query_team() )
+    if (me->query_team())
 	me->dismiss_team();
         
     if( !wizardp(me) ) {

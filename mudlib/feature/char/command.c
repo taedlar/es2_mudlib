@@ -1,17 +1,4 @@
-/*  command.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
-
+// vim: syntax=lpc
 #include <ansi.h>
 #include <command.h>
 #include <dbase.h>
@@ -19,15 +6,15 @@
 #include <login.h>
 
 /* 指令搜尋路徑。 */
-static string *path = ({});
+private string *path = ({});
 
 string
 find_command(string verb)
 {
-    return (string)COMMAND_D->find_command(verb, path);
+  return (string)COMMAND_D->find_command(verb, path);
 }
 
-static nomask int
+private nomask int
 command_hook(string arg)
 {
     string verb, file;
@@ -70,7 +57,7 @@ command_hook(string arg)
     return 1;
 }
 
-static void
+private void
 set_path(string *p)
 {
     path = p;
@@ -106,7 +93,7 @@ force_me(string cmd)
     return command( userp(this_object()) ? this_object()->process_input(cmd) : cmd );
 }
 
-static void
+protected void
 enable_player()
 {
     /* 設定生物名稱 */
@@ -119,7 +106,7 @@ enable_player()
     delete("disable_type");
 }
 
-void
+protected void
 init_command()
 {
     if( !userp(this_object()) )
@@ -144,7 +131,7 @@ init_command()
 // cmd_quit()
 //
 // 這個是用來在萬一 quit 指令壞掉時，備用的 quit。
-private int
+protected int
 cmd_quit(string arg)
 {
     if( !catch(call_other(QUIT_CMD, "main", this_object(), arg)) ) {
@@ -158,14 +145,14 @@ cmd_quit(string arg)
     destruct(this_object());
 }
 
-private int
+protected int
 cmd_update(string arg)
 {
     if( !wizardp(this_object()) ) return 0;
     return call_other("/cmds/wiz/update", "main", this_object(), arg);
 }
 
-static void
+protected void
 disable_player(string type)
 {
     if( origin()==ORIGIN_CALL_OTHER

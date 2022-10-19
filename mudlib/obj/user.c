@@ -1,16 +1,4 @@
-/*  user.c - the user body object
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: syntax=lpc
 
 #include <ansi.h>
 #include <origin.h>
@@ -30,45 +18,48 @@ private void user_dump(int type);
 
 // variables
 
-static object my_link;
-static int last_age_set;
+private object my_link;
+private int last_age_set;
 
 // implementations
 
-void
+private void
 create()
 {
-    object ob;
+  object ob;
 
-    // Let LOGIN_D export proper uid to us.
-    seteuid(0);
+  // Let LOGIN_D export proper uid to us.
+  seteuid(0);
 
-    if( clonep(this_object()) )
-	set_name("無名氏", "noname");
+  if (clonep(this_object()) )
+    set_name("無名氏", "noname");
 }
 
 private int
 move_or_destruct( object dest )
 {
-    if( dest ) move(dest);
-    else {
-	message("system", "一陣時空的扭曲將你傳送到另一個地方....\n", this_object());
-	set_temp("last_location", base_name(environment()));
-	move(VOID_OB);
-    }
+  if (dest)
+    move(dest);
+  else {
+    message("system", "一陣時空的扭曲將你傳送到另一個地方....\n", this_object());
+    set_temp("last_location", base_name(environment()));
+    move(VOID_OB);
+  }
 }
 
 private void
 reset()
 {
-    // To prevent the master copy of user object error out by security
-    // violation.
-    if( !userp(this_object()) ) return;
+  // To prevent the master copy of user object error out by security
+  // violation.
+  if (!userp(this_object()))
+    return;
 
-    gain_score("survive", (int)query("age") / 2 + 1 );
+  gain_score("survive", (int)query("age") / 2 + 1 );
 }
 
-int set_link(object link)
+int
+set_link(object link)
 {
     if( origin()==ORIGIN_CALL_OTHER
     &&	(geteuid(previous_object()) != ROOT_UID)
@@ -78,16 +69,22 @@ int set_link(object link)
     return 1;
 }
 
-object link() { return my_link; }
-
-void terminal_type(string term_type)
+object
+link()
 {
-    set_temp("terminal_type", term_type);
-    message("system", "終端機型態設定為 " + term_type + "。\n", this_object());
+  return my_link;
+}
+
+private void
+set_terminal_type(string term_type)
+{
+  set_temp("terminal_type", term_type);
+  message("system", "終端機型態設定為 " + term_type + "。\n", this_object());
 }
 
 // This is used by F_SAVE to determine the filename to save our data.
-string query_save_file()
+string
+query_save_file()
 {
     string id;
 
@@ -97,7 +94,8 @@ string query_save_file()
     return user_data(id);
 }
 
-int save()
+int
+save()
 {
     int res;
 
@@ -112,26 +110,29 @@ int save()
 private void
 heart_beat()
 {
-    ::heart_beat();
-    if( !this_object() ) return;
+  ::heart_beat();
+  if (!this_object())
+    return;
 
-    // Make us older. Note this should not rely on fixed period between
-    // each call to heart_beat bcz heart_beat could be stoped for various
-    // reason.                                           - Annihilator
+  // Make us older. Note this should not rely on fixed period between
+  // each call to heart_beat bcz heart_beat could be stoped for various
+  // reason.                                           - Annihilator
 
-    if( !last_age_set ) last_age_set = time();
-    add("time_aged", time() - last_age_set);
+  if (!last_age_set)
     last_age_set = time();
-    if( (int)query("time_aged") >= 86400 ) {
-	add("age", 1);
-	delete("time_aged");
+  add("time_aged", time() - last_age_set);
+  last_age_set = time();
+  if ((int)query("time_aged") >= 86400)
+    {
+      add("age", 1);
+      delete("time_aged");
     }
 
-    if( objectp(my_link) ) my_link->update_age();
+  if (objectp(my_link))
+    my_link->update_age();
 
-    if( interactive(this_object())
-    &&	query_idle(this_object()) >= IDLE_TIMEOUT )
-	user_dump(DUMP_IDLE);
+  if (interactive(this_object()) && query_idle(this_object()) >= IDLE_TIMEOUT)
+    user_dump(DUMP_IDLE);
 }
 
 void
@@ -155,24 +156,23 @@ setup()
 private void
 user_dump(int type)
 {
-    switch(type)
+  switch(type)
     {
     case DUMP_NET_DEAD:
-	// change cmd: quit to quit ! -Dragoon
-	command("quit !");
-	break;
+      // change cmd: quit to quit ! -Dragoon
+      cmd_quit("!");
+      break;
     case DUMP_IDLE:
-	// wiz don't get kicked out (Elon 10-17-95)
-	if (wizardp(this_object())) return;
-	tell_object( this_object(), "對不起﹐您已經發呆超過 " 
-	    + IDLE_TIMEOUT/60 + " 分鐘了﹐請下次再來。\n");
-	tell_room( environment(), "一陣風吹來﹐將發呆中的" + query("name")
-	    + "化為一堆飛灰﹐消失了。\n", ({this_object()}));
-	// change cmd: quit to quit ! -Dragoon
-	command("quit !");
-	break;
     default:
+      // wiz don't get kicked out (Elon 10-17-95)
+      if (wizardp(this_object()))
 	return;
+      tell_object(this_object(), CYN "你聽到一個細小的聲音說道：節能愛地球，請勿長時間掛機發呆～～\n" NOR);
+      tell_object(this_object(), HIW "\n一個小小的，長著白色翅膀的生物忽然出現，抓著你的手在鍵盤上敲了 quit 命令。\n\n" NOR);
+      tell_room(environment(), "一陣風吹來﹐將發呆中的" + query("name") + "化為一堆飛灰﹐消失了。\n", ({this_object()}));
+      // change cmd: quit to quit ! -Dragoon
+      cmd_quit("!");
+      break;
     }
 }
 
@@ -223,9 +223,9 @@ reconnect()
 	move(last_loc);
 }
 
-static string last_cmd;
-static int last_cmd_time;
-static int last_cmd_count;
+private string last_cmd;
+private int last_cmd_time;
+private int last_cmd_count;
 
 string
 process_input(string str)
