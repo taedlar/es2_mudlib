@@ -20,8 +20,12 @@ neolith -f neolith.conf
 ```
 5. Then you shall be able to connect to the mud by `telnet localhost 4000`. Enjoy.
 
+### Client Software
+- ES2 Mudlib is compatible with classical telnet client and vt100 terminal, with ANSI coloring.
+- You can also use a MUD client such as [TinTin++](https://github.com/scandum/tintin), or [Mudlet](https://github.com/Mudlet/Mudlet).
+
 ### Differences from v1.3
-- Changed to UTF-8. No longer use Big-5 encoding.
+- Changed to UTF-8. No longer using Big-5 encoding.
 - Tested with Neolith only.
 - Favors `git` based source control than in-game programming. May remove certain wizard commands in the future.
 - Favors `vim` editor for its ability to [syntax highlight](docs/syntax_highlight.md) LPC programs.
