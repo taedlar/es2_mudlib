@@ -237,7 +237,7 @@ get_id (string arg, object ob)
             input_to("get_passwd", 1, ob);
             return;
         }
-        write("對不起﹐您的人物儲存擋出了一些問題﹐請利用 guest 人物通知巫師處理。\n");
+        write("對不起﹐您的人物儲存檔出了一些問題﹐請利用 guest 人物通知巫師處理。\n");
         destruct(ob);
         return;
     }

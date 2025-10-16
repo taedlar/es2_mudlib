@@ -1,79 +1,78 @@
-/*  ansi.h
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
-
-#ifndef	ANSI_ESCAPE_H
+#ifndef ANSI_ESCAPE_H
 #define ANSI_ESCAPE_H
+
+/* ANSI - The American National Standards Institute
+ * ANSI escape sequences for terminal colors, screen clearing, cursor positioning, etc.
+ * See http://en.wikipedia.org/wiki/ANSI_escape_code
+ */
  
-#define ESC	"\x1B"
- 
-#define NOR ESC "[0;2m"		/* Normal white forground */
- 
+#define CSI     "\x1b["         /* Control Sequence Introducer */
+
+#define HOME    CSI "H"         /* (CUP n=1; m=1) Move cursor left-top of scren */
+#define CLR     CSI "J"         /* (ED n=2) Clear from cursor to end of screen */
+#define CLREOL  CSI "K"         /* (EL n=0) Clear from cursor to end of line */
+
+#define SAVEC   CSI "s"         /* Save cursor */
+#define RESTC   CSI "u"         /* Restore cursor */
+
+/* Select Graphic Rendition (CSI n m) */
+
+#define NOR     CSI "0m"        /* All attributes become turned off */
+#define BOLD    CSI "1m"        /* Bold mode */
+#define FAINT   CSI "2m"        /* Faint mode */
+#define ITALIC  CSI "3m"        /* Italic mode */
+#define UNDL    CSI "4m"        /* Underline mode */
+#define BLINK   CSI "5m"        /* Blink mode */
+
 /* Foreground colors */
  
-#define BLK	ESC "[30m"	/* Black    */
-#define RED	ESC "[31m"	/* Red      */
-#define GRN	ESC "[32m"	/* Green    */
-#define YEL	ESC "[33m"	/* Yellow   */
-#define BLU	ESC "[34m"	/* Blue     */
-#define MAG	ESC "[35m"	/* Magenta  */
-#define CYN	ESC "[36m"	/* Cyan     */
-#define WHT	ESC "[37m"	/* White    */
+#define BLK     CSI "30m"       /* Black    */
+#define RED     CSI "31m"       /* Red      */
+#define GRN     CSI "32m"       /* Green    */
+#define YEL     CSI "33m"       /* Yellow   */
+#define BLU     CSI "34m"       /* Blue     */
+#define MAG     CSI "35m"       /* Magenta  */
+#define CYN     CSI "36m"       /* Cyan     */
+#define WHT     CSI "37m"       /* White    */
+#define SFC     CSI "38;5;%dm"  /* Special foreground color from 0-255 */
  
 /* Background colors */
  
-#define BBLK	ESC "[40m"	/* Black    */
-#define BRED	ESC "[41m"	/* Red      */
-#define BGRN	ESC "[42m"	/* Green    */
-#define BYEL	ESC "[43m"	/* Yellow   */
-#define BBLU	ESC "[44m"	/* Blue     */
-#define BMAG	ESC "[45m"	/* Magenta  */
-#define BCYN	ESC "[46m"	/* Cyan     */
-#define BWHT	ESC "[47m"	/* White    */
+#define BBLK    CSI "40m"       /* Black    */
+#define BRED    CSI "41m"       /* Red      */
+#define BGRN    CSI "42m"       /* Green    */
+#define BYEL    CSI "43m"       /* Yellow   */
+#define BBLU    CSI "44m"       /* Blue     */
+#define BMAG    CSI "45m"       /* Magenta  */
+#define BCYN    CSI "46m"       /* Cyan     */
+#define BWHT    CSI "47m"       /* White    */
+#define SBC     CSI "48;5;%dm"  /* Special background color from 0-255.  */
 
 /* Bold foreground colors */
 
-#define HIK	ESC "[1;30m"	/* Black    */
-#define HIR	ESC "[1;31m"	/* Red      */
-#define HIG	ESC "[1;32m"	/* Green    */
-#define HIY	ESC "[1;33m"	/* Yellow   */
-#define HIB	ESC "[1;34m"	/* Blue     */
-#define HIM	ESC "[1;35m"	/* Magenta  */
-#define HIC	ESC "[1;36m"	/* Cyan     */
-#define HIW	ESC "[1;37m"	/* White    */
+#define HIK     CSI "1;30m"     /* Black    */
+#define HIR     CSI "1;31m"     /* Red      */
+#define HIG     CSI "1;32m"     /* Green    */
+#define HIY     CSI "1;33m"     /* Yellow   */
+#define HIB     CSI "1;34m"     /* Blue     */
+#define HIM     CSI "1;35m"     /* Magenta  */
+#define HIC     CSI "1;36m"     /* Cyan     */
+#define HIW     CSI "1;37m"     /* White    */
 
 /* Bold background colors */
 
-#define HBBLK	ESC "[1;40m"	/* Black    */
-#define HBRED	ESC "[1;41m"	/* Red      */
-#define HBGRN	ESC "[1;42m"	/* Green    */
-#define HBYEL	ESC "[1;43m"	/* Yellow   */
-#define HBBLU	ESC "[1;44m"	/* Blue     */
-#define HBMAG	ESC "[1;45m"	/* Magenta  */
-#define HBCYN	ESC "[1;46m"	/* Cyan     */
-#define HBWHT	ESC "[1;47m"	/* White    */
- 
-#define SAVEC	ESC "[s"	/* Save cursor */
-#define RESTC	ESC "[u"	/* Restore cursor */
-#define SAVECA	ESC "7"		/* Save cursor & attribute */
-#define RESTCA	ESC "8"		/* Restore cursor & attribute */
+#define HBBLK   CSI "1;40m"     /* Black    */
+#define HBRED   CSI "1;41m"     /* Red      */
+#define HBGRN   CSI "1;42m"     /* Green    */
+#define HBYEL   CSI "1;43m"     /* Yellow   */
+#define HBBLU   CSI "1;44m"     /* Blue     */
+#define HBMAG   CSI "1;45m"     /* Magenta  */
+#define HBCYN   CSI "1;46m"     /* Cyan     */
+#define HBWHT   CSI "1;47m"     /* White    */
 
-#define CLR	ESC "[2J"	/* Clear entire screen  */
-#define HOME	ESC "[H"	/* Move cursor left-top of scren */
+/* VT100 */
 
-#define BOLD	ESC "[1m"	/* Bold mode */
-#define ITALIC	ESC "[3m"	/* Italic mode */
-#define UNDL	ESC "[4m"	/* Underline mode */
-#define REF	CLR HOME	/* Clear screen, move cursor to left-top */
- 
-#endif	/* ANSI_ESCAPE_H */
+#define DECSC   "\x1b7"         /* Saves the cursor position, encoding shift state and formatting attributes. */
+#define DECRC   "\x1b8"         /* Restores states saved by a previous DECSC, or reset all to their defaults. */
+
+#endif  /* ANSI_ESCAPE_H */
