@@ -19,11 +19,6 @@
 
 inherit F_CLEAN_UP;
 
-string bar_string
-	= "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■";
-string blank_string
-	= "□□□□□□□□□□□□□□□□□□□□□□□□□□□□□";
-
 string display_attr(int gift, int value);
 string status_color(int current, int max);
 string tribar_graph(int val, int eff, int max);
@@ -174,14 +169,16 @@ tribar_graph(int val, int eff, int max)
 
     if( (max <= 0) || (val <= 0) || (eff <= 0) ) return "";
 
-    n_filled = val * 25 / max;
-    n_empty = eff * 25 / max - n_filled;
+    n_filled = val * 50 / max;
+    n_empty = eff * 50 / max - n_filled;
 
     /* 如果狀態值與目前值都非常低(但不是 0)，顯示一個空格 */
     if( ! n_filled && ! n_empty ) n_empty = 1;
 
-    if( n_filled ) bar += bar_string[0..n_filled*2-1];
-    if( n_empty ) bar += blank_string[0..n_empty*2-1];
+    if (n_filled)
+        bar += repeat_string("O", n_filled);
+    if (n_empty)
+        bar += repeat_string(".", n_empty);
 
     return bar;
 }
