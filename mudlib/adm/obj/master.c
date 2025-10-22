@@ -35,27 +35,27 @@ connect (int port)
     switch(port)
     {
     case MUD_PORT:
-	err = catch(ob = new(LOGIN_OB));
-	if (err) {
-	    write ("Oops, something goes wrong. Please try again later.");
-	    if (ip == "127.0.0.1")
-		write (err);
-	    return 0;
-	}
-	export_uid (ob); // grant ROOT_UID temporarily
-	return ob;
+        err = catch(ob = new(LOGIN_OB));
+        if (err) {
+            write ("Oops, something goes wrong. Please try again later.");
+            if (ip == "127.0.0.1")
+                write (err);
+            return 0;
+        }
+        export_uid (ob); // grant ROOT_UID temporarily
+        return ob;
 
     case HTTP_PORT:
-	err = catch(ob = new(HTTP_OB));
-	if (err) {
-	    write (HTTP_VERSION " 503 Service Unavailable" CRLF CRLF ":P");
-	    return 0;
-	}
-	return ob;
+        err = catch(ob = new(HTTP_OB));
+        if (err) {
+            write (HTTP_VERSION " 503 Service Unavailable" CRLF CRLF ":P");
+            return 0;
+        }
+        return ob;
 
     default:
-	debug_message("connection from unexpected port " + port);
-	return 0;
+        debug_message("connection from unexpected port " + port);
+        return 0;
     }
 }
 
@@ -79,7 +79,7 @@ crash(string error, object command_giver, object current_object)
     efun::shout("系統核心告訴你﹕要當機了﹐自己保重吧﹗\n");
     log_file("CRASHES", sprintf("[%s] %s\n", ctime(time()), error) );
     if (command_giver)
-	log_file("CRASHES", sprintf("  this_player: %O\n", command_giver));
+        log_file("CRASHES", sprintf("  this_player: %O\n", command_giver));
     if (current_object)
         log_file("CRASHES", sprintf("  this_object: %O\n", current_object));
 }
@@ -93,15 +93,17 @@ epilog (int load_empty)
 static void
 preload (string file)
 {
-    debug_message ("preloading " + file);
-    load_object (file);
+    object ob;
+
+    ob = load_object (file);
+    debug_message (sprintf ("preloaded %O", ob));
 }
 
 private int
 save_ed_setup(object who, int code)
 {
     return write_file(user_path(getuid(who)) + ".edrc",
-	save_variable(code), 1);
+        save_variable(code), 1);
 }
 
 private int
@@ -159,44 +161,44 @@ creator_file (string file)
 
     dirs = explode (file, "/") - ({""});
     if (!arrayp(dirs) || (sizeof(dirs) < 2))
-	return -1; // forbids object in root directory of mudlib
+        return -1; // forbids object in root directory of mudlib
 
     switch (dirs[0]) {
-	case "adm":
-	case "cmds":
-	    // administrator objects with highest privileges
-	    return ROOT_UID;
+        case "adm":
+        case "cmds":
+            // administrator objects with highest privileges
+            return ROOT_UID;
 
-	case "d":
-	    // domain objects that can alter user status, but not allowed to write files
-  	    return DOMAIN_UID;
+        case "d":
+            // domain objects that can alter user status, but not allowed to write files
+            return DOMAIN_UID;
 
-	case "u":
-	case "open":
-	    // wizard objects that receive the wizard's id as UID if it is loaded by the wizard.
-	    // otherwise, give it the lowest privilege as NONAME
-	    if (this_player(1)) {
-		euid = getuid (this_player(1));
-		if (euid == dirs[1])
-		    return euid;
-	    }
+        case "u":
+        case "open":
+            // wizard objects receive the wizard's uid as UID if it is loaded by the wizard.
+            // otherwise, give it the lowest privilege as NONAME
+            if (this_player(1)) {
+                euid = getuid (this_player(1));
+                if (euid == dirs[1])
+                    return euid;
+            }
             return "NONAME";
 
-	case "obj":
-	    // utility objects is granted the EUID of the caller.
-	    // if the caller owns ROOT_UID, degrade to NONAME.
-	    if (previous_object(1)) {
-		euid = geteuid (previous_object(1));
-		if (euid == ROOT_UID)
-		    return "NONAME";
-		return euid;
-	    }
-	    return -1;
+        case "obj":
+            // utility objects is granted the EUID of the caller.
+            // if the caller owns ROOT_UID, degrade to NONAME.
+            if (previous_object(1)) {
+                euid = geteuid (previous_object(1));
+                if (euid == ROOT_UID)
+                    return "NONAME";
+                return euid;
+            }
+            return -1;
 
-	case "daemon":
-	default:
-	    // others
-	    return MUDLIB_UID;
+        case "daemon":
+        default:
+            // others
+            return MUDLIB_UID;
     }
 }
 
@@ -204,12 +206,9 @@ string
 object_name (object ob)
 {
     if (!objectp(ob))
-	return 0;
+        return 0;
 
-    if (getuid(ob) == geteuid(ob))
-	return getuid(ob);
-
-    return getuid(ob) + "/" + geteuid(ob);
+    return "euid:" + geteuid(ob);
 }
 
 string
@@ -220,24 +219,24 @@ standard_trace(mapping error)
 
     /* keep track of number of errors per object...if you're into that */
     res += sprintf("%O: %s: %s:%d: %s\n",
-	error["object"],
-	error["program"],
-	error["file"],
-	error["line"],
-	error["error"]);
+        error["object"],
+        error["program"],
+        error["file"],
+        error["line"],
+        error["error"]);
 
     /*
     if (error["trace"]) {
-	res += "\t[\n";
-	foreach(mapping trace in error["trace"]) {
-	    res += sprintf("%-25O %-20s %s:%i\n",
-		trace["object"],
-		trace["function"],
-		trace["program"]==trace["file"] ? trace["program"]
-			: trace["file"] + "(" + trace["program"] + ")",
-		trace["line"] );
-	}
-	res += "\t]\n";
+        res += "\t[\n";
+        foreach(mapping trace in error["trace"]) {
+            res += sprintf("%-25O %-20s %s:%i\n",
+                trace["object"],
+                trace["function"],
+                trace["program"]==trace["file"] ? trace["program"]
+                        : trace["file"] + "(" + trace["program"] + ")",
+                trace["line"] );
+        }
+        res += "\t]\n";
     }
     */
 
@@ -259,7 +258,7 @@ error_handler( mapping error, int caught )
     player = this_player();
 
     if (objectp(player) && interactive(player))
-	efun::write (report);
+        efun::write (report);
 
     return report; // goes to debug.log
 }
@@ -331,16 +330,16 @@ valid_write (string file, mixed user, string func)
     int ret = 0;
 
     if (user == master())
-	return 1; // always allow master object to write anything
+        return 1; // always allow master object to write anything
 
     if (file_name(user) == SIMUL_EFUN_OB)
-	user = previous_object(1); // simul_efun has no uid, use caller's
+        user = previous_object(1); // simul_efun has no uid, use caller's
 
     if (!catch(ob = load_object(SECURITY_D)) && objectp(ob)) {
         ret = (int)SECURITY_D->valid_write (file, user, func);
-    	if (0 == ret)
-	    //error (sprintf ("%s: denied writing %s for %O", func, file, user));
-	    debug_message (sprintf ("%s: denied writing %s for %O", func, file, user));
+            if (0 == ret)
+            //error (sprintf ("%s: denied writing %s for %O", func, file, user));
+            debug_message (sprintf ("%s: denied writing %s for %O", func, file, user));
     }
 
     return ret;
@@ -353,16 +352,16 @@ valid_read( string file, mixed user, string func )
     int ret = 1;
 
     if ((user == master()) || (geteuid(user) == ROOT_UID))
-	return 1; // always allow master object to read anything
+        return 1; // always allow master object to read anything
 
     if (file_name(user) == SIMUL_EFUN_OB)
-	user = previous_object(1); // simul_efun has no uid, use caller's
+        user = previous_object(1); // simul_efun has no uid, use caller's
 
     if (!catch(ob = load_object(SECURITY_D)) && objectp(ob)) {
         ret = (int)SECURITY_D->valid_read (file, user, func);
-	if (0 == ret)
-	    //error (sprintf ("%s: denied reading %s for %O", func, file, user));
-	    debug_message (sprintf ("%s: denied reading %s for %O", func, file, user));
+        if (0 == ret)
+            //error (sprintf ("%s: denied reading %s for %O", func, file, user));
+            debug_message (sprintf ("%s: denied reading %s for %O", func, file, user));
     }
 
     return ret;
