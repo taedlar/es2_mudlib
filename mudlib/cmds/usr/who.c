@@ -28,21 +28,22 @@ main(object me, string arg, int remote)
      * 注意在被 rwho_q 呼叫的狀況下，this_player() 為 0。
      */
     if( this_player(1) )
-	all = filter(users(), (:
-	    objectp(environment($1))
-	    && (!wizardp($1) || wiz_level($2)>wiz_level($1) || $1->visible($2))
-	:), this_player(1));
+        all = filter(users(), (:
+            objectp(environment($1))
+            && (!wizardp($1) || wiz_level($2)>wiz_level($1) || $1->visible($2))
+        :), this_player(1));
     else
-	all = filter(users(), (: objectp(environment($1)) && !wizardp($1) :));
+        all = filter(users(), (: objectp(environment($1)) && !wizardp($1) :));
 
     i = sizeof(all);
     
     if( !arg || arg=="" ) {
-	center_lv = me->query_level();
+        center_lv = me->query_level();
         while( i-- ) {
-            if( all[i]->query("level") - center_lv < 6
-            &&  center_lv - all[i]->query("level") < 6
-            && !wizardp(all[i]) )
+            if (all[i]->query("level") - center_lv < 6 &&
+                center_lv - all[i]->query("level") < 6 &&
+                (!wizardp(all[i]) || all[i]==this_player(1))
+            )
                 target += ({ all[i] });
         }
         msg_format("1");
@@ -56,28 +57,28 @@ main(object me, string arg, int remote)
             target = all;
             msg_format("5");
             break;
-	case "-1":
-	    target = filter(all, (:($1->query_level()-1)/10==0 && !wizardp($1) :));
+        case "-1":
+            target = filter(all, (:($1->query_level()-1)/10==0 && !wizardp($1) :));
             msg_format("1");
             break;
-	case "-2":
-	    target = filter(all, (:($1->query_level()-1)/10==1 && !wizardp($1) :));
+        case "-2":
+            target = filter(all, (:($1->query_level()-1)/10==1 && !wizardp($1) :));
             msg_format("1");
             break;
         case "-3":
-	    target = filter(all, (:($1->query_level()-1)/10==2 && !wizardp($1) :));
+            target = filter(all, (:($1->query_level()-1)/10==2 && !wizardp($1) :));
             msg_format("1");
             break;
         case "-4":
-	    target = filter(all, (:($1->query_level()-1)/10==3 && !wizardp($1) :));
+            target = filter(all, (:($1->query_level()-1)/10==3 && !wizardp($1) :));
             msg_format("1");
             break;
         case "-5":
-	    target = filter(all, (:($1->query_level()-1)/10==4 && !wizardp($1) :));
+            target = filter(all, (:($1->query_level()-1)/10==4 && !wizardp($1) :));
             msg_format("1");
             break;
-	case "-w":
-	    target = filter(all, (: wizardp :));
+        case "-w":
+            target = filter(all, (: wizardp :));
             msg_format("5");
             break;
         case "-i":
@@ -87,88 +88,88 @@ main(object me, string arg, int remote)
             msg_format("42");
             break;
         case "-bh":
-	    target = filter(all, (: $1->query_race()=="blackteeth" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="blackteeth" :));
+            msg_format("50");
+            break;
         case "-hn":
-	    target = filter(all, (: $1->query_race()=="human" :));
-	    msg_format("50");
-	    break;
-	case "-wn":
-	    target = filter(all, (: $1->query_race()=="woochan" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="human" :));
+            msg_format("50");
+            break;
+        case "-wn":
+            target = filter(all, (: $1->query_race()=="woochan" :));
+            msg_format("50");
+            break;
         case "-jo":
-	    target = filter(all, (: $1->query_race()=="jiaojao" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="jiaojao" :));
+            msg_format("50");
+            break;
         case "-yd":
-	    target = filter(all, (: $1->query_race()=="yenhold" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="yenhold" :));
+            msg_format("50");
+            break;
         case "-rr":
-	    target = filter(all, (: $1->query_race()=="rainnar" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="rainnar" :));
+            msg_format("50");
+            break;
         case "-aa":
-	    target = filter(all, (: $1->query_race()=="ashura" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="ashura" :));
+            msg_format("50");
+            break;
         case "-hs":
-	    target = filter(all, (: $1->query_race()=="headless" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="headless" :));
+            msg_format("50");
+            break;
         case "-ya":
-	    target = filter(all, (: $1->query_race()=="yaksa" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="yaksa" :));
+            msg_format("50");
+            break;
         case "-ml":
-	    target = filter(all, (: $1->query_race()=="malik" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_race()=="malik" :));
+            msg_format("50");
+            break;
         case "-at":
-	    target = filter(all, (: $1->query_class()=="alchemist" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_class()=="alchemist" :));
+            msg_format("50");
+            break;
         case "-cr":
-	    target = filter(all, (: $1->query_class()=="commoner" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_class()=="commoner" :));
+            msg_format("50");
+            break;
         case "-fr":
-	    target = filter(all, (: $1->query_class()=="fighter" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_class()=="fighter" :));
+            msg_format("50");
+            break;
         case "-sr":
-	    target = filter(all, (: $1->query_class()=="soldier" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_class()=="soldier" :));
+            msg_format("50");
+            break;
         case "-tf":
-	    target = filter(all, (: $1->query_class()=="thief" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_class()=="thief" :));
+            msg_format("50");
+            break;
         case "-tt":
-	    target = filter(all, (: $1->query_class()=="taoist" :));
-	    msg_format("50");
-	    break;
+            target = filter(all, (: $1->query_class()=="taoist" :));
+            msg_format("50");
+            break;
         case "-sc":
-	    target = filter(all, (: $1->query_class()=="scholar" :));
-	    msg_format("50");
-	    break;
-	default :
-	    if( objectp(me) && wizardp(me) &&  arg[0]=='@' ) {
-		//RWHO_Q->send_rwho_q(arg[1..sizeof(arg)], me, 0);
-		//write("網路訊息已送往 " + arg[1..sizeof(arg)] + " 請稍候。\n");
-		return notify_fail("遠端查詢功能已關閉。\n");
-	    }
-	    return notify_fail("指令格式更新﹕請看 help who。\n");
+            target = filter(all, (: $1->query_class()=="scholar" :));
+            msg_format("50");
+            break;
+        default :
+            if( objectp(me) && wizardp(me) &&  arg[0]=='@' ) {
+                //RWHO_Q->send_rwho_q(arg[1..sizeof(arg)], me, 0);
+                //write("網路訊息已送往 " + arg[1..sizeof(arg)] + " 請稍候。\n");
+                return notify_fail("遠端查詢功能已關閉。\n");
+            }
+            return notify_fail("指令格式更新﹕請看 help who。\n");
         }
     }
 
     msg = sprintf("◎ %s\n"
-	"───────────────────────────────────────\n"
-	"%s───────────────────────────────────────\n"
-	"共列出 %d/%d 位使用者﹐系統負荷﹕%s\n",
-	MUD_NAME, msg, sizeof(target), sizeof(all), query_load_average());
+        "──────────────────────────────────────────────────────────────────────────────\n"
+        "%s──────────────────────────────────────────────────────────────────────────────\n"
+        "共列出 %d/%d 位使用者﹐系統負荷﹕%s\n",
+        MUD_NAME, msg, sizeof(target), sizeof(all), query_load_average());
 
     if( me && me->query_stat_current("sen") > 5 )
         me->consume_stat("sen", 5);
@@ -215,13 +216,13 @@ msg_format(string arg)
                     NOR
                 );
             else
-      		msg = sprintf("%s【 %2d%|8s 】%-12s%30s %-14s\n",
+                      msg = sprintf("%s【 %2d%|8s 】%-12s%30s %-14s\n",
                     msg,
                     target[j]->query_level(),
                     target[j]->rank(),
                     target[j]->query("title") ? target[j]->query("title") : "",
-		    (target[j]->query("nickname") ? "「"+ target[j]->query("nickname") +"」" : "")
-			+ target[j]->query("name", 1),
+                    (target[j]->query("nickname") ? "「"+ target[j]->query("nickname") +"」" : "")
+                        + target[j]->query("name", 1),
                     "(" + capitalize(target[j]->query("id")) + ")",
                 );
         }
@@ -285,10 +286,10 @@ help(object me)
 HELP
     );
     if( wizardp(me) )
-	write(@HELP
+        write(@HELP
 巫師可以利用 who @celestial.empire  來得知其他連線站之線上人數, 已連線站可
 以mudlist 得知。
 HELP
-	);
+        );
     return 1;
 }
