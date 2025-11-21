@@ -45,28 +45,28 @@ process_input(string str)
 
     /* 取得 client 端的 request */
     if( ! request ) {
-	if( strlen(str) < 1 ) return 1;	/* as specified in RFC#2608 */
-	if( str[<1]=='\r' ) str = str[0..<2];
-	request = str;
-	return 1;
+        if( strlen(str) < 1 ) return 1;	/* as specified in RFC#2608 */
+        if( str[<1]=='\r' ) str = str[0..<2];
+        request = str;
+        return 1;
     }
 
     /* 取得 headers */
     if( strlen(str) > 0 && str[0] != '\r' ) {
-	if( arrayp(header) ) header += ({ str });
-	else header = ({ str });
-	return 1;
+        if( arrayp(header) ) header += ({ str });
+        else header = ({ str });
+        return 1;
     }
 
     msg = request + "\n" + implode(header, "\n");
 
     hdr = HTTP_STAT_OK
-	+ "Content-type: text/html" CRLF
-	+ "Connection: close" CRLF
-	+ CRLF;
+        + "Content-type: text/html" CRLF
+        + "Connection: close" CRLF
+        + CRLF;
     receive(hdr + read_file("/doc/index.html"));
     log_file("http/access.log", sprintf("[%s] %s \"%s\"\n",
-	ctime(time()), query_ip_number(this_object()), request));
+        ctime(time()), query_ip_number(this_object()), request));
     destruct(this_object());
 }
 

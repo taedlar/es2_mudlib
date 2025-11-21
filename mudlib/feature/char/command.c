@@ -51,7 +51,7 @@ command_hook(string arg)
 #ifdef ENABLE_BENCHMARK
     info = rusage();
     PROFILE_D->log_command(verb, memory_info() - mem, info["stime"] - stime,
-	info["utime"] - utime);
+        info["utime"] - utime);
 #endif
 
     return 1;
@@ -71,13 +71,13 @@ nomask void
 add_path(string p)
 {
     if( previous_object() && (geteuid(previous_object())!=ROOT_UID) )
-	error("Permission denied\n");
+        error("Permission denied\n");
 
     if( arrayp(path) && (member_array(p, path) < 0) ) {
-	path += ({ p });
-	/* 保護特權使用者的設計：指令搜尋路徑改變時，印出訊息讓使用者知道。 */
-	if( wizardp(this_object()) )
-	    receive(HIR "新增指令搜尋路徑：" NOR + p + "\n");
+        path += ({ p });
+        /* 保護特權使用者的設計：指令搜尋路徑改變時，印出訊息讓使用者知道。 */
+        if( wizardp(this_object()) )
+            receive(HIR "新增指令搜尋路徑：" NOR + p + "\n");
     }
 }
 
@@ -88,7 +88,7 @@ int
 force_me(string cmd)
 {
     if( geteuid(previous_object()) != ROOT_UID )
-	error("Permission denied\n");
+        error("Permission denied\n");
 
     return command( userp(this_object()) ? this_object()->process_input(cmd) : cmd );
 }
@@ -109,18 +109,20 @@ enable_player()
 protected void
 init_command()
 {
-    if( !userp(this_object()) )
+    if( !userp(this_object()) ) {
         set_path(NPC_PATH);
-    else
-	switch( wizhood(this_object()) )
-	{
-	case "(admin)":		set_path(ADM_PATH); enable_wizard(); break;
-	case "(arch)":		set_path(ARC_PATH); enable_wizard(); break;
-	case "(wizard)":	set_path(WIZ_PATH); enable_wizard(); break;
-	case "(apprentice)":	set_path(APR_PATH); enable_wizard(); break;
-	case "(immortal)":	set_path(IMM_PATH); break;
-	default:		set_path(PLR_PATH); break;
-	}
+    }
+    else {
+        switch( wizhood(this_object()) )
+        {
+        case "(admin)":		set_path(ADM_PATH); enable_wizard(); break;
+        case "(arch)":		set_path(ARC_PATH); enable_wizard(); break;
+        case "(wizard)":	set_path(WIZ_PATH); enable_wizard(); break;
+        case "(apprentice)":	set_path(APR_PATH); enable_wizard(); break;
+        case "(immortal)":	set_path(IMM_PATH); break;
+        default:		set_path(PLR_PATH); break;
+        }
+    }
 
     add_action("command_hook", "", 1);
     add_action("cmd_quit", "quit");
@@ -135,8 +137,8 @@ protected int
 cmd_quit(string arg)
 {
     if( !catch(call_other(QUIT_CMD, "main", this_object(), arg)) ) {
-	// 若成功，this_object() 已經被 destruct 了，立即返回。
-	return 1;
+        // 若成功，this_object() 已經被 destruct 了，立即返回。
+        return 1;
     }
 
 #ifdef SAVE_USER
@@ -158,7 +160,7 @@ disable_player(string type)
     if( origin()==ORIGIN_CALL_OTHER
     &&	geteuid(previous_object())!=ROOT_UID
     &&	previous_object()!=this_object())
-	return;
+        return;
 
     set("disable_type", type);
     disable_commands();

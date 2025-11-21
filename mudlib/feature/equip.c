@@ -139,7 +139,7 @@ wear(string on_part)
     }
 
     // Ask race/class daemon to check if we can wield such weapon.
-    notify_fail("你的種族或職業不允許\你使用這種護具。\n");
+    notify_fail("你的種族或職業不允許你使用這種護具。\n");
     if( !(RACE_D(owner->query_race())->valid_wear(owner, this_object(), on_part))
     ||    !(CLASS_D(owner->query_class())->valid_wear(owner, this_object()), on_part))
         return 0;
@@ -196,7 +196,7 @@ wield(string as_skill)
         if( !old->unequip() ) return notify_fail("你無法取下正在使用中的同種類武器");
 
     // Ask race/class daemon to check if we can wield such weapon.
-    notify_fail("你的種族或職業不允許\你使用這種武器。\n");
+    notify_fail("你的種族或職業不允許你使用這種武器。\n");
     if( !(RACE_D(owner->query_race())->valid_wield(owner, this_object(), as_skill))
     ||    !(CLASS_D(owner->query_class())->valid_wield(owner, this_object()), as_skill))
         return 0;

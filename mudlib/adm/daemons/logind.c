@@ -51,7 +51,7 @@ string *banned_ip = ({
 });
 
 string *banned_hostname = ({
-	"%*s.Dorm2.nsysu.edu.tw",	// mutli, rude words, dragoon
+        "%*s.Dorm2.nsysu.edu.tw",	// mutli, rude words, dragoon
 });
 
 #ifdef ENABLE_ANTISPAM
@@ -65,6 +65,7 @@ string *penalty_attr = ({
 private void get_id(string arg, object ob);
 private void confirm_id(string yn, object ob);
 private void get_email(string email, object ob);
+private void authorize(object ob);
 object make_body(object ob);
 private void init_new_body(object link, object user);
 varargs void enter_world(object ob, object user, int silent);
@@ -93,17 +94,17 @@ reset()
     room = find_object(VOID_OB);
     seteuid(getuid());
     if( objectp(room) )
-	foreach(ob in all_inventory(room)) {
+        foreach(ob in all_inventory(room)) {
 #ifdef	SAVE_USER
-	    if( userp(ob) ) ob->save();
+            if( userp(ob) ) ob->save();
 #endif
-	    destruct(ob);
-	}
+            destruct(ob);
+        }
 #endif
 
     /* 記錄線上使用者人數 */
     log_file("USRGRAPH", sprintf("[%s] %d users\n",
-	ctime(time()), sizeof(users())));
+        ctime(time()), sizeof(users())));
 
 #ifdef ENABLE_ANTISPAM
     spammer_player = ([]);
@@ -118,8 +119,8 @@ logon (object ob)
     int i, wiz_cnt, ppl_cnt, login_cnt;
 
     if (getuid(ob) != ROOT_UID) {
-	// only allow trusted login object
-	return;
+        // only allow trusted login object
+        return;
     }
 
 #ifdef ENABLE_ANTISPAM
@@ -167,13 +168,13 @@ get_id (string arg, object ob)
     arg = lower_case (arg);
 
     if (!check_legal_id(arg)) {
-	write("您的使用者代號：");
-	input_to ("get_id", ob);
-	return;
+        write("您的使用者代號：");
+        input_to ("get_id", ob);
+        return;
     }
 
     if (getuid (ob) != ROOT_UID)
-	return;
+        return;
     seteuid (arg);
     export_uid (ob);
     seteuid (getuid());
@@ -183,13 +184,13 @@ get_id (string arg, object ob)
 #ifdef MAX_USERS
     if( wizhood(arg)=="(player)" && sizeof(users()) >= MAX_USERS )
     {
-	ppl = find_body(arg);
-	// Only allow reconnect an interactive player when MAX_USERS exceeded.
-	if( !ppl || !interactive(ppl) ) {
-	    write("對不起﹐" + MUD_NAME + "的使用者已經太多了﹐請待會再來。\n");
-	    destruct(ob);
-	    return;
-	}
+        ppl = find_body(arg);
+        // Only allow reconnect an interactive player when MAX_USERS exceeded.
+        if( !ppl || !interactive(ppl) ) {
+            write("對不起﹐" + MUD_NAME + "的使用者已經太多了﹐請待會再來。\n");
+            destruct(ob);
+            return;
+        }
     }
 #endif
 
@@ -197,22 +198,22 @@ get_id (string arg, object ob)
     // Rework by Annihilator (11/10/1999), support IP address and hostname
     if( wizhood(arg)=="(player)" )
     {
-	string ip, pattern;
+        string ip, pattern;
 
-	ip = query_ip_number(ob);
-	foreach(pattern in banned_ip)
-	    if( ip==pattern || sscanf(ip, pattern) ) {
-		write("您的連線位置目前不接受使用者登入。\n");
-		destruct(ob);
-		return;
-	    }
-	ip = query_ip_name(ob);
-	foreach(pattern in banned_hostname)
-	    if( ip==pattern || sscanf(ip, pattern) ) {
-		write("您的連線位置目前不接受使用者登入。\n");
-		destruct(ob);
-		return;
-	    }
+        ip = query_ip_number(ob);
+        foreach(pattern in banned_ip)
+            if( ip==pattern || sscanf(ip, pattern) ) {
+                write("您的連線位置目前不接受使用者登入。\n");
+                destruct(ob);
+                return;
+            }
+        ip = query_ip_name(ob);
+        foreach(pattern in banned_hostname)
+            if( ip==pattern || sscanf(ip, pattern) ) {
+                write("您的連線位置目前不接受使用者登入。\n");
+                destruct(ob);
+                return;
+            }
     }
 #endif	/* ENABLE_BAN_SITE */
 
@@ -233,6 +234,11 @@ get_id (string arg, object ob)
 
     if( file_size(login_data(arg)) != -1 ) {
         if( ob->restore() ) {
+            if (userp(ob) == 2) { // console user
+                write("\n");
+                authorize(ob);
+                return;
+            }
             write("請輸入密碼﹕");
             input_to("get_passwd", 1, ob);
             return;
@@ -250,14 +256,13 @@ private void
 get_passwd(string pass, object ob)
 {
     string my_pass;
-    object user;
 
     write("\n");
 
     if( !check_ip(ob) ) {
-	write("對不起，您的連線位置不正確。\n");
-	destruct(ob);
-	return;
+        write("對不起，您的連線位置不正確。\n");
+        destruct(ob);
+        return;
     }
 
     my_pass = ob->query("password");
@@ -266,10 +271,14 @@ get_passwd(string pass, object ob)
         destruct(ob);
         return;
     }
+    authorize(ob);
+}
 
-    user = find_body(ob->query("id"));
+void authorize(object ob)
+{
+    object user = find_body(ob->query("id"));
     if (user) {
-	/* 斷線的使用者重新連線 */
+        /* 斷線的使用者重新連線 */
         if( !user->link() ) {
             reconnect(ob, user);
             return;
@@ -281,49 +290,48 @@ get_passwd(string pass, object ob)
 
     user = make_body(ob);
     if( ! user ) {
-	/* 如果沒有辦法製造使用者物件，直接切斷連線 */
-	destruct(ob);
-	return;
+        /* 如果沒有辦法製造使用者物件，直接切斷連線 */
+        destruct(ob);
+        return;
     }
 
-    if( user->restore() )
-    {
-	log_file( "USAGE", sprintf("[%s] %s login from %s\n",
-	    ctime(time()), (string)user->query("id"), query_ip_name(ob) ) );
+    if (user->restore()) {
+        log_file( "USAGE", sprintf("[%s] %s login from %s\n",
+            ctime(time()), (string)user->query("id"), query_ip_name(ob) ) );
 
-	if( wizhood(ob)=="(admin)") {
-	    if( (query_ip_name(ob) != "localhost")
-	    &&	(query_ip_number(ob) != "127.0.0.1") ) {
-		write("安全檢查失敗....自動登出。\n");
-		destruct(user);
-		destruct(ob);
-		return;
-	    }
-	    write("安全檢查通過。\n");
-	}
-	enter_world(ob, user);
-	return;
+        if (wizhood(ob)=="(admin)") {
+            if( (query_ip_name(ob) != "localhost")
+            &&	(query_ip_number(ob) != "127.0.0.1") ) {
+                write("安全檢查失敗....自動登出。\n");
+                destruct(user);
+                destruct(ob);
+                return;
+            }
+            write("安全檢查通過。\n");
+        }
+        enter_world(ob, user);
+        return;
     } else {
-	if( file_size(user->query_save_file())==-1 ) {
-	    write(@NOTICE
+        if( file_size(user->query_save_file())==-1 ) {
+            write(@NOTICE
 系統找不到您的人物資料，可能的原因包括您在創造人物或人物在投胎轉世時
 斷線，或者因為違反規定您的人物資料被刪除了。如果您確定這個人物並沒有
 上述這些情況，請用 guest 帳號洽線上巫師查詢。
 
 NOTICE
-	    );
-	    destruct(user);
-	    write(HIY "您要重新創造這個人物嗎？(y/n) " NOR);
-	    input_to("confirm_reincarnate", ob);
-	} else {
-	    write(@NOTICE
+            );
+            destruct(user);
+            write(HIY "您要重新創造這個人物嗎？(y/n) " NOR);
+            input_to("confirm_reincarnate", ob);
+        } else {
+            write(@NOTICE
 系統目前無法讀取您的人物資料，可能的原因包括系統正在備分或整理使用者
 資料，請稍候再試。
 NOTICE
-	    );
-	    destruct(user);
-	    destruct(ob);
-	}
+            );
+            destruct(user);
+            destruct(ob);
+        }
     }
 }
 
@@ -343,9 +351,9 @@ confirm_reincarnate(string yn, object ob)
     }
 
     if( !list_user_race(ob) ) {
-	/*  業力不足，無法投胎轉世的狀況。 */
+        /*  業力不足，無法投胎轉世的狀況。 */
 #ifdef	SAVE_USER
-	rm(ob->query_save_file());
+        rm(ob->query_save_file());
 #endif
         destruct(ob);
         return;
@@ -381,8 +389,8 @@ confirm_relogin(string yn, object ob, object user)
     // Kick out tho old player.
     old_link = user->link();
     if( old_link ) {
-	seteuid(getuid());
-	if( interactive(user) ) exec(old_link, user);
+        seteuid(getuid());
+        if( interactive(user) ) exec(old_link, user);
         destruct(old_link);
     }
 
@@ -461,22 +469,22 @@ get_email(string email, object ob)
     int c, delim=0, err=0;
 
     if( strlen(email) > 64 ) {
-	write("電子郵件地址最多可以有 64 個字元。\n");
-	write("您的電子郵件地址：");
-	input_to("get_email",  ob);
-	return;
+        write("電子郵件地址最多可以有 64 個字元。\n");
+        write("您的電子郵件地址：");
+        input_to("get_email",  ob);
+        return;
     }
 
     foreach(c in email) {
-	if( c=='@' && !delim ) { delim = 1; continue; }
-	if( strsrch("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.", c) < 0 )
-	    { err = 1; break; }
+        if( c=='@' && !delim ) { delim = 1; continue; }
+        if( strsrch("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.", c) < 0 )
+            { err = 1; break; }
     }
     if( !delim || err ) {
-	write("您的電子郵件格式錯誤，請輸入正確的電子郵件地址。\n");
-	write("您的電子郵件地址：");
-	input_to("get_email",  ob);
-	return;
+        write("您的電子郵件格式錯誤，請輸入正確的電子郵件地址。\n");
+        write("您的電子郵件地址：");
+        input_to("get_email",  ob);
+        return;
     }
 
     ob->set("email", email);
@@ -629,32 +637,32 @@ check_ip(object link)
     cur_ip_num = query_ip_number(link);
     foreach(string ip in explode(okip, ":") - ({ "" }))
     {
-	if (sscanf(ip, "%s*", be_checked) && be_checked!="")
-	{
-	    len = strlen(be_checked);
-	    ip_part = cur_ip[0..len-1];
-	    num_part = cur_ip_num[0..len-1];
-	}
-	else if (sscanf(ip, "*%s", be_checked) && be_checked!="")       
-	{
-	    len = strlen(be_checked);
-	    ed = strlen(cur_ip);
-	    ip_part = cur_ip[ed-len..<1];
-	    num_part = cur_ip_num[ed-len..<1];
-	}
-	else
-	{
-	    be_checked = ip;
-	    ip_part = cur_ip;
-	    num_part = cur_ip_num;
-	}
+        if (sscanf(ip, "%s*", be_checked) && be_checked!="")
+        {
+            len = strlen(be_checked);
+            ip_part = cur_ip[0..len-1];
+            num_part = cur_ip_num[0..len-1];
+        }
+        else if (sscanf(ip, "*%s", be_checked) && be_checked!="")       
+        {
+            len = strlen(be_checked);
+            ed = strlen(cur_ip);
+            ip_part = cur_ip[ed-len..<1];
+            num_part = cur_ip_num[ed-len..<1];
+        }
+        else
+        {
+            be_checked = ip;
+            ip_part = cur_ip;
+            num_part = cur_ip_num;
+        }
        
-	if (lower_case(be_checked) == lower_case(ip_part)
-	|| lower_case(be_checked) == lower_case(num_part))
-	{
-	    write(HIW "檢查通過。\n" NOR);
-	    return 1;
-	}
+        if (lower_case(be_checked) == lower_case(ip_part)
+        || lower_case(be_checked) == lower_case(num_part))
+        {
+            write(HIW "檢查通過。\n" NOR);
+            return 1;
+        }
     }
 
     return 0;
@@ -699,7 +707,7 @@ enter_world(object ob, object user, int silent)
     exec (user, ob);
 
     if (!silent)
-	write ("目前權限﹕" + wizhood(user) + "\n");
+        write ("目前權限﹕" + wizhood(user) + "\n");
 
     user->setup();
     increment_visitor_count();
@@ -710,7 +718,7 @@ enter_world(object ob, object user, int silent)
 #endif
 
     if (silent)
-	return;
+        return;
 
     cat(MOTD);
     IDENT_D->query_userid((string)user->query("id"));
@@ -722,37 +730,37 @@ enter_world(object ob, object user, int silent)
     if( !room ) err = catch(room = load_object(VOID_OB));
 
     if( !room || !user->move(room) ) {
-	write(@NOTICE
+        write(@NOTICE
 對不起，目前系統正在整修一些登入地點的程式，請稍候再試。
 NOTICE
-	);
-	destruct(ob);
-	destruct(user);
-	return;
+        );
+        destruct(ob);
+        destruct(user);
+        return;
     }
 
     /* 檢查使用者是否有未讀的信件 */
     if( ob->query("new_mail") ) {
-	write( HIW "\n有您的信！請到驛站來一趟 ...\n\n" NOR);
-	ob->delete("new_mail");
+        write( HIW "\n有您的信！請到驛站來一趟 ...\n\n" NOR);
+        ob->delete("new_mail");
     }
  
     // if detect mark: pker, set the time mark -dragoon
     if( user->query("pker") ) {
-	user->set("last_pk_time", time());
-	user->delete("pker");
+        user->set("last_pk_time", time());
+        user->delete("pker");
     }
 
     /* 宣告使用者登入的消息 */
     if( !wizardp(user) && !user->query("invis") ) {
-	message("vision", user->query("name") + "連線進入這個世界。\n",
-		room, user);
-	CHANNEL_D->do_channel( this_object(), "sys",
-		sprintf("%s(%s)由%s連線進入。",
-		user->name(1),
-		user->query("id"),
-		query_ip_name(user))
-	);
+        message("vision", user->query("name") + "連線進入這個世界。\n",
+                room, user);
+        CHANNEL_D->do_channel( this_object(), "sys",
+                sprintf("%s(%s)由%s連線進入。",
+                user->name(1),
+                user->query("id"),
+                query_ip_name(user))
+        );
     }
 }
 
@@ -771,18 +779,18 @@ reconnect(object ob, object user, int silent)
 
     // if detect pking, reset time mark to now -dragoon
     if( time() - (int)user->query("last_pk_time") < 60 * 60 )
-	user->set("last_pk_time", time());
+        user->set("last_pk_time", time());
 
     /* 宣告使用者重新連線的消息 */
     if( !wizardp(user) && !user->query("invis") ) {
-	message("vision", user->query("name") + "重新連線回到這個世界。\n",
-		environment(user), user);
-	CHANNEL_D->do_channel( this_object(), "sys",
-		sprintf("%s(%s)由%s重新連線進入。",
-		user->name(1),
-		user->query("id"),
-		query_ip_name(user))
-	);
+        message("vision", user->query("name") + "重新連線回到這個世界。\n",
+                environment(user), user);
+        CHANNEL_D->do_channel( this_object(), "sys",
+                sprintf("%s(%s)由%s重新連線進入。",
+                user->name(1),
+                user->query("id"),
+                query_ip_name(user))
+        );
     }
 }
 
@@ -882,15 +890,15 @@ list_user_race(object link)
     karma = link->query("karma");
     msg = "";
     foreach(race in user_race) {
-	if( RACE_D(race)->query("karma") > karma ) continue;
-	msg += sprintf("%-25s %d 點業力\n",
-		to_chinese(race) + "(" + race + ")",
-		RACE_D(race)->query("karma") );
+        if( RACE_D(race)->query("karma") > karma ) continue;
+        msg += sprintf("%-25s %d 點業力\n",
+                to_chinese(race) + "(" + race + ")",
+                RACE_D(race)->query("karma") );
     }
 
     if( msg=="" ) {
-	write("你所剩的業力已經沒有辦法投胎轉世了！\n");
-	return 0;
+        write("你所剩的業力已經沒有辦法投胎轉世了！\n");
+        return 0;
     }
 
     msg = "您現在共有 " + karma + " 點業力，可以選擇以下的種族：\n" + msg;
@@ -913,7 +921,7 @@ reincarnate(object ob)
     int max_karma_gain, karma_gain;
 
     if( previous_object() && geteuid(previous_object()) != ROOT_UID )
-	return;
+        return;
 
     seteuid(getuid());
 

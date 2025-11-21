@@ -34,6 +34,7 @@ connect (int port)
 
     switch(port)
     {
+    case 0: // console user
     case MUD_PORT:
         err = catch(ob = new(LOGIN_OB));
         if (err) {
