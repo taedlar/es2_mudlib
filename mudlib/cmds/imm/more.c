@@ -23,7 +23,7 @@ int main(object me, string arg)
 
     seteuid(geteuid(this_player(1)));
     if (!arg)
-	return notify_fail("指令格式 : more <檔名>|<物件名> \n");
+        return notify_fail("指令格式 : more <檔名>|<物件名> \n");
     file = resolve_path(me->query("cwd"), arg);
     if( file_size(file) < 0 ) {
         ob = present(arg, me);
