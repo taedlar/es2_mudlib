@@ -1,0 +1,3 @@
+[submodule "neolith"]
+	path = neolith
+	url = https://github.com/taedlar/neolith.git

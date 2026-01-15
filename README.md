@@ -28,7 +28,7 @@ neolith -f neolith.conf
 - Changed to UTF-8. No longer using Big-5 encoding.
 - Tested with Neolith only.
 - Favors `git` based source control than in-game programming. May remove certain wizard commands in the future.
-- Favors `vim` editor for its ability to [syntax highlight](docs/syntax_highlight.md) LPC programs.
+- Supports `vim` editor for its ability to [syntax highlight](docs/syntax_highlight.md) LPC programs.
 - No longer release as specific version. If you plan to stick on particular version of ES2 Mudlib, use git commit id instead.
 
 ## License
