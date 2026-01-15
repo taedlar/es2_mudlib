@@ -23,21 +23,21 @@ int main(object me, string arg)
     object target;
 
     if( !(f = me->skill_mapped("force")) )
-        return notify_fail("你現在並沒有使用任何內功\。\n");
+        return notify_fail("你現在並沒有使用任何內功。\n");
     if( f=="force" )
-        return notify_fail("你必須先 enable 一種內功\。\n");
+        return notify_fail("你必須先 enable 一種內功。\n");
 
     if( !arg ) {
         ratio = me->query("force_ratio");
         if( !ratio ) ratio = 75;
-        printf("你在作戰時將使出%s成%s的功\力。\n",
+        printf("你在作戰時將使出%s成%s的功力。\n",
             chinese_number(ratio/10), (ratio%10==0 ? "" : chinese_number(ratio%10)));
         return 1;
     }
 
     if( sscanf(arg, "%d", ratio)==1 ) {
         if( ratio < 10 || ratio > 100 )
-            return notify_fail("你能控制的範圍是在一成到十成功\力之間。\n");
+            return notify_fail("你能控制的範圍是在一成到十成功力之間。\n");
         me->set("force_ratio", ratio);
         write("Ok.\n");
         return 1;
@@ -54,7 +54,7 @@ int main(object me, string arg)
 	if( !target ) target = present( dest, me );
 	if( !target ) return notify_fail("這裡沒有這個人。\n");
     }
-    notify_fail("你所使用的內功\沒有這種功\能。\n");
+    notify_fail("你所使用的內功沒有這種功能。\n");
     return SKILL_D(me->skill_mapped("force"))->exert_function(me, arg, target);
 }
 

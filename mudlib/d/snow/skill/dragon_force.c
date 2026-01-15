@@ -71,7 +71,7 @@ int do_exercise(object me)
     if( me->query_stat("gin") < 10
     ||    me->query_stat("kee") < 10
     ||    me->query_stat("sen") < 10 ) {
-	tell_object(me, "你覺得神困力乏﹐沒有辦法繼續練功\了。\n");
+	tell_object(me, "你覺得神困力乏﹐沒有辦法繼續練功了。\n");
 	me->interrupt_me(me, "exhausted");
 	return 1;
     }
@@ -101,11 +101,11 @@ exert_function(object me, string func, object target)
 
     switch(func) {
     case "dragon force":
-	message_vision(HIY "$N盤膝而坐，深深地吸了口氣，開始修習龍圖心經的內功\。\n" NOR,
+	message_vision(HIY "$N盤膝而坐，深深地吸了口氣，開始修習龍圖心經的內功。\n" NOR,
 	    me);
 	me->start_busy((: do_exercise, me :), (: halt_exercise, me :));
 	return 1;
     default:
-	return notify_fail("龍圖心經沒有這種功\能。\n");
+	return notify_fail("龍圖心經沒有這種功能。\n");
     }
 }

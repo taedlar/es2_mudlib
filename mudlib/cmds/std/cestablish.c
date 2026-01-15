@@ -25,7 +25,7 @@ int main(object me, string arg)
 			notify_fail("只有聲望夠高的頂級玩家才有建幫的資格。\n");
 
 		if( me->query("clan/create") ) return 
-			notify_fail("每個人一生只允許\創造一次新幫派。\n");
+			notify_fail("每個人一生只允許創造一次新幫派。\n");
 
 		if( me->query("clan/clan_level") ) return 
 			notify_fail("你已經是幫派成員了, 請先脫離原來幫派。\n");

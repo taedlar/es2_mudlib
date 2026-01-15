@@ -81,12 +81,12 @@ int main(object me, string file)
     && !obj->is_character()
     && !living(obj)
     && obj->move(me) ) {
-	write(obj->query("name") + "複製成功\﹐放在你的物品欄。\n");
+	write(obj->query("name") + "複製成功﹐放在你的物品欄。\n");
 	message_vision(msg + "\n", me, obj);
 	return 1;
     }
     if( obj->move(environment(me)) ) {
-	write(obj->query("name") + "複製成功\﹐放在這個房間。\n");
+	write(obj->query("name") + "複製成功﹐放在這個房間。\n");
 	message_vision(msg + "\n", me, obj);
 	return 1;
     }
@@ -99,7 +99,7 @@ int main(object me, string file)
 	else
 	    bottle = new(obj->query("default_container"));
 	if( obj->move(bottle) ) {
-	    write(obj->query("name") + "複製成功\﹐放個一個" + bottle->name() + "中。\n");
+	    write(obj->query("name") + "複製成功﹐放個一個" + bottle->name() + "中。\n");
 	    bottle->move(me);
 	    message_vision(msg + "\n", me, obj);
 	    return 1;

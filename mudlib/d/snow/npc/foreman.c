@@ -37,7 +37,7 @@ void create()
 
 int accept_fight()
 {
-	do_chat("工頭說道﹕比武﹖你瘋了嗎﹖我才沒那種閒功\夫。\n");
+	do_chat("工頭說道﹕比武﹖你瘋了嗎﹖我才沒那種閒功夫。\n");
 	return 0;
 }
 

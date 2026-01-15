@@ -27,7 +27,7 @@ string short(int raw)
 	if( query("measured_flag") )
 		s += " <" + weight_string() + ">";
 	else {
-		if( w < 100 ) s += " <少許\>";
+		if( w < 100 ) s += " <少許>";
 		else if( w < 250 ) s += " <若干>";
 		else if( w < 500 ) s += " <不到半斤>";
 		else if( w < 1000 ) s += " <不到一斤>";

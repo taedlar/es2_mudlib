@@ -55,7 +55,7 @@ int main(object me, string arg)
         CLASS_D(pro)->brother_praise(me, ob);
     me->set("praise_done", 1);
 
-    shout( sprintf(YEL "%s對%s的讚揚獲得了許\多人的認同，並提高了%s的聲望！\n" NOR,
+    shout( sprintf(YEL "%s對%s的讚揚獲得了許多人的認同，並提高了%s的聲望！\n" NOR,
             me->name(), ob->name(), ob->name() ));
     write("Ok.\n");
 

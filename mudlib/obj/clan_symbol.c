@@ -232,7 +232,7 @@ int do_clan_reset(string arg)
     me = this_player();
 
     if( wiz_level(me) < 3 ) 
-	return notify_fail("本功\能只有大巫師級以上才能使用。\n");
+	return notify_fail("本功能只有大巫師級以上才能使用。\n");
 
     if( sscanf(arg, "%s %d", target, elders) != 2 )
 	return notify_fail("指令格式: clan_reset <對象> <長老數>。\n");

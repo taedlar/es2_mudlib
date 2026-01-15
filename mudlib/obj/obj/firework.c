@@ -46,7 +46,7 @@ int do_light(string s)
 		this_player() );
 	if (!s) cmsg = s1 + "砰！的一聲，一枚美麗的"+ s2 +
 		"色煙火在天空中迸射開來。\n" + NOR;
-	else cmsg = s1 + "砰！的一聲，許\多枚美麗的"+ s2 +
+	else cmsg = s1 + "砰！的一聲，許多枚美麗的"+ s2 +
 		"色煙火在空中迸射開來，緩緩幻化成一排字：\n"+s+"。\n" + NOR;
 	shout(cmsg);
 	write(cmsg);

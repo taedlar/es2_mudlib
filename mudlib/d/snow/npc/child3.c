@@ -24,7 +24,7 @@ void create()
 
 int accept_fight(object ob)
 {
-	do_chat("小孩搖了搖頭﹐說道：我沒空打架，我在用功\唸書，將來要考狀元的。\n");
+	do_chat("小孩搖了搖頭﹐說道：我沒空打架，我在用功唸書，將來要考狀元的。\n");
 	return 0;
 }
 

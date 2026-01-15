@@ -177,7 +177,7 @@ int do_withdraw(string arg)
     if( !money_ob->move(this_player()) ) {
         bond->transact(money_ob->value());
         destruct(money_ob);
-        return notify_fail("你身上帶不了這許\多錢﹐提少一點吧。\n");
+        return notify_fail("你身上帶不了這許多錢﹐提少一點吧。\n");
     }
 
     write("錢莊將" + chinese_number(amount) + money_ob->query("base_unit")

@@ -120,7 +120,7 @@ string
 status_msg (int ratio)
 {
     if( ratio==100 ) return HIG "( $N看起來對這種程度的攻擊一點也不在乎。 )\n" NOR;
-    if( ratio > 95 ) return HIG "( $N似乎有些疲憊，但也許\是誘敵之計，你無法確定。 )\n" NOR;
+    if( ratio > 95 ) return HIG "( $N似乎有些疲憊，但也許是誘敵之計，你無法確定。 )\n" NOR;
     if( ratio > 90 ) return HIG "( $N看起來可能有些累了，出招開始慢了下來。 )\n" NOR;
     if( ratio > 80 ) return HIY "( $N動作似乎開始有點不太靈光，但是仍然有條不紊。 )\n" NOR;
     if( ratio > 60 ) return HIY "( $N氣喘噓噓，看起來狀況並不太好。 )\n" NOR;

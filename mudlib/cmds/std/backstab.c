@@ -176,7 +176,7 @@ int do_backstab(object victim, object me)
             me->set_temp("backstab_countdown", DELAY_COUNTDOWN);
             return 1;
         }
-        write(CYN "\n你成功\地來到" + victim->name() + "的背後，準備動手了 ...\n\n" NOR);
+        write(CYN "\n你成功地來到" + victim->name() + "的背後，準備動手了 ...\n\n" NOR);
         me->improve_skill("backstab", 1 + random(me->query_attr("int")));
         me->gain_score("mortal sin", random(10)+1);
         me->set_temp("backstab_countdown", DOIT_COUNTDOWN);

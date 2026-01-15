@@ -59,7 +59,7 @@ main(object me, string arg)
 
     if(    ob->set("password", crypt(new_passwd, 0))
     &&    ob->save() )
-        write("使用者 " + userid + " 密碼變更成功\。\n");
+        write("使用者 " + userid + " 密碼變更成功。\n");
     else
         write("使用者資料儲存失敗。\n");
 

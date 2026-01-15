@@ -58,7 +58,7 @@ int main(object me, string arg)
     if( ! my_strength ) my_strength = 1;
 
     if( ob==me ) {
-	printf("你評估自己在武功\招數上約有 %d 的程度。\n", my_ability);
+	printf("你評估自己在武功招數上約有 %d 的程度。\n", my_ability);
 	printf("守禦方面應該有 %d 的水準。\n", my_defense);
 	printf("全力一擊的話能有 %.2f 公斤左右的力道。\n", my_strength / 1000.0);
 	return 1;
@@ -99,7 +99,7 @@ int main(object me, string arg)
     cmp_strength = (my_strength - hir_strength) * 100 / my_strength;
     cmp_defense  = (my_defense - hir_defense) * 100 / my_defense;
 
-    msg = "你評估" + ob->name() + "的武功\在招數上";
+    msg = "你評估" + ob->name() + "的武功在招數上";
 
     if( cmp_ability < -150 )
         msg += "遠勝於你，";

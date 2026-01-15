@@ -81,7 +81,7 @@ private void confirm_new_pass(string pass, object ob, string new_pass)
 
 #ifdef SAVE_USER
     ob->save();
-    write("密碼變更成功\。\n");
+    write("密碼變更成功。\n");
     log_file("PASSWD", sprintf("[%s] %s changed password from %s\n",
         ctime(time()), getuid(this_player(1)), query_ip_name(this_player(1)) ));
 #endif

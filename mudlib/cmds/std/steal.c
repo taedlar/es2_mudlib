@@ -159,7 +159,7 @@ private void compelete_steal(object me, object victim, object ob, int sp, int dp
             return;
         }
         tell_object(me, HIW "得手了﹗\n\n" NOR);
-        tell_object(me, "你成功\地偷到一" + ob->query("unit") + ob->name() + "﹗\n");
+        tell_object(me, "你成功地偷到一" + ob->query("unit") + ob->name() + "﹗\n");
         if( living(victim) ) {
             int gain;
             me->improve_skill("stealing", me->query_attr("int"));
