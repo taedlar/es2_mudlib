@@ -102,8 +102,9 @@ This is **ES2 (Eastern Stories II)**, a LPMud mudlib project originally started 
 - Build Neolith driver first (see `neolith/docs/INSTALL.md`)
 - Edit `neolith.conf` with correct local paths
 - Run: `neolith -f neolith.conf`
-- Connect: `telnet localhost 4000`
-- In-game editing is discouraged; use git-based workflow with vim/editor
+- Run as console mode for local testing: `neolith -f neolith.conf -c`
+- In-game editing with `ed()` efun is supported for historical reasons; a git-based workflow (source control) is recommended for modern development activities.
+  - A running MUD server may fetch updated LPC code from source control and reload objects as needed when the git operations are supported in the LPMud driver.
 
 ### Version Control
 
