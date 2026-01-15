@@ -13,3 +13,5 @@
 # vim
 *.swp
 
+# local configuration files
+neolith.local.conf
