@@ -16,15 +16,11 @@
 
 #include <http.h>
 
-private void
-create()
-{
+private void create() {
     debug_message ("master object is created successfully.");
 }
 
-private object
-connect (int port)
-{
+private object connect (int port) {
     object ob;
     mixed err;
     string ip;
@@ -32,8 +28,7 @@ connect (int port)
     ip = query_ip_number();
     debug_message (sprintf ("new connection from ip address \"%s\"", ip));
 
-    switch(port)
-    {
+    switch(port) {
     case 0: // console user
     case MUD_PORT:
         err = catch(ob = new(LOGIN_OB));
@@ -60,9 +55,7 @@ connect (int port)
     }
 }
 
-private mixed
-compile_object(string file)
-{
+private mixed compile_object(string file) {
     object daemon;
     mixed err;
 
@@ -73,9 +66,7 @@ compile_object(string file)
     return daemon->compile_object(file);
 }
 
-private void
-crash(string error, object command_giver, object current_object)
-{
+private void crash(string error, object command_giver, object current_object) {
     efun::shout("系統核心發出一聲慘叫：哇 ....\n");
     efun::shout("系統核心告訴你﹕要當機了﹐自己保重吧﹗\n");
     log_file("CRASHES", sprintf("[%s] %s\n", ctime(time()), error) );
@@ -85,66 +76,48 @@ crash(string error, object command_giver, object current_object)
         log_file("CRASHES", sprintf("  this_object: %O\n", current_object));
 }
 
-static string *
-epilog (int load_empty)
-{
+static string* epilog (int load_empty) {
     return filter (explode (read_file (CONFIG_DIR + "preload"), "\n"), (: strlen($1) && ($1[0] != '#') :));
 }
 
-static void
-preload (string file)
-{
+static void preload (string file) {
     object ob;
 
     ob = load_object (file);
     debug_message (sprintf ("preloaded %O", ob));
 }
 
-private int
-save_ed_setup(object who, int code)
-{
+private int save_ed_setup(object who, int code) {
     return write_file(user_path(getuid(who)) + ".edrc",
         save_variable(code), 1);
 }
 
-private int
-retrieve_ed_setup(object who)
-{
+private int retrieve_ed_setup(object who) {
     string val;
   
     val = read_file(user_path(getuid(who)) + ".edrc");
     return stringp(val) ? (int)restore_variable(val) : 0; 
 }
 
-private void
-destruct_env_of(object ob)
-{
+private void destruct_env_of(object ob) {
     if (!interactive(ob)) return;
     tell_object(ob, "你所存在的空間被毀滅了。\n");
     ob->move(VOID_OB);
 }
 
-static string
-make_path_absolute(string file)
-{
+static string make_path_absolute(string file) {
     return resolve_path((string)this_player()->query("cwd"), file);
 }
 
-static string
-get_save_file_name(string fname)
-{
+static string get_save_file_name(string fname) {
     return fname + "." + time();
 }
 
-static string
-get_root_uid()
-{
+static string get_root_uid() {
    return ROOT_UID;
 }
 
-static string
-get_bb_uid()
-{
+static string get_bb_uid() {
    return BACKBONE_UID;
 }
 
@@ -155,9 +128,7 @@ get_bb_uid()
 // temporarily to restrict its access when it acts as an delegate of operations from users.
 //
 // If creator_file() returns -1, the LPMud driver will destruct the object.
-static mixed
-creator_file (string file)
-{
+static mixed creator_file (string file) {
     string *dirs, euid;
 
     dirs = explode (file, "/") - ({""});
@@ -203,18 +174,14 @@ creator_file (string file)
     }
 }
 
-string
-object_name (object ob)
-{
+string object_name (object ob) {
     if (!objectp(ob))
         return 0;
 
     return "euid:" + geteuid(ob);
 }
 
-string
-standard_trace(mapping error)
-{
+string standard_trace(mapping error) {
     int i, s;
     string res = "";
 
@@ -265,9 +232,7 @@ error_handler( mapping error, int caught )
 }
 #endif
 
-static void
-log_error(string file, string message)
-{
+static void log_error (string file, string message) {
     string name, home;
    
     if( find_object(SIMUL_EFUN_OB) )
@@ -281,9 +246,7 @@ log_error(string file, string message)
     efun::write_file(home + "log", sprintf("[%s]%s", ctime(time())[4..18], message));
 }
 
-static int
-valid_override( string file, string name )
-{
+static int valid_override (string file, string name) {
     if (file == SIMUL_EFUN_OB || file==MASTER_OB) return 1;
 
     if( file[0..15] == "/adm/simul_efun/" ) return 1;
@@ -298,35 +261,28 @@ valid_override( string file, string name )
     return 1;
 }
 
-static int
-valid_seteuid( object ob, string str )
-{
+static int valid_seteuid (object ob, string str) {
     return (int)SECURITY_D->valid_seteuid( ob, str );
 }
 
-static int
-valid_socket( object eff_user, string fun, mixed *info )
-{
+static int valid_socket (object eff_user, string fun, mixed *info) {
     return 1;
 }
 
-static int
-valid_object( object ob )
-{
+static int valid_object (object ob) {
     return (!clonep(ob)) || inherits(F_MOVE, ob);
 }
 
 // valid_save_binary: controls whether an object can save a binary
 //   image of itself to the specified "save binaries directory"
 //   (see config file)
-static int
-valid_save_binary( string filename ) { return 1; }
+static int valid_save_binary (string filename) {
+    return 1;
+}
 
 // valid_write: write privileges; called with the file name, the object
 //   initiating the call, and the function by which they called it. 
-static int
-valid_write (string file, mixed user, string func)
-{
+static int valid_write (string file, mixed user, string func) {
     object ob;
     int ret = 0;
 
@@ -346,9 +302,7 @@ valid_write (string file, mixed user, string func)
     return ret;
 }
 
-static int
-valid_read( string file, mixed user, string func )
-{
+static int valid_read( string file, mixed user, string func ) {
     object ob;
     int ret = 1;
 
@@ -368,9 +322,7 @@ valid_read( string file, mixed user, string func )
     return ret;
 }
 
-static int
-valid_bind(object binder, object old_owner, object new_owner)
-{
+static int valid_bind (object binder, object old_owner, object new_owner) {
     // Root can bind anything to anything
     if( geteuid(binder)==ROOT_UID ) return 1;
 
@@ -386,4 +338,3 @@ valid_bind(object binder, object old_owner, object new_owner)
         binder, old_owner, new_owner) );
     return 0;
 }
-/*  master.c */

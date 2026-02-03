@@ -178,8 +178,8 @@ close_door(string dir, int from_other_side)
     mapping exits;
     object ob;
 
-    if( !mapp(doors) || undefinedp(doors[dir]
-    ||    (!from_other_side && doors[dir]["status"]&DOOR_HIDDEN)) )
+    if( !mapp(doors) || undefinedp(doors[dir])
+    ||    (!from_other_side && doors[dir]["status"]&DOOR_HIDDEN))
 	return notify_fail("這個方向沒有門。\n");
 
     if( (doors[dir]["status"] & DOOR_CLOSED) )

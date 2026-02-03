@@ -63,7 +63,7 @@ int find_drug(object me,int num)
 	object ob;
 	ob=new(DRUG_OB +"d_"+num);
 	if(!ob){
-		tell_object(me, "這種草藥被巫師下了毒, 碰到人便枯\萎了, 請找巫師反應.\n");
+		tell_object(me, "這種草藥被巫師下了毒, 碰到人便枯萎了, 請找巫師反應.\n");
 		return 0;
 	}
 	message_vision(ob->query("found_msg")? ob->query("found_msg") : "$N在陰濕角落中, 發現了一" + ob->query("base_unit") + ob->name() + "。\n",me);

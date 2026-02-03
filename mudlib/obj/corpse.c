@@ -63,7 +63,7 @@ void decay()
             break;
         case 2:
             say( query("name") + "被風吹乾了﹐變成一具骸骨。\n" );
-            set_name("枯\乾的骸骨", ({ "skeleton" }) );
+            set_name("枯乾的骸骨", ({ "skeleton" }) );
             set("long", "這副骸骨已經躺在這裡很久了。\n");
             call_out("decay", decay_interval);
             break;

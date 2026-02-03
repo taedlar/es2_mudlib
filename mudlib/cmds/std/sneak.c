@@ -102,7 +102,7 @@ int main(object me, string arg)
     if( !undefinedp(default_dirs[arg]) )    dir = default_dirs[arg];
     else                                    dir = arg;
 
-    write("你開始躡\手躡\足地往" + dir + "移動。\n");
+    write("你開始躡手躡足地往" + dir + "移動。\n");
 
     me->set_temp("sneak_countdown", 3);
     me->start_busy( (: do_sneak, me, obj, dir, arg, type :), (: halt_sneak :) );

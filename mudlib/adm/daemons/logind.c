@@ -902,7 +902,7 @@ list_user_race(object link)
     }
 
     msg = "您現在共有 " + karma + " 點業力，可以選擇以下的種族：\n" + msg;
-    msg += "您的選擇(用 '? <種族名>' 可查閱\說明)﹕";
+    msg += "您的選擇(用 '? <種族名>' 可查閱說明)﹕";
 
     write(msg);
     return 1;

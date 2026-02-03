@@ -46,7 +46,7 @@ query_save_file()
     string id;
 
     if( !stringp(id = query("board_id")) ) return 0;
-    return DATA_DIR + "board/" + id + __SAVE_EXTENSION__;
+    return DATA_DIR + "board/" + id + ".o";
 }
 
 string
