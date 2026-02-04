@@ -56,7 +56,7 @@ int main(object me, string arg) {
                 (tmp = ob->query("gender")) ? to_chinese(tmp) : "",
                 to_chinese(ob->query_race()),
                 ob->query("humanoid") ? ob->rank(0, 1) : "",
-                CHINESE_D->chinese_date(((int)ob->query("birthday") - 14*365*24*60) * 60),
+                CHINESE_D->chinese_date(((int)ob->query("birthday") - 14*365*24*60) * 60 % 1892160000),
                 ob->link() ? ob->link()->query("karma") : 0
         ),
         68,

@@ -1,0 +1,6 @@
+{
+    "editor.fontFamily": "'Sarasa Mono SC', 'Noto Sans Mono CJK SC', 'Source Han Sans', 'Microsoft YaHei Mono', monospace",
+    "editor.fontSize": 14,
+    "editor.fontLigatures": false,
+    "editor.renderWhitespace": "all"
+}

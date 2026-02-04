@@ -14,7 +14,7 @@
 
 #include <localtime.h>
 
-#define TIME_TICK (time()*60)
+#define TIME_TICK (time()*60%1892160000) // cycle between 1970-01-01 00:00:00 and 2030-01-01 00:00:00
 
 static int current_day_phase;
 mapping *day_phase;
