@@ -1,16 +1,4 @@
-/*  sword.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 varargs void init_damage(int, int, int, int, mixed...);
 
@@ -30,3 +18,4 @@ setup_sword(int x, int y, int z, int r)
     init_damage(x, y/2, z, r, "secondhand sword");
     init_damage(x, y*3/2, z*4/3, r, "twohanded sword");
 }
+

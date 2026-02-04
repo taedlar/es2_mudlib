@@ -1,16 +1,4 @@
-/*  score.c - display informations of a user
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <ansi.h>
 #include <combat.h>
@@ -40,10 +28,7 @@ int main(object me, string arg) {
         if (!ob) ob = find_player(arg);
         if (!ob) ob = find_living(arg);
         if (!ob) return notify_fail("你要察看誰的狀態﹖\n");
-/*  將check wiz 移至前面 -dragoon
-        if (!wizardp(me) && !ob->accept_info(me, "score") )
-            return notify_fail("只有巫師能察看別人的狀態。\n");
-*/
+// vim: set ts=4 sw=4 syntax=lpc
     }
 
     line = sprintf (HIW "【 %s 】" NOR "%s\n\n", ob->rank(), ob->short(1));
@@ -143,18 +128,18 @@ string display_attr(int gift, int value) {
 
 string status_color(int current, int max) {
     if( (max<=0) || (current > max) )
-        return HIC;		/* > 100%	青色 */
+        return HIC;		// vim: set ts=4 sw=4 syntax=lpc
 
     switch(current*10/max) {
-    case 10: case 9:		/* 100% - 90%	綠色 */
+    case 10: case 9:		// vim: set ts=4 sw=4 syntax=lpc
         return HIG;
-    case 8: case 7: case 6:	/* 90% - 60%	黃色 */
+    case 8: case 7: case 6:	// vim: set ts=4 sw=4 syntax=lpc
         return HIY;
-    case 5: case 4: case 3:	/* 60% - 30%	暗黃色 */
+    case 5: case 4: case 3:	// vim: set ts=4 sw=4 syntax=lpc
         return YEL;
-    case 2: case 1:		/* 30% - 10%	紅色 */
+    case 2: case 1:		// vim: set ts=4 sw=4 syntax=lpc
         return HIR;
-    default:			/* < 10%	暗紅色 */
+    default:			// vim: set ts=4 sw=4 syntax=lpc
         return RED;
     }
 }
@@ -168,7 +153,7 @@ string tribar_graph(int val, int eff, int max) {
     n_filled = val * 50 / max;
     n_empty = eff * 50 / max - n_filled;
 
-    /* 如果狀態值與目前值都非常低(但不是 0)，顯示一個空格 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( ! n_filled && ! n_empty ) n_empty = 1;
 
     if (n_filled)
@@ -192,3 +177,4 @@ HELP
     );
     return 1;
 }
+

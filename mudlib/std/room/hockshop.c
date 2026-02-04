@@ -1,16 +1,4 @@
-/*  hockshop.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 inherit ROOM;
 
@@ -253,14 +241,7 @@ int do_list(string arg)
     if( !sizeof(inv) ) return notify_fail("當鋪裡現在沒有可供出售的貨物。\n");
     if( arg ) inv = filter( inv, (: $1->id($(arg)) :) );
 
-/*
-    msg = "當鋪裡現在有以下貨物出售﹕\n  ";
-    msg += implode( map(inv, (: sprintf("%-50s%s", $1->short(),
-        value_string((int)$1->query("value") * 2)) :)), "\n  ");
-    msg += "\n";
-    this_player()->start_more(msg);
-    return 1;
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
     msg = "當鋪裡現在有以下貨物出售﹕\n\n";
     for ( i = 0; i < sizeof(inv); i++)
@@ -319,3 +300,4 @@ int do_store(string arg)
     write("Ok.\n");
     return 1;
 }
+

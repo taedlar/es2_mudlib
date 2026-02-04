@@ -1,16 +1,4 @@
-/*  http.c - user object for HTTP request
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <http.h>
 
@@ -43,15 +31,15 @@ process_input(string str)
 {
     string hdr, msg;
 
-    /* 取得 client 端的 request */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( ! request ) {
-        if( strlen(str) < 1 ) return 1;	/* as specified in RFC#2608 */
+        if( strlen(str) < 1 ) return 1;	// vim: set ts=4 sw=4 syntax=lpc
         if( str[<1]=='\r' ) str = str[0..<2];
         request = str;
         return 1;
     }
 
-    /* 取得 headers */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( strlen(str) > 0 && str[0] != '\r' ) {
         if( arrayp(header) ) header += ({ str });
         else header = ({ str });
@@ -81,3 +69,4 @@ remove()
 {
     remove_call_out();
 }
+

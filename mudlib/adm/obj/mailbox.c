@@ -1,25 +1,11 @@
-/*  mailbox.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <ansi.h>
 
 inherit ITEM;
 inherit F_SAVE;
 
-/* 這個 mapping 儲存載入的郵件內容，宣告為 private 以防止被其他物件以
- * 繼承方式存取。
- */
+// vim: set ts=4 sw=4 syntax=lpc
 private mapping *mails;
 
 void get_mail_text(mapping mail, string str);
@@ -44,7 +30,7 @@ LONG
     set("no_insert", 1);
     setup();
 
-    seteuid(0);	/* 清除 euid，讓 SMTP daemon 指定 uid 給這個物件 */
+    seteuid(0);	// vim: set ts=4 sw=4 syntax=lpc
 }
 
 varargs string
@@ -67,17 +53,15 @@ init()
     object ob;
 
     if( environment()!=this_player() ) {
-	/* 安全措施：若 mailbox 被移動到 this_player() 以外的地方，立刻
-	 * 銷毀物件中載入的郵件內容，並儘快銷毀這個物件。
-	 */
+	// vim: set ts=4 sw=4 syntax=lpc
 	mails = 0;
 	call_out("retire", 0);
 	return;
     }
 
-    seteuid(getuid());		/* 設定 euid，用來載入 SMTP daemon */
+    seteuid(getuid());		// vim: set ts=4 sw=4 syntax=lpc
     ob = load_object(SMTP_D);
-    seteuid(0);			/* 清除 euid，讓 SMTP 指定 uid 給這個物件 */
+    seteuid(0);			// vim: set ts=4 sw=4 syntax=lpc
     ob->restore_mailbox(this_object());
 
     if( objectp(ob = this_player()->query_temp("mbox_ob")) )
@@ -101,7 +85,7 @@ query_save_file()
 
 void receive_mail(mapping mail)
 {
-    /* 只接受來自具有 ROOT 權限的物件所送的信 */
+    // vim: set ts=4 sw=4 syntax=lpc
 if (!previous_object()) error("no previous object\n");
     if( geteuid(previous_object()) != ROOT_UID )
 	error("Permission denied.\n");
@@ -272,4 +256,5 @@ owner_is_killed()
 {
     retire();
 }
+
 

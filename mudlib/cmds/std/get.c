@@ -1,16 +1,4 @@
-/*  get.c - get command
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #pragma save_binary
 
@@ -111,14 +99,7 @@ int do_get(object me, object obj)
 
     if( obj->is_character() ) 
 	return notify_fail("不行!\n");
-/*
-    {
-        if( living(obj) ) return 0;
-        // Don't allow player to move unconcious NPC
-        if( !userp(obj) && !obj->is_corpse() )
-            return notify_fail("你只能背負其他玩家的身體。\n");
-    }
-*/
+// vim: set ts=4 sw=4 syntax=lpc
     notify_fail("這樣東西拿不出來。\n");
     if( from_ob->hold_object(obj) ) return 0;
 
@@ -167,3 +148,4 @@ HELP
     return 1;
 }
  
+

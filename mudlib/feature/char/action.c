@@ -1,16 +1,4 @@
-/*  action.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <dbase.h>
 #include <function.h>
@@ -80,10 +68,7 @@ interrupt(object who, string how)
 	}
     }
     else if( functionp(intr) ) {
-	/*  函數型態的 interrupt：
-	 *  evaluate 之後，若傳回值 != 0 或者 how 是強制 interrupt，則
-	 *  中斷動作。
-	 */
+	// vim: set ts=4 sw=4 syntax=lpc
 	if( evaluate(intr, this_object(), who, how)
 	||  how[0]=='*' ) {
 	    busy = 0;
@@ -91,3 +76,4 @@ interrupt(object who, string how)
 	}
     }
 }
+

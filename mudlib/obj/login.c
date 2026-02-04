@@ -1,16 +1,4 @@
-/*  login.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <login.h>
 #include <origin.h>
@@ -50,7 +38,7 @@ logon ()
 	return;
     }
 
-    /* 無法載入 LOGIN_D ... */
+    // vim: set ts=4 sw=4 syntax=lpc
     receive("系統登入功能整修中，請稍後再嘗試連線。\n");
     destruct (this_object());
 }
@@ -91,10 +79,7 @@ query_save_file()
     return login_data(id);
 }
 
-/*  receive_message()
- *
- *  物件接收 message 所發出的訊息之介面。
- */
+// vim: set ts=4 sw=4 syntax=lpc
 private void
 receive_message(string type, string str)
 {
@@ -171,7 +156,7 @@ query(string prop, int raw)
 	break;
     }
 
-    /* 保護指標語意(pointer semantic)型別的資料 */    
+    // vim: set ts=4 sw=4 syntax=lpc    
     if( mapp(data) || arrayp(data) ) USER_PROTECT();
 
     return data;
@@ -183,11 +168,10 @@ restore()
     seteuid(getuid());
     if( ! ::restore() ) return 0;
 
-    /* patch for migrating critical user information from dbase mapping
-     * to variable.
-     */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( ! password ) password = ::query("password");
     if( ! email ) email = ::query("email");
 
     return 1;
 }
+

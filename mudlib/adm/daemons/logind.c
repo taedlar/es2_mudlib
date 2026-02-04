@@ -1,16 +1,4 @@
-/*  logind.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #pragma save_binary
 
@@ -60,7 +48,7 @@ mapping spammer_ip = ([]);
 string *penalty_attr = ({
     "str", "int", "dex", "con", "spi", "cps", "wis", "cor"
 });
-#endif	/* ENABLE_ANTISPAM */
+#endif	// vim: set ts=4 sw=4 syntax=lpc
 
 private void get_id(string arg, object ob);
 private void confirm_id(string yn, object ob);
@@ -90,7 +78,7 @@ reset()
     object room, ob;
 
 #if 0
-    /* 清空在 void 裡的斷線玩家。 */
+    // vim: set ts=4 sw=4 syntax=lpc
     room = find_object(VOID_OB);
     seteuid(getuid());
     if( objectp(room) )
@@ -102,7 +90,7 @@ reset()
         }
 #endif
 
-    /* 記錄線上使用者人數 */
+    // vim: set ts=4 sw=4 syntax=lpc
     log_file("USRGRAPH", sprintf("[%s] %d users\n",
         ctime(time()), sizeof(users())));
 
@@ -215,7 +203,7 @@ get_id (string arg, object ob)
                 return;
             }
     }
-#endif	/* ENABLE_BAN_SITE */
+#endif	// vim: set ts=4 sw=4 syntax=lpc
 
 #ifdef WIZ_LOCK_LEVEL
     if ((int)wiz_level(arg) < (int)wiz_lock_level) {
@@ -278,7 +266,7 @@ void authorize(object ob)
 {
     object user = find_body(ob->query("id"));
     if (user) {
-        /* 斷線的使用者重新連線 */
+        // vim: set ts=4 sw=4 syntax=lpc
         if( !user->link() ) {
             reconnect(ob, user);
             return;
@@ -290,7 +278,7 @@ void authorize(object ob)
 
     user = make_body(ob);
     if( ! user ) {
-        /* 如果沒有辦法製造使用者物件，直接切斷連線 */
+        // vim: set ts=4 sw=4 syntax=lpc
         destruct(ob);
         return;
     }
@@ -351,7 +339,7 @@ confirm_reincarnate(string yn, object ob)
     }
 
     if( !list_user_race(ob) ) {
-        /*  業力不足，無法投胎轉世的狀況。 */
+        // vim: set ts=4 sw=4 syntax=lpc
 #ifdef	SAVE_USER
         rm(ob->query_save_file());
 #endif
@@ -495,7 +483,7 @@ get_email(string email, object ob)
         write("抱歉, 線上已經有一個 Guest 了.\n");
         destruct(ob);
         return;            }
-#endif /* ONE_GUEST */
+#endif // vim: set ts=4 sw=4 syntax=lpc
 
     // Complete non-body-specific initialization of new user here.
     ob->set("karma", 20);
@@ -613,7 +601,7 @@ make_body(object link_ob)
         return 0;
     }
 
-    /* 設定使用者的權限 */
+    // vim: set ts=4 sw=4 syntax=lpc
     seteuid(getuid(link_ob));
     export_uid(user);
     seteuid(getuid());
@@ -723,7 +711,7 @@ enter_world(object ob, object user, int silent)
     cat(MOTD);
     IDENT_D->query_userid((string)user->query("id"));
 
-    /* 以安全的方法載入使用者登入的房間 */
+    // vim: set ts=4 sw=4 syntax=lpc
     startroom = user->query("startroom");
     if( !startroom ) startroom = START_ROOM;
     err = catch(room = load_object(startroom));
@@ -739,7 +727,7 @@ NOTICE
         return;
     }
 
-    /* 檢查使用者是否有未讀的信件 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( ob->query("new_mail") ) {
         write( HIW "\n有您的信！請到驛站來一趟 ...\n\n" NOR);
         ob->delete("new_mail");
@@ -751,7 +739,7 @@ NOTICE
         user->delete("pker");
     }
 
-    /* 宣告使用者登入的消息 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( !wizardp(user) && !user->query("invis") ) {
         message("vision", user->query("name") + "連線進入這個世界。\n",
                 room, user);
@@ -767,7 +755,7 @@ NOTICE
 varargs void
 reconnect(object ob, object user, int silent)
 {
-    /* 將使用者從連線物件 exec 到使用者物件上 */
+    // vim: set ts=4 sw=4 syntax=lpc
     user->set_link(ob);
     ob->set_body(user);
     exec(user, ob);
@@ -781,7 +769,7 @@ reconnect(object ob, object user, int silent)
     if( time() - (int)user->query("last_pk_time") < 60 * 60 )
         user->set("last_pk_time", time());
 
-    /* 宣告使用者重新連線的消息 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( !wizardp(user) && !user->query("invis") ) {
         message("vision", user->query("name") + "重新連線回到這個世界。\n",
                 environment(user), user);
@@ -908,11 +896,7 @@ list_user_race(object link)
     return 1;
 }
 
-/*  reincarnate()
- *
- *  這個函數是用來讓一個 player 投胎轉世用的。原則上只有 CHAR_D 才需要
- *  叫用這個功能，叫用這個函數的物件必須具有 ROOT 權限。
- */
+// vim: set ts=4 sw=4 syntax=lpc
 
 void
 reincarnate(object ob)
@@ -925,7 +909,7 @@ reincarnate(object ob)
 
     seteuid(getuid());
 
-    /* 如果進行轉世的人物斷線了，等下次連線的時候再轉世 */
+    // vim: set ts=4 sw=4 syntax=lpc
     link = ob->link();
     if( ! link ) {
 #ifdef	SAVE_USER
@@ -935,7 +919,7 @@ reincarnate(object ob)
         return;
     }
 
-    /* 每次獲得的業力為 MIN(上線天數*2, 轉世時人物的等級) */
+    // vim: set ts=4 sw=4 syntax=lpc
     max_karma_gain = link->query("time_aged") / 43200;
     karma_gain = ob->query_level();
     if( karma_gain > max_karma_gain ) karma_gain = max_karma_gain;
@@ -944,14 +928,14 @@ reincarnate(object ob)
     link->save();
 #endif
 
-    /* 將使用者 exec 到連線物件上，刪除人物資料檔 */
+    // vim: set ts=4 sw=4 syntax=lpc
     exec(link, ob);
 #ifdef	SAVE_USER
     rm(ob->query_save_file());
 #endif
     destruct(ob);
 
-    /* 如果所剩業力已經不夠轉世成任何種族，宣告 GAME OVER */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( !list_user_race(link) ) {
         write("請您重新創造一個人物，重新再來吧。\n");
 #ifdef	SAVE_USER
@@ -981,3 +965,4 @@ increment_visitor_count()
     }
     write_file (VISITOR_COUNTER_FILE, s, 1);
 }
+

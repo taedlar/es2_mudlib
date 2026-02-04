@@ -1,16 +1,4 @@
-/*  securityd.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #pragma save_binary
 
@@ -55,7 +43,7 @@ private string *wiz_levels =
 // from the current directory to root. And exclude is checked prior than
 // trusted.
 
-/* 寫入權限 */
+// vim: set ts=4 sw=4 syntax=lpc
 
 private mapping trusted_write =
 ([
@@ -64,9 +52,7 @@ private mapping trusted_write =
     "/data/daemon":	({ MUDLIB_UID }),
     "/open":		({ "(wizard)", "(apprentice)" }),
 #if 0
-    /*  讀寫權管制：由於 /d 目錄下的物件具有修改使用者狀態的權力，因此應由
-     *              具經驗及 QC 權力的巫師存取，不應開放一般巫師使用。
-     */
+    // vim: set ts=4 sw=4 syntax=lpc
     "/d/chin_palace":	({ "cuteweca" }),
     "/d/cloudy":	({ "knomo" }),
     "/d/zoo":		({ "cuteweca" }),
@@ -99,7 +85,7 @@ private mapping exclude_write =
     "/cmds":		({ "(arch)" }),
 ]);
 
-/*  讀取權限 */
+// vim: set ts=4 sw=4 syntax=lpc
 
 private mapping trusted_read =
 ([
@@ -220,32 +206,32 @@ valid_write(string file, object user, string func)
 		geteuid(user));
 #endif
 
-    /* 取得使用者目前的權限 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( !(euid = geteuid(user)) ) return 0;
     status = get_status(user);
 
-    /* 允許擁有 ROOT_UID 的物件寫入任何檔案 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( euid==ROOT_UID ) return 1;
 
     path = explode(file, "/") - ({ "" });
     if( file[0] != '/' ) file = "/" + file;
 
-    /* 允許巫師寫入自己的目錄 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( sizeof(path)>=3 && euid[0]>='a' && euid[0]<='z'
     && path[0]=="u" && path[1]==euid[0..0] && path[2]==euid ) return 1;
 
-    /* 允許 SIMUL_EFUN_OB 寫入 /log 檔 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( file==SIMUL_EFUN_OB && path[0]=="log" ) return 1;
 
 #ifdef	SAVE_USER
-    /* 允許使用者存檔 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( func=="save_object"
     &&  (file==user_data(euid) || file==login_data(euid)
 	|| file==mail_data(euid)) )
 	return 1;
 #endif
 
-    /* 檢查是否有「阻卻寫入」的情形 */
+    // vim: set ts=4 sw=4 syntax=lpc
     for( i=sizeof(path)-1; i>=0; i--)
     {
 	dir = "/" + implode(path[0..i], "/");
@@ -254,7 +240,7 @@ valid_write(string file, object user, string func)
 	    return 0;
     }
 
-    /* 檢查是否有「允許寫入」的設定 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( (member_array(euid, trusted_write["/"])>=0)
     ||	member_array(status, trusted_write["/"])>=0 )
 	return 1;
@@ -282,11 +268,11 @@ valid_read(string file, mixed user, string func)
 		geteuid(user));
 #endif
 
-    /* 取得使用者目前的權限 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( !(euid = geteuid(user)) ) return 0;
     status = get_status(user);
 
-    /* 允許 ROOT_UID 讀取任何檔案 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( euid==ROOT_UID ) return 1;
 
     // allow operations on user data of the same euid
@@ -296,11 +282,11 @@ valid_read(string file, mixed user, string func)
     path = explode(file, "/") - ({ "" });
     if( file[0] != '/' ) file = "/" + file;
 
-    /* 允許巫師讀取自己的目錄 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( sizeof(path)>=3 && euid[0]>='a' && euid[0]<='z'
     && path[0]=="u" && path[1]==euid[0..0] && path[2]==euid ) return 1;
 
-    /* 檢查是否有「阻卻讀取」的情形 */
+    // vim: set ts=4 sw=4 syntax=lpc
     for(i=sizeof(path)-1; i>=0; i--) {
 	dir = "/" + implode(path[0..i], "/");
 	if( undefinedp(perm = exclude_read[dir]) ) continue;
@@ -308,7 +294,7 @@ valid_read(string file, mixed user, string func)
 	    return 0;
     }
 
-    /* 檢查是否有「允許讀取」的情形 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( member_array(euid, trusted_read["/"])!=-1 ) return 1;
     if( member_array(status, trusted_read["/"])!=-1 ) return 1;
     for(i=sizeof(path)-1; i>=0; i--) {
@@ -337,3 +323,4 @@ valid_seteuid( object ob, string euid )
 
     return 0;
 }
+

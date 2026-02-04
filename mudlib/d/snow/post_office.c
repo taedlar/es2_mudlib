@@ -1,16 +1,4 @@
-/*  post_office.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 inherit ROOM;
 
@@ -26,7 +14,7 @@ void create()
 如果你想要收發信，可以用 request 向驛站官員領取收發信的信札。
 LONG
     );
-    set("exits", ([ /* sizeof() == 1 */
+    set("exits", ([ // vim: set ts=4 sw=4 syntax=lpc
         "east" : __DIR__"nstreet2",
     ]));
     set("post_office", 1);    // mailbox checks this flag.
@@ -69,3 +57,4 @@ valid_leave(object ob)
 
     return 1;
 }
+

@@ -1,16 +1,4 @@
-/*  berserk.c - berserk command
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <ansi.h>
 
@@ -32,7 +20,7 @@ main(object me, string arg)
     if( me->is_busy() )
 	return notify_fail("請先用 halt 停止你正在做的事。\n");
 
-    /* NPC 不檢查這些限制 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( userp(me) )
     {
 	if( me->query_stat("fatigue") >= me->query_stat_maximum("fatigue") )
@@ -69,7 +57,7 @@ do_berserk(object me)
     object ob, *enemy;
     int skill, power, cost, max_attack, max_hit, penalty, exp, kee_cost;
 
-    /* berserk 的花費看氣的強度而定，但消耗的是精力 */
+    // vim: set ts=4 sw=4 syntax=lpc
     // 加上膂力和膽識的效用, 並整體上調降berserk的破壞力, 除了因為
     // berserk + powerblow 目前過於暴力外, 亦先預留未開放技能有再
     // 增強軍人攻擊力的空間, 如: leadership  -dragoon
@@ -90,22 +78,22 @@ do_berserk(object me)
     message_vision(HIR "\n$N一聲怒吼，大喊：「殺～～～～～！」\n\n" NOR,
         me);
 
-    /* 強度跟所消耗的氣有關，攻擊次數和技能有關 */
+    // vim: set ts=4 sw=4 syntax=lpc
     skill = me->query_skill("berserk");
-    power = cost * 3500;		/* 最大(粗估) 700Kg */
-    max_attack = skill / 20;		/* 攻擊次數 4 - 9 */
+    power = cost * 3500;		// vim: set ts=4 sw=4 syntax=lpc
+    max_attack = skill / 20;		// vim: set ts=4 sw=4 syntax=lpc
     if( max_attack < 4 ) max_attack = 4;
-    max_hit = skill / 45;		/* 最大 = 4 */
+    max_hit = skill / 45;		// vim: set ts=4 sw=4 syntax=lpc
     if( max_hit < 1 ) max_hit = 1;
 
     me->add_temp("apply/attack", skill/4);
     me->add_temp("apply/strength", power);
 
-    /* 先對付所有敵人，如果還有餘力，再多打幾輪 */
+    // vim: set ts=4 sw=4 syntax=lpc
     enemy = me->query_enemy();
     while( max_hit-- && max_attack ) {
 	foreach(ob in enemy) {
-	    if( ! ob ) continue;	/* 如果敵人已經掛了，跳過他 :P */
+	    if( ! ob ) continue;	// vim: set ts=4 sw=4 syntax=lpc
 	    // 若是敵人不在同一個房間, 跳過
 	    if( environment(ob) != environment(me) ) continue;
 	    me->attack(ob);
@@ -123,7 +111,7 @@ do_berserk(object me)
     me->add_temp("apply/attack", - skill/4);
     me->add_temp("apply/strength", - power);
 
-    /* 消耗體力 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( userp(me) )
     {
 	me->damage_stat("gin", cost/6);
@@ -154,3 +142,4 @@ TEXT
     );
     return 1;
 }
+

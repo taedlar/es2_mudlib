@@ -1,16 +1,4 @@
-/*  go.c - character move command
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #pragma optimize
 #pragma save_binary
@@ -43,7 +31,7 @@ mapping default_dirs = ([
 
 void create()
 {
-    /* 因為 go 指令可能會載入其他物件，所以需要有 euid */
+    // vim: set ts=4 sw=4 syntax=lpc
     seteuid(getuid());
 }
 
@@ -157,3 +145,4 @@ HELP
     );
     return 1;
 }
+

@@ -1,18 +1,4 @@
-/*  i2d.c
-
-    Intermud-2 service daemon.
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <mudlib.h>
 #include <intermud.h>
@@ -26,7 +12,7 @@
 inherit F_DBASE;
 #ifdef	SAVE_MUDLIST
 inherit F_SAVE;
-#endif	/* SAVE_MUDLIST */
+#endif	// vim: set ts=4 sw=4 syntax=lpc
 
 static int udp_port;
 static int udp_socket;
@@ -60,7 +46,7 @@ create()
 
 #ifdef	SAVE_MUDLIST
     restore();
-#endif	/* SAVE_MUDLIST */
+#endif	// vim: set ts=4 sw=4 syntax=lpc
 
     udp_port = INTERMUD_UDP_PORT;
     if( (udp_socket = socket_create(DATAGRAM, "read_callback")) < 0 )
@@ -78,7 +64,7 @@ query_save_file()
 {
     return DATA_DIR + "intermud-2";
 }
-#endif	/* SAVE_MUDLIST */
+#endif	// vim: set ts=4 sw=4 syntax=lpc
 
 private void
 update()
@@ -116,7 +102,7 @@ remove()
 
 #ifdef	SAVE_MUDLIST
     save();
-#endif	/* SAVE_MUDLIST */
+#endif	// vim: set ts=4 sw=4 syntax=lpc
 
 }
 
@@ -256,3 +242,4 @@ send_event(string dest, int port, string event, mapping args)
     socket_write(sock, "@@@" + msg + "@@@", dest + " " + port);
     socket_close(sock);
 }
+

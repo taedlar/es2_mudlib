@@ -1,16 +1,4 @@
-/*  cmd_d.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 // Created by Annihilator (11/07/94)
 
@@ -67,19 +55,20 @@ find_command(string verb, string *path)
 
     if( !pointerp(path) ) return 0;
 
-    /* 如果 cache 中有這個指令，立即傳回 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( pointerp(p = cache[verb+".c"])
     &&	sizeof(p & path) )
         return p[0] + verb;
 
-    /* 檢查使用者是否有尚未進入 cache 的搜尋路徑 */
+    // vim: set ts=4 sw=4 syntax=lpc
     p = path - cached_path;
     if( sizeof(p) ) {
-	foreach(dir in p) rehash(dir);		/* 加入 cache */
-	if( pointerp(p = cache[verb+".c"])	/* 再搜尋一次 */
+	foreach(dir in p) rehash(dir);		// vim: set ts=4 sw=4 syntax=lpc
+	if( pointerp(p = cache[verb+".c"])	// vim: set ts=4 sw=4 syntax=lpc
 	&&  sizeof(p & path) )
 	    return p[0] + verb;
     }
 
     return 0;
 }
+

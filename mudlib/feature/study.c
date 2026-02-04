@@ -1,16 +1,4 @@
-/*  study.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <dbase.h>
 #include <name.h>
@@ -46,7 +34,7 @@ int study_ob(object me)
 	    }
     }
 
-    /* 只有符合條件的人才知道記載的內容有沒有用 .... */
+    // vim: set ts=4 sw=4 syntax=lpc
     content = query("content");
     if( !content )
 	return notify_fail("這上面沒有記載什麼有用的內容。\n");
@@ -77,14 +65,14 @@ int study_content(object me)
     if( ! mapp(content = query("content"))
     ||	! sizeof(content) ) return 0;
 
-    /* 使用讀書識字的技能 */
+    // vim: set ts=4 sw=4 syntax=lpc
     skill = me->query_skill("literate");
 
-    /* 耗精神 1 - 10 點 */
+    // vim: set ts=4 sw=4 syntax=lpc
     cost = 1 + (9 - me->query_attr("wis")/3);
     if( cost < 1 ) cost = 1;
 
-    /* 若需要古文知識，重新計算技能及損耗 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( (archaism = query("required/skill/archaic attainment")) ) {
 	skill = skill/10 + me->query_skill("archaic attainment");
 	cost *= 2;
@@ -131,3 +119,4 @@ int halt_study(object me, object from, string how)
 		write("你停止研讀" + name() + "上面記載的內容。\n");
 		return 1;
 }
+

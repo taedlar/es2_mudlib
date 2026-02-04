@@ -1,16 +1,4 @@
-/*  backstab.c - the backstab command
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <ansi.h>
 
@@ -111,17 +99,17 @@ int do_backstab(object victim, object me)
 
     if( !me ) return 0;
 
-    /* 檢查要偷襲的對象是否還在 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( !victim || environment(me) != environment(victim) ) {
         tell_object(me, "\n...  真可惜，那個傢伙已經不在這裡了。\n");
         return 0;
     }
 
-    /* 取得偷襲者的偷襲程序倒數計時值 */
+    // vim: set ts=4 sw=4 syntax=lpc
     countdown = me->query_temp("backstab_countdown");
     if( ! countdown ) countdown = 4;
 
-    /* 在戰鬥狀態？ */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( me->is_fighting() ) {
         tell_object(me, "\n可惡，還是先應付眼前的敵人吧。\n");
         return 0;
@@ -130,7 +118,7 @@ int do_backstab(object victim, object me)
     switch(countdown)
     {
     case INITIAL_COUNTDOWN:
-        /* 第一階段的測試 */
+        // vim: set ts=4 sw=4 syntax=lpc
         ability = 3 * (me->query_attr("dex") + me->query_skill("backstab"));
         defend = victim->query_ability("awarness")
                  + random(victim->query_stat("gin"));
@@ -141,7 +129,7 @@ int do_backstab(object victim, object me)
             return 0;
         }
 
-        /* 對方還沒有發現，進入下一階段 */
+        // vim: set ts=4 sw=4 syntax=lpc
         tell_object(me, CYN "\n看起來" + victim->name()
                 + "還沒有察覺你的舉動 ... 。\n\n" NOR);
         me->set_temp("backstab_countdown", ENGAGE_COUNTDOWN);
@@ -149,7 +137,7 @@ int do_backstab(object victim, object me)
         return 1;
 
     case ENGAGE_COUNTDOWN:
-        /* 第二階段的測試 */
+        // vim: set ts=4 sw=4 syntax=lpc
         ability = 2 * (me->query_attr("dex") + me->query_skill("backstab"));
         defend = victim->query_ability("awarness")
                  + random(victim->query_stat("gin"));
@@ -162,7 +150,7 @@ int do_backstab(object victim, object me)
             write(HIR "\n糟糕！被發現了！\n\n" NOR "你被"
                         + victim->name() + "攻了個措手不及！\n\n");
 
-            /* 被偷襲者的反擊 */
+            // vim: set ts=4 sw=4 syntax=lpc
 	    // 降低失敗的傷害和命中率, for thief's low hp -dragoon
             victim->kill_ob(me);
             victim->add_temp("apply/attack", 2 * victim->query_level() );
@@ -171,7 +159,7 @@ int do_backstab(object victim, object me)
             victim->add_temp("apply/attack", -2 * victim->query_level() );
             victim->add_temp("apply/damage", -victim->query_level() );
 
-            /* 偷襲者的代價 */
+            // vim: set ts=4 sw=4 syntax=lpc
             me->gain_score("mortal sin", 1);
             me->set_temp("backstab_countdown", DELAY_COUNTDOWN);
             return 1;
@@ -188,7 +176,7 @@ int do_backstab(object victim, object me)
         tell_object(victim, "不妙！你被" + me->name() + "從後面偷襲了！\n");
         me->kill_ob(victim);
 
-        /* 偷襲成功的威力 */
+        // vim: set ts=4 sw=4 syntax=lpc
         bonus = 10 + me->query_skill("backstab")
                 + 2 * me->query_skill("killerhood");
 
@@ -200,7 +188,7 @@ int do_backstab(object victim, object me)
             message_vision(HIY "$N偷襲$n得手，見$p一時反應不過來，臉露獰笑"
                         "，老實不客氣地往前進逼一步。\n" NOR,
                         me, victim);
-            /* 殺手本能，追加兩下 */
+            // vim: set ts=4 sw=4 syntax=lpc
             me->attack(victim);
             me->attack(victim);
         }
@@ -209,7 +197,7 @@ int do_backstab(object victim, object me)
 
         victim->kill_ob(me);
 
-        /* 給予經驗值 */
+        // vim: set ts=4 sw=4 syntax=lpc
         me->improve_skill("backstab", 1 + random(me->query_attr("int")*2) );
         if( me->query_learn("killerhood") )
             me->improve_skill("killerhood", 1 + random(me->query_attr("dex")) );
@@ -218,7 +206,7 @@ int do_backstab(object victim, object me)
         return 0;
 
     default:
-        /* 若在延遲中，執行倒數計數 */
+        // vim: set ts=4 sw=4 syntax=lpc
         if( countdown > 0 && countdown <= DELAY_COUNTDOWN ) {
             me->set_temp("backstab_countdown", --countdown);
             return countdown;
@@ -254,3 +242,4 @@ TEXT
     );
         return 1;
 }
+

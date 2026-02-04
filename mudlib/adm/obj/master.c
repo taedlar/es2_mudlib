@@ -1,16 +1,4 @@
-/*  master.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 // Created by Annihilator (04/16/2000)
 
@@ -59,7 +47,7 @@ private mixed compile_object(string file) {
     object daemon;
     mixed err;
 
-    /* 用安全的方式尋找並呼叫 VIRTUAL_D */
+    // vim: set ts=4 sw=4 syntax=lpc
     err = catch(daemon = load_object(VIRTUAL_D));
 
     if( err || !objectp(daemon) ) return 0;
@@ -185,7 +173,7 @@ string standard_trace(mapping error) {
     int i, s;
     string res = "";
 
-    /* keep track of number of errors per object...if you're into that */
+    // vim: set ts=4 sw=4 syntax=lpc
     res += sprintf("%O: %s: %s:%d: %s\n",
         error["object"],
         error["program"],
@@ -193,20 +181,7 @@ string standard_trace(mapping error) {
         error["line"],
         error["error"]);
 
-    /*
-    if (error["trace"]) {
-        res += "\t[\n";
-        foreach(mapping trace in error["trace"]) {
-            res += sprintf("%-25O %-20s %s:%i\n",
-                trace["object"],
-                trace["function"],
-                trace["program"]==trace["file"] ? trace["program"]
-                        : trace["file"] + "(" + trace["program"] + ")",
-                trace["line"] );
-        }
-        res += "\t]\n";
-    }
-    */
+    // vim: set ts=4 sw=4 syntax=lpc
 
     return res;
 }
@@ -338,3 +313,4 @@ static int valid_bind (object binder, object old_owner, object new_owner) {
         binder, old_owner, new_owner) );
     return 0;
 }
+

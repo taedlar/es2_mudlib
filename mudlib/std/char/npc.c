@@ -1,16 +1,4 @@
-/*  npc.c - NPC standard object
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <ansi.h>
 #include <dbase.h>
@@ -250,11 +238,12 @@ void do_heal()
 varargs void
 improve_skill(string skill, int amount)
 {
-    /* 重定義成不做任何事，以節省系統資源 */
+    // vim: set ts=4 sw=4 syntax=lpc
 }
 
 void
 gain_score(string term, int amount)
 {
-    /* 重定義成不做任何事，以節省系統資源 */
+    // vim: set ts=4 sw=4 syntax=lpc
 }
+

@@ -1,16 +1,4 @@
-/*  call.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <command.h>
 
@@ -31,7 +19,7 @@ main(object me, string arg)
     if( !arg || arg=="" ) return notify_fail(USAGE);
 
     if( sscanf(arg, "-%s %s", euid, arg)==2 ) {
-	/* 只有 (admin) 能設定自己的 euid 為任意值，包括 ROOT_EUID */
+	// vim: set ts=4 sw=4 syntax=lpc
 	switch(euid)
 	{
 	case DOMAIN_UID:
@@ -116,3 +104,4 @@ HELP
     );
     return 1;
 }
+

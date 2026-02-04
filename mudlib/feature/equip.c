@@ -1,16 +1,4 @@
-/*  equip.c
-
-    Copyright (C) 1994-2000 Annihilator <annihilator@muds.net>
-
-    This program is a part of ES2 mudlib. Permission is granted to use,
-    modify, copy or distribute this program provided this copyright notice
-    remains intact and subject to the restriction that this program MAY
-    NOT be used in any way for monetary gain.
-
-    Details of terms and conditions is available in the Copyright.ES2 file.
-    If you don't receive this file along with this program, write to the
-    primary author of ES2 mudlib: Annihilator <annihilator@muds.net>
-*/
+// vim: set ts=4 sw=4 syntax=lpc
 
 #include <ansi.h>
 #include <combat.h>
@@ -218,13 +206,7 @@ attack_with(object me, object opponent, string skill_type)
     SKILL_D(skill_type)->attack_using(me, opponent, this_object());
 }
 
-/*  inflict_damage()
- *
- *  傷害產生函數。
- *
- *  當一個武器物件擊中敵人時，會呼叫這個函數以對敵人造成傷害。傷害產生函
- *  數會帶有一個 strength 參數，表示這個傷害是由多少的力量造成的。
- */
+// vim: set ts=4 sw=4 syntax=lpc
 
 int
 inflict_damage(int strength, object victim)
@@ -234,11 +216,11 @@ inflict_damage(int strength, object victim)
     string skill;
     int damage, weight, max_bonus, bonus = 0;
 
-    /* 檢查持有者 */
+    // vim: set ts=4 sw=4 syntax=lpc
     owner = environment();
     if( ! owner ) return 0;
 
-    /* 檢查所使用的技能 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( stringp(skill = query("equipped")) ) {
 	if( skill[0..6] != "weapon/" ) return 0;
 	skill = skill[7..];
@@ -246,20 +228,20 @@ inflict_damage(int strength, object victim)
     else return 0;
 
     if( userp(owner) ) {
-	/* 檢查力道 */
+	// vim: set ts=4 sw=4 syntax=lpc
 	if( weight() > strength ) return 0;
     }
 
-    /* 取得殺傷力參數 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( !classp(dam = query("damage/" + skill)) ) return 0;
 
     max_bonus = dam->multipler * dam->range * dam->bonus / 100;
 
-    /* 計算力量與重量的加值 */
+    // vim: set ts=4 sw=4 syntax=lpc
     bonus = random(strength / 20000) + weight / 1000;
     if( bonus > max_bonus ) bonus = max_bonus;
 
-    /* 重擊術的效用 */
+    // vim: set ts=4 sw=4 syntax=lpc
     if( bonus < max_bonus
     &&	owner->query_learn("powerblow")
     &&	random(max_bonus - owner->query_skill("powerblow")) < bonus )
@@ -299,3 +281,4 @@ init_damage(int x, int y, int z, int r, mixed *slist ...)
 
     set("phase", PHASE_PHYSICAL);
 }
+
