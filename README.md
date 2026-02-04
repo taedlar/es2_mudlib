@@ -24,6 +24,18 @@ neolith -f neolith.conf
 - ES2 Mudlib is compatible with classical telnet client and vt100 terminal, with ANSI coloring.
 - You can also use a MUD client such as [TinTin++](https://github.com/scandum/tintin), or [Mudlet](https://github.com/Mudlet/Mudlet).
 
+### Neolith Console Mode
+With `neolith-1.0.0.alpha.6` or later, ES2 mudlib supports the **console mode** that allows connecting to the MUD directly on the console.
+This enables mudlib developer to start and test the MUD quickly or integration automation scripts on the mudlib code.
+
+To connect in console mode, add the `-c` option to neolith:
+```
+neolith -f neolith.conf -c
+```
+> [!CAUTION]
+> External ports works as usual when in console mode.
+> However, interruption (Ctrl-C) on console mode brings down the MUD server process and disconnect all users immediately.
+
 ### Differences from v1.3
 - Changed to UTF-8. No longer using Big-5 encoding.
 - Tested with Neolith only.
