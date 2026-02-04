@@ -7,91 +7,103 @@
 
 inherit F_CLEAN_UP;
 
-string display_attr(int gift, int value);
-string status_color(int current, int max);
-string tribar_graph(int val, int eff, int max);
+string display_attr (int gift, int value);
+string status_color (int current, int max);
+string tribar_graph (int val, int eff, int max);
 
 private void create() {
     seteuid(getuid());
 }
 
-int main(object me, string arg) {
+int main (object me, string arg) {
     object ob;
     mapping score;
     string line, tmp, lform;
     int i;
+    int birth;
 
-    if(!arg) ob = me;
+    if (!arg)
+        ob = me;
     else {
-        if( !wizardp(me) ) return notify_fail("只有巫師能察看別人的狀態。\n");
-        ob = present(arg, environment(me));
-        if (!ob) ob = find_player(arg);
-        if (!ob) ob = find_living(arg);
-        if (!ob) return notify_fail("你要察看誰的狀態﹖\n");
-// vim: set ts=4 sw=4 syntax=lpc
+        if (!wizardp(me))
+            return notify_fail("只有巫師能察看別人的狀態。\n");
+        ob = present (arg, environment (me));
+        if (!ob)
+            ob = find_player (arg);
+        if (!ob)
+            ob = find_living (arg);
+        if (!ob)
+            return notify_fail ("你要察看誰的狀態﹖\n");
     }
+    if (!ob->query("birthday"))
+        ob->set("birthday", random (1892160000));
+    birth = ((int)ob->query ("birthday") - 14*365*24*60) * 60 % 1892160000;
 
     line = sprintf (HIW "【 %s 】" NOR "%s\n\n", ob->rank(), ob->short(1));
     line += break_chinese_string (sprintf(
             "%s是一%s%s歲的 %d 級%s%s%s﹐出生於%s，目前的業力是 %d 點。",
-                ob==me ? gender_self(ob) : gender_pronoun(ob),
-                (tmp = ob->query("unit")) ? tmp : "個",
-                chinese_number(ob->query("age")),
+                ob==me ? gender_self (ob) : gender_pronoun (ob),
+                (tmp = ob->query ("unit")) ? tmp : "個",
+                chinese_number (ob->query ("age")),
                 ob->query_level(),
-                (tmp = ob->query("gender")) ? to_chinese(tmp) : "",
-                to_chinese(ob->query_race()),
-                ob->query("humanoid") ? ob->rank(0, 1) : "",
-                CHINESE_D->chinese_date(((int)ob->query("birthday") - 14*365*24*60) * 60 % 1892160000),
-                ob->link() ? ob->link()->query("karma") : 0
+                (tmp = ob->query ("gender")) ? to_chinese (tmp) : "",
+                to_chinese (ob->query_race()),
+                ob->query ("humanoid") ? ob->rank (0, 1) : "",
+                CHINESE_D->chinese_date(),
+                ob->link() ? ob->link()->query ("karma") : 0
         ),
         68,
         " "
     ) + "\n\n";
 
-    if( wizardp(me) || (int)me->query_level() > 1 ) {
-        line = sprintf(
+    if (wizardp (me) || (int)me->query_level() > 1) {
+        line = sprintf (
             "%s 膂力 %s   膽識 %s   悟性 %s   靈性 %s\n"
               " 定力 %s   機敏 %s   根骨 %s   慧根 %s\n\n", line,
-            display_attr(ob->query_attr("str",1), ob->query_attr("str")),
-            display_attr(ob->query_attr("cor",1), ob->query_attr("cor")),
-            display_attr(ob->query_attr("int",1), ob->query_attr("int")),
-            display_attr(ob->query_attr("spi",1), ob->query_attr("spi")),
-            display_attr(ob->query_attr("cps",1), ob->query_attr("cps")),
-            display_attr(ob->query_attr("dex",1), ob->query_attr("dex")),
-            display_attr(ob->query_attr("con",1), ob->query_attr("con")),
-            display_attr(ob->query_attr("wis",1), ob->query_attr("wis")));
+            display_attr (ob->query_attr ("str",1), ob->query_attr ("str")),
+            display_attr (ob->query_attr ("cor",1), ob->query_attr ("cor")),
+            display_attr (ob->query_attr ("int",1), ob->query_attr ("int")),
+            display_attr (ob->query_attr ("spi",1), ob->query_attr ("spi")),
+            display_attr (ob->query_attr ("cps",1), ob->query_attr ("cps")),
+            display_attr (ob->query_attr ("dex",1), ob->query_attr ("dex")),
+            display_attr (ob->query_attr ("con",1), ob->query_attr ("con")),
+            display_attr (ob->query_attr ("wis",1), ob->query_attr ("wis")));
     }
 
-    line = sprintf("%s 形體 %s%4d/%4d  " NOR HIY "%s\n\n" NOR, line,
+    line = sprintf ("%s 形體 %s%4d/%4d  " NOR GRN "%s\n\n" NOR, line,
         status_color(ob->query_stat("HP"), ob->query_stat_maximum("HP")),
         ob->query_stat("HP"), ob->query_stat_maximum("HP"),
         tribar_graph(ob->query_stat("HP"), ob->query_stat_effective("HP"), ob->query_stat_maximum("HP")) );
 
-    if( ob->query_stat_maximum("gin") )
-    line = sprintf("%s 精   %s%4d/%4d  " NOR GRN "%s\n" NOR, line,
-        status_color(ob->query_stat("gin"), ob->query_stat_maximum("gin")),
-        ob->query_stat("gin"),    ob->query_stat_maximum("gin"),
-        tribar_graph(ob->query_stat("gin"),    ob->query_stat_effective("gin"), ob->query_stat_maximum("gin")) );
-    if( ob->query_stat_maximum("kee") )
-    line = sprintf("%s 氣   %s%4d/%4d  " HIR "%s\n" NOR, line,
-        status_color(ob->query_stat("kee"), ob->query_stat_maximum("kee")),
-        ob->query_stat("kee"), ob->query_stat_maximum("kee"),
-        tribar_graph(ob->query_stat("kee"),    ob->query_stat_effective("kee"), ob->query_stat_maximum("kee")) );
-    if( ob->query_stat_maximum("sen") )
-    line = sprintf("%s 神   %s%4d/%4d  " HIB "%s\n" NOR, line,
-        status_color(ob->query_stat("sen"), ob->query_stat_maximum("sen")),
-        ob->query_stat("sen"), ob->query_stat_maximum("sen"),
-        tribar_graph(ob->query_stat("sen"),    ob->query_stat_effective("sen"), ob->query_stat_maximum("sen")) );
+    if (ob->query_stat_maximum("gin"))
+        line = sprintf ("%s 精   %s%4d/%4d  " NOR HIY "%s\n" NOR, line,
+            status_color (ob->query_stat("gin"), ob->query_stat_maximum ("gin")),
+            ob->query_stat ("gin"), ob->query_stat_maximum ("gin"),
+            tribar_graph (ob->query_stat ("gin"), ob->query_stat_effective ("gin"), ob->query_stat_maximum ("gin"))
+        );
+    if (ob->query_stat_maximum("kee"))
+        line = sprintf ("%s 氣   %s%4d/%4d  " HIR "%s\n" NOR, line,
+            status_color (ob->query_stat("kee"), ob->query_stat_maximum ("kee")),
+            ob->query_stat ("kee"), ob->query_stat_maximum ("kee"),
+            tribar_graph (ob->query_stat ("kee"), ob->query_stat_effective ("kee"), ob->query_stat_maximum ("kee"))
+        );
+    if (ob->query_stat_maximum("sen"))
+        line = sprintf ("%s 神   %s%4d/%4d  " HIB "%s\n" NOR, line,
+            status_color (ob->query_stat("sen"), ob->query_stat_maximum ("sen")),
+            ob->query_stat ("sen"), ob->query_stat_maximum ("sen"),
+            tribar_graph (ob->query_stat ("sen"), ob->query_stat_effective ("sen"), ob->query_stat_maximum ("sen"))
+        );
 
-    line = sprintf("%s\n 食物 %s%4d/%4d" NOR "\t\t飲水 %s%4d/%4d" NOR "\t\t疲勞 %s%4d/%4d\n" NOR, line,
+    line = sprintf ("%s\n 食物 %s%4d/%4d" NOR "\t\t飲水 %s%4d/%4d" NOR "\t\t疲勞 %s%4d/%4d\n" NOR, line,
         status_color(ob->query_stat("food"), ob->query_stat_maximum("food")),
         ob->query_stat("food"), ob->query_stat_maximum("food"),
         status_color(ob->query_stat("water"), ob->query_stat_maximum("water")),
         ob->query_stat("water"), ob->query_stat_maximum("water"),
         status_color(ob->query_stat_maximum("fatigue") - ob->query_stat("fatigue"), ob->query_stat_maximum("fatigue")),
-        ob->query_stat("fatigue"), ob->query_stat_maximum("fatigue") );
+        ob->query_stat("fatigue"), ob->query_stat_maximum("fatigue")
+    );
 
-    score = ob->query("score");
+    score = ob->query ("score");
     if (mapp (score)) {
         string c;
         int xp;
@@ -126,46 +138,47 @@ string display_attr(int gift, int value) {
         return sprintf( CYN "%3d     " NOR, value);
 }
 
-string status_color(int current, int max) {
-    if( (max<=0) || (current > max) )
-        return HIC;		// vim: set ts=4 sw=4 syntax=lpc
+string status_color (int current, int max) {
+    if ((max<=0) || (current > max))
+        return HIC;
 
-    switch(current*10/max) {
-    case 10: case 9:		// vim: set ts=4 sw=4 syntax=lpc
+    switch (current*10/max) {
+    case 10: case 9:
         return HIG;
-    case 8: case 7: case 6:	// vim: set ts=4 sw=4 syntax=lpc
+    case 8: case 7: case 6:
         return HIY;
-    case 5: case 4: case 3:	// vim: set ts=4 sw=4 syntax=lpc
+    case 5: case 4: case 3:
         return YEL;
-    case 2: case 1:		// vim: set ts=4 sw=4 syntax=lpc
+    case 2: case 1:
         return HIR;
-    default:			// vim: set ts=4 sw=4 syntax=lpc
+    default:
         return RED;
     }
 }
 
-string tribar_graph(int val, int eff, int max) {
+string tribar_graph (int val, int eff, int max) {
     int n_filled, n_empty;
     string bar = "";
 
-    if( (max <= 0) || (val <= 0) || (eff <= 0) ) return "";
+    if ((max <= 0) || (val <= 0) || (eff <= 0))
+        return "";
 
     n_filled = val * 50 / max;
     n_empty = eff * 50 / max - n_filled;
 
-    // vim: set ts=4 sw=4 syntax=lpc
-    if( ! n_filled && ! n_empty ) n_empty = 1;
+    if (! n_filled && ! n_empty)
+        n_empty = 1;
 
     if (n_filled)
-        bar += repeat_string("O", n_filled);
+        bar += repeat_string ("O", n_filled);
     if (n_empty)
-        bar += repeat_string(".", n_empty);
+        bar += repeat_string (".", n_empty);
 
     return bar;
 }
 
-int help(object me) {
-        write(@HELP
+int help (object me) {
+    write (@HELP
 指令格式 : score
            score <對象名稱>                   (巫師專用)
  

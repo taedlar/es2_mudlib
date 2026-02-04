@@ -1,6 +1,4 @@
 // vim: set ts=4 sw=4 syntax=lpc
-
-//#pragma optimize
 #pragma save_binary
 
 #include <room.h>
@@ -13,86 +11,94 @@ int look_item(object me, object obj);
 int look_living(object me, object obj);
 int look_room_item(object me, string arg);
 
-void create() {seteuid(getuid());}
+void create() {
+    seteuid (getuid());
+}
 
-int main(object me, string arg)
-{
+int main (object me, string arg) {
     object obj;
     int result;
 
-    if( me->query_temp("block_msg/vision") )
-        return notify_fail("你現在什麼也看不到﹗\n");
+    if (me->query_temp("block_msg/vision"))
+        return notify_fail ("你現在什麼也看不到﹗\n");
 
-    if( arg ) {
-        if( (obj = present(arg, me))
-        ||    (obj = present(arg, environment(me)))) 
-            if( obj->is_character() ) result = look_living(me, obj);
-            else result = look_item(me, obj);
+    if (arg) {
+        if ((obj = present (arg, me)) ||
+            (obj = present (arg, environment(me)))) 
+            if (obj->is_character())
+                result = look_living (me, obj);
+            else
+                result = look_item (me, obj);
     }
 
-    if( !result && environment(me) )
-        return environment(me)->do_look(me, arg);
+    if (!result && environment(me))
+        return environment(me)->do_look (me, arg);
+
     return result;
 }
 
-int look_item(object me, object obj)
-{
+int look_item(object me, object obj) {
     mixed *inv;
 
     me->start_more(obj->long());
     inv = all_inventory(obj);
     if( sizeof(inv) ) {
-	// if too many items, show a simple message -dragoon
-	if( sizeof(inv) < 30 ) {
+        // if too many items, show a simple message -dragoon
+        if( sizeof(inv) < 30 ) {
             inv = map_array(inv, "inventory_look", this_object() );
             message("vision", sprintf("裡面有﹕\n  %s\n",
                 implode(inv, "\n  ") ), me); }
-	else tell_object(me, YEL"裡面雜七雜八的放著許多東西..\n"NOR);
+        else tell_object(me, YEL"裡面雜七雜八的放著許多東西..\n"NOR);
     }
     return 1;
 }
 
-int look_living(object me, object obj)
-{
+int look_living (object me, object obj) {
     string str, pro, race;
     mixed *inv;
     int age;
 
-    if( me!=obj )
-        message("vision", me->name() + "正盯著你看﹐不知道打些什麼主意。\n", obj);
+    if (me != obj)
+        message ("vision", me->name() + "正盯著你看﹐不知道打些什麼主意。\n", obj);
 
-    str = obj->long();
+    str = break_chinese_string (obj->long(), 70) + "\n";
 
-    pro = (obj==me) ? gender_self(obj->query("gender")) : gender_pronoun(obj->query("gender"));
+    pro = (me == obj) ? gender_self (obj->query ("gender")) : gender_pronoun (obj->query ("gender"));
 
     race = obj->query_race();
     if( (string)obj->query("humanoid") && intp(age = obj->query("age")) ) {
-        if( race=="human" )
-            str += break_chinese_string(
-                sprintf("%s%s，%s看起來%s。",
-                    obj->name(), RACE_D(race)->query_appearance(obj),
-                    pro, (age > 10) ? ("約" + chinese_number(age / 10 * 10) + "多歲") : "不到十歲"),
+        if (race == me->query_race())
+            str += break_chinese_string (
+                sprintf ("%s%s，%s看起來%s。",
+                    obj->name(),
+                    RACE_D (race)->query_appearance (obj),
+                    pro,
+                    (age > 10) ? ("約" + chinese_number (age / 10 * 10) + "多歲") : "不到十歲"),
                 70 ) + "\n";
         else
-            str += break_chinese_string(
-                sprintf("%s屬於%s族，%s%s，%s看起來%s。",
-                    obj->name(), to_chinese(race),
-                    pro, RACE_D(race)->query_appearance(obj),
-                    pro, (age > 10) ? ("約" + chinese_number(age / 10 * 10) + "多歲") : "不到十歲"),
+            str += break_chinese_string (
+                sprintf ("%s屬於%s族，%s%s，%s看起來%s。",
+                    obj->name(),
+                    to_chinese (race),
+                    pro,
+                    RACE_D (race)->query_appearance (obj),
+                    pro,
+                    (age > 10) ? ("約" + chinese_number (age / 10 * 10) + "多歲") : "不到十歲"),
                 70 ) + "\n";
     }
 
-    inv = all_inventory(obj);
-    if( sizeof(inv) ) {
+    inv = all_inventory (obj);
+    if (sizeof(inv)) {
         inv = map_array(inv, "inventory_look", this_object(), obj->is_corpse()? 0 : 1 );
         inv -= ({ 0 });
-        if( sizeof(inv) )
-            str += sprintf( obj->is_corpse() ? "%s的遺物有﹕\n%s\n" : "%s身上帶著﹕\n%s\n",
-                pro, implode(inv, "\n") );
+        if (sizeof(inv))
+            str += sprintf (obj->is_corpse() ? "%s的遺物有﹕\n%s\n" : "%s身上帶著﹕\n%s\n",
+                pro,
+                implode (inv, "\n")
+            );
     }
 
-    message("vision", str, me);
-
+    message ("vision", str, me);
     return 1;
 }
 
