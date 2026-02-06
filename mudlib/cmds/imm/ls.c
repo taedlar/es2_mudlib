@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 #include <command.h>
@@ -29,9 +29,9 @@ main(object me, string arg)
     i = sizeof(file);
     w = 0;
     while(i--) {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	if( file[i][1]==-2 ) file[i][0] += "/";
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	if( strlen(file[i][0]) > w ) w = strlen(file[i][0]) + 1;
     }
 

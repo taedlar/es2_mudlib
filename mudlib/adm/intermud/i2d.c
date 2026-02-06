@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <mudlib.h>
 #include <intermud.h>
@@ -12,7 +12,7 @@
 inherit F_DBASE;
 #ifdef	SAVE_MUDLIST
 inherit F_SAVE;
-#endif	// vim: set ts=4 sw=4 syntax=lpc
+#endif
 
 static int udp_port;
 static int udp_socket;
@@ -46,7 +46,7 @@ create()
 
 #ifdef	SAVE_MUDLIST
     restore();
-#endif	// vim: set ts=4 sw=4 syntax=lpc
+#endif
 
     udp_port = INTERMUD_UDP_PORT;
     if( (udp_socket = socket_create(DATAGRAM, "read_callback")) < 0 )
@@ -64,7 +64,7 @@ query_save_file()
 {
     return DATA_DIR + "intermud-2";
 }
-#endif	// vim: set ts=4 sw=4 syntax=lpc
+#endif
 
 private void
 update()
@@ -102,7 +102,7 @@ remove()
 
 #ifdef	SAVE_MUDLIST
     save();
-#endif	// vim: set ts=4 sw=4 syntax=lpc
+#endif
 
 }
 

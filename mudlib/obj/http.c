@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <http.h>
 
@@ -31,15 +31,15 @@ process_input(string str)
 {
     string hdr, msg;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( ! request ) {
-        if( strlen(str) < 1 ) return 1;	// vim: set ts=4 sw=4 syntax=lpc
+        if( strlen(str) < 1 ) return 1;
         if( str[<1]=='\r' ) str = str[0..<2];
         request = str;
         return 1;
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( strlen(str) > 0 && str[0] != '\r' ) {
         if( arrayp(header) ) header += ({ str });
         else header = ({ str });

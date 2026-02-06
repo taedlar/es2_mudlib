@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 #include <dbase.h>
@@ -36,7 +36,7 @@ void clear_statistic_flags()
     f_notified = ([]);
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 int
 query_stat(string what)
 {
@@ -62,7 +62,7 @@ delete_stat(string what)
     if( mapp(st_regenerator) )	map_delete(st_regenerator, what);
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 int query_stat_current(string what)
     { return mapp(st_current) ? st_current[what] : 0; }
 
@@ -78,7 +78,7 @@ int query_stat_notify(string what)
 mixed query_stat_regenerate(string what)
     { return mapp(st_regenerator) ? st_regenerator[what] : 0; }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 int set_stat_current(string what, int val)
     { return mapp(st_current) ? st_current[what] = val : 0; }
 
@@ -99,14 +99,14 @@ advance_stat(string what, int val)
     return (st_maximum[what] += val);
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 mixed
 set_stat_regenerate(string what, mixed val)
 {
     int max;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !(max = query_stat_maximum(what)) ) return 0;
 
     if( functionp(val) )
@@ -115,17 +115,17 @@ set_stat_regenerate(string what, mixed val)
     switch(val)
     {
     case TYPE_STATIC:
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	return (st_regenerator[what] = 0);
     case TYPE_HEALTH:
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	if( undefinedp(query_stat_current(what)) )
 	    set_stat_current(what, max);
 	if( undefinedp(query_stat_effective(what)) )
 	    set_stat_effective(what, max);
 	return (st_regenerator[what] = (: health_regenerator :) );
     case TYPE_WASTING:
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	if( undefinedp(query_stat_current(what)) )
 	    set_stat_current(what, max);
 	if( undefinedp(query_stat_effective(what)) )
@@ -137,7 +137,7 @@ set_stat_regenerate(string what, mixed val)
     return 0;
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 void
 init_statistic(mapping base)
@@ -194,7 +194,7 @@ consume_stat(string type, int damage, object who)
     if( damage < 0 ) error("damage less than zero.\n");
     if( damage == 0 ) return 0;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !objectp(who) ) {
 	if( this_player() ) who = this_player();
 	else if( previous_object() && previous_object()->is_character() )
@@ -203,7 +203,7 @@ consume_stat(string type, int damage, object who)
 	    who = this_object();
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !mapp(st_current)
     ||	undefinedp(st_current[type])
     ||	f_exhausted[type] )
@@ -212,13 +212,13 @@ consume_stat(string type, int damage, object who)
     last_from_ob = who;
     st_current[type] -= damage;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( st_current[type] < 0 ) {
         st_current[type] = 0;
         f_exhausted[type] = who;
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( who && mapp(st_notify) && !undefinedp(st_notify[type])) {
 	if( mapp(st_maximum) && !undefinedp(st_maximum[type])
 	&&  st_maximum[type] > 0
@@ -246,7 +246,7 @@ damage_stat(string type, int damage, object who)
     if( damage < 0 ) error("damage less than zero.\n");
     if( damage == 0 ) return 0;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !objectp(who) ) {
 	if( this_player() ) who = this_player();
 	else if( previous_object() && previous_object()->is_character() )
@@ -255,7 +255,7 @@ damage_stat(string type, int damage, object who)
 	    who = this_object();
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !mapp(st_effective)
     ||	undefinedp(st_effective[type])
     ||	f_destroyed[type] )
@@ -264,16 +264,16 @@ damage_stat(string type, int damage, object who)
     last_from_ob = who;
     st_effective[type] -= damage;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( mapp(st_current) && st_current[type] > st_effective[type] )
 	st_current[type] = st_effective[type];
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( st_effective[type] < 0 ) {
         st_effective[type] = 0;
         f_destroyed[type] = who;
     }
-    // vim: set ts=4 sw=4 syntax=lpc
+
     else if( who && mapp(st_notify) && !undefinedp(st_notify[type])) {
 	if( mapp(st_maximum) && !undefinedp(st_maximum[type])
 	&&  st_maximum[type] > 0
@@ -350,7 +350,7 @@ heal_stat(string type, int heal)
 
 void start_regenerate() { regenerating = 1; }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 int regenerate()
 {
@@ -389,16 +389,16 @@ int regenerate()
 int
 health_regenerator(object me, string stat, int max, int eff, int cur)
 {
-    if( eff <= 0 ) return 0;	// vim: set ts=4 sw=4 syntax=lpc
+    if( eff <= 0 ) return 0;
 
-    if( userp(me) ) {		// vim: set ts=4 sw=4 syntax=lpc
+    if( userp(me) ) {
 	if( me->is_fighting()
 	||  (int)me->query_stat("water") < 1
 	||  me->over_encumbranced() )
 	    return 0;
     }
 
-    if( cur < eff ) {	// vim: set ts=4 sw=4 syntax=lpc
+    if( cur < eff ) {
 	switch(stat)
 	{
 	case "gin":
@@ -416,7 +416,7 @@ health_regenerator(object me, string stat, int max, int eff, int cur)
 
     if( userp(me) && ((int)me->query_stat("food") < 1) ) return 0;
 
-    if( eff < max ) {	// vim: set ts=4 sw=4 syntax=lpc
+    if( eff < max ) {
         switch(stat)
         {
 	case "gin":
@@ -438,7 +438,7 @@ health_regenerator(object me, string stat, int max, int eff, int cur)
 int
 wasting_regenerator(object me, string stat, int max, int eff, int cur)
 {
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !userp(me) ) return 0;
 
     return me->consume_stat(stat, 1 + (me->is_fighting() ? 2 : 0), me);

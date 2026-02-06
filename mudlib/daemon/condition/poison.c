@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 inherit CONDITION;
 
@@ -8,7 +8,7 @@ private void create()
     DAEMON_D->register_condition_daemon("poison");
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 void
 condition_update(object me, string cnd, mixed cnd_data)
@@ -37,6 +37,6 @@ condition_update(object me, string cnd, mixed cnd_data)
     }
     me->set_condition("poison", cnd_data);
 }
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 

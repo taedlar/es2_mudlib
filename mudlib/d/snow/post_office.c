@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 inherit ROOM;
 
@@ -14,7 +14,7 @@ void create()
 如果你想要收發信，可以用 request 向驛站官員領取收發信的信札。
 LONG
     );
-    set("exits", ([ // vim: set ts=4 sw=4 syntax=lpc
+    set("exits", ([
         "east" : __DIR__"nstreet2",
     ]));
     set("post_office", 1);    // mailbox checks this flag.

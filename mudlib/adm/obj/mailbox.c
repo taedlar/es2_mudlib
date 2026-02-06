@@ -1,11 +1,11 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 
 inherit ITEM;
 inherit F_SAVE;
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 private mapping *mails;
 
 void get_mail_text(mapping mail, string str);
@@ -30,7 +30,7 @@ LONG
     set("no_insert", 1);
     setup();
 
-    seteuid(0);	// vim: set ts=4 sw=4 syntax=lpc
+    seteuid(0);
 }
 
 varargs string
@@ -53,15 +53,15 @@ init()
     object ob;
 
     if( environment()!=this_player() ) {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	mails = 0;
 	call_out("retire", 0);
 	return;
     }
 
-    seteuid(getuid());		// vim: set ts=4 sw=4 syntax=lpc
+    seteuid(getuid());
     ob = load_object(SMTP_D);
-    seteuid(0);			// vim: set ts=4 sw=4 syntax=lpc
+    seteuid(0);
     ob->restore_mailbox(this_object());
 
     if( objectp(ob = this_player()->query_temp("mbox_ob")) )
@@ -85,7 +85,7 @@ query_save_file()
 
 void receive_mail(mapping mail)
 {
-    // vim: set ts=4 sw=4 syntax=lpc
+
 if (!previous_object()) error("no previous object\n");
     if( geteuid(previous_object()) != ROOT_UID )
 	error("Permission denied.\n");

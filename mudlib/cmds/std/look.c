@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 #pragma save_binary
 
 #include <room.h>

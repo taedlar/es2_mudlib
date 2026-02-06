@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 
@@ -74,7 +74,7 @@ int main(object me, string arg)
                 (i % 4 == 3 ) ? "\n\t\t\t" : "");
         }
     str += "\n";
-// vim: set ts=4 sw=4 syntax=lpc
+
     write( str + NOR + "\n" );
     return 1;
 }

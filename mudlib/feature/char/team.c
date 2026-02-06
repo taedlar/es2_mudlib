@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 #include <dbase.h>
@@ -76,11 +76,11 @@ dismiss_team()
     if( !arrayp(team) ) return 0;
     
     if( team[0]==this_object() ) {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	foreach(member in team) member->set_team(0);
 	team = 0;
     } else {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	team -= ({ this_object() });
 	foreach(member in team) member->set_team(team);
 	team = 0;

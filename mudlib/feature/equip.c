@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 #include <combat.h>
@@ -206,7 +206,7 @@ attack_with(object me, object opponent, string skill_type)
     SKILL_D(skill_type)->attack_using(me, opponent, this_object());
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 int
 inflict_damage(int strength, object victim)
@@ -216,11 +216,11 @@ inflict_damage(int strength, object victim)
     string skill;
     int damage, weight, max_bonus, bonus = 0;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     owner = environment();
     if( ! owner ) return 0;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( stringp(skill = query("equipped")) ) {
 	if( skill[0..6] != "weapon/" ) return 0;
 	skill = skill[7..];
@@ -228,20 +228,20 @@ inflict_damage(int strength, object victim)
     else return 0;
 
     if( userp(owner) ) {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	if( weight() > strength ) return 0;
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !classp(dam = query("damage/" + skill)) ) return 0;
 
     max_bonus = dam->multipler * dam->range * dam->bonus / 100;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     bonus = random(strength / 20000) + weight / 1000;
     if( bonus > max_bonus ) bonus = max_bonus;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( bonus < max_bonus
     &&	owner->query_learn("powerblow")
     &&	random(max_bonus - owner->query_skill("powerblow")) < bonus )

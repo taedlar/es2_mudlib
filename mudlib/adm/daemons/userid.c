@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 // Created by Elon (5/10/1997)
 
@@ -46,7 +46,7 @@ void query_userid(string str) {
     return;
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 void write_data(int fd)
 {

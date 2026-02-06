@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 // chinese_d.c
 // A minor chinese-english or english-chinese converter.

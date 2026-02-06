@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 // Created by Annihilator (07/06/1995)
 

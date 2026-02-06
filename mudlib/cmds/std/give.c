@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <command.h>
 #include <login.h>
@@ -89,7 +89,7 @@ do_give(object me, object item, object who)
     if( !userp(who) ) {
         if( !who->accept_object(me, item) ) return 0;
         if( item->value() ) {
-            // vim: set ts=4 sw=4 syntax=lpc
+
             message_vision("$N拿出" + item->short() + "交給$n。\n", me, who);
             destruct(item);
             return 1;

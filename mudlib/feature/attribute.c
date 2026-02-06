@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <dbase.h>
 #include <attribute.h>
@@ -44,7 +44,7 @@ init_attribute(mapping base)
     string name;
     int value;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( mapp(attr=query("attribute")) ) {
 	attribute = attr;
 	delete("attribute");
@@ -54,7 +54,7 @@ init_attribute(mapping base)
 
     if( !mapp(base) || !sizeof(base) ) return;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     foreach(name, value in base)
         if( undefinedp(attribute[name]) )
             attribute[name] = value;

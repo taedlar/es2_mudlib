@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 #include <dbase.h>
@@ -238,12 +238,12 @@ void do_heal()
 varargs void
 improve_skill(string skill, int amount)
 {
-    // vim: set ts=4 sw=4 syntax=lpc
+
 }
 
 void
 gain_score(string term, int amount)
 {
-    // vim: set ts=4 sw=4 syntax=lpc
+
 }
 

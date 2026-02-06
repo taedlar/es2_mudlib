@@ -12,16 +12,7 @@ inherit F_DBASE;
 int wiz_lock_level = WIZ_LOCK_LEVEL;
 
 string *user_race = ({
-    "blackteeth",
-    "human",
-    "yenhold",
-    "woochan",
-    "jiaojao",
-    "rainnar", 
-    "ashura",
-    "headless",
-    "yaksa",
-    "malik"
+    "human"
 });
 
 string *banned_name = ({
@@ -33,13 +24,9 @@ string *banned_rude_name = ({
 });
 
 string *banned_ip = ({
-// 暫時取消, 記錄先留著, 若是情況仍相同再考慮永久ban掉 -dragoon
-//	"163.19.7.%*s", 	// mutli, dragoon
-//	"140.96.148.%*s",	// mutli, dragoon
 });
 
 string *banned_hostname = ({
-        "%*s.Dorm2.nsysu.edu.tw",	// mutli, rude words, dragoon
 });
 
 #ifdef ENABLE_ANTISPAM
@@ -48,7 +35,7 @@ mapping spammer_ip = ([]);
 string *penalty_attr = ({
     "str", "int", "dex", "con", "spi", "cps", "wis", "cor"
 });
-#endif	// vim: set ts=4 sw=4 syntax=lpc
+#endif
 
 private void get_id(string arg, object ob);
 private void confirm_id(string yn, object ob);
@@ -65,32 +52,14 @@ private int list_user_race(object link);
 private void increment_visitor_count();
 private int check_ip(object link);
 
-private void
-create() 
-{
+private void create() {
     seteuid(getuid());
     set("channel_id", "連線精靈");
 }
 
-private void
-reset()
-{
+private void reset() {
     object room, ob;
 
-#if 0
-    // vim: set ts=4 sw=4 syntax=lpc
-    room = find_object(VOID_OB);
-    seteuid(getuid());
-    if( objectp(room) )
-        foreach(ob in all_inventory(room)) {
-#ifdef	SAVE_USER
-            if( userp(ob) ) ob->save();
-#endif
-            destruct(ob);
-        }
-#endif
-
-    // vim: set ts=4 sw=4 syntax=lpc
     log_file("USRGRAPH", sprintf("[%s] %d users\n",
         ctime(time()), sizeof(users())));
 
@@ -100,9 +69,7 @@ reset()
 #endif
 }
 
-void
-logon (object ob)
-{
+void logon (object ob) {
     object *usr;
     int i, wiz_cnt, ppl_cnt, login_cnt;
 
@@ -144,9 +111,7 @@ logon (object ob)
     input_to ("get_id", ob);
 }
 
-private void
-get_id (string arg, object ob)
-{
+private void get_id (string arg, object ob) {
     object ppl;
 
     // user id will be used as object uid for all objects created by the user.
@@ -203,7 +168,7 @@ get_id (string arg, object ob)
                 return;
             }
     }
-#endif	// vim: set ts=4 sw=4 syntax=lpc
+#endif
 
 #ifdef WIZ_LOCK_LEVEL
     if ((int)wiz_level(arg) < (int)wiz_lock_level) {
@@ -240,9 +205,7 @@ get_id (string arg, object ob)
     input_to("confirm_id", ob);
 }
 
-private void
-get_passwd(string pass, object ob)
-{
+private void get_passwd(string pass, object ob) {
     string my_pass;
 
     write("\n");
@@ -262,11 +225,10 @@ get_passwd(string pass, object ob)
     authorize(ob);
 }
 
-void authorize(object ob)
-{
+void authorize(object ob) {
     object user = find_body(ob->query("id"));
     if (user) {
-        // vim: set ts=4 sw=4 syntax=lpc
+
         if( !user->link() ) {
             reconnect(ob, user);
             return;
@@ -278,7 +240,7 @@ void authorize(object ob)
 
     user = make_body(ob);
     if( ! user ) {
-        // vim: set ts=4 sw=4 syntax=lpc
+
         destruct(ob);
         return;
     }
@@ -323,9 +285,7 @@ NOTICE
     }
 }
 
-private void
-confirm_reincarnate(string yn, object ob)
-{
+private void confirm_reincarnate(string yn, object ob) {
     if( yn=="" ) {
         write(HIY "您要重新創造這個人物嗎？(y/n) " NOR);
         input_to("confirm_reincarnate", ob);
@@ -339,7 +299,7 @@ confirm_reincarnate(string yn, object ob)
     }
 
     if( !list_user_race(ob) ) {
-        // vim: set ts=4 sw=4 syntax=lpc
+
 #ifdef	SAVE_USER
         rm(ob->query_save_file());
 #endif
@@ -350,9 +310,7 @@ confirm_reincarnate(string yn, object ob)
     input_to("get_race", ob);
 }
 
-private void
-confirm_relogin(string yn, object ob, object user)
-{
+private void confirm_relogin(string yn, object ob, object user) {
     object old_link;
 
     if( yn=="" ) {
@@ -385,9 +343,7 @@ confirm_relogin(string yn, object ob, object user)
     reconnect(ob, user);    
 }
 
-private void
-confirm_id(string yn, object ob)
-{
+private void confirm_id(string yn, object ob) {
     if( yn=="" ) {
         write("使用這個名字將會創造一個新的人物﹐您確定嗎(y/n)﹖");
         input_to("confirm_id", ob);
@@ -410,9 +366,7 @@ confirm_id(string yn, object ob)
     input_to("new_password", 1, ob);
 }
 
-private void
-new_password(string pass, object ob)
-{
+private void new_password(string pass, object ob) {
     write("\n");
     if( strlen(pass)<5 ) {
         write("密碼的長度至少要五個字元﹐請重設您的密碼﹕");
@@ -428,9 +382,7 @@ new_password(string pass, object ob)
     input_to("confirm_password", 1, ob);
 }
 
-private void
-confirm_password(string pass, object ob)
-{
+private void confirm_password(string pass, object ob) {
     string old_pass;
 
     write("\n");
@@ -451,9 +403,7 @@ TEXT
     input_to("get_email",  ob);
 }
 
-private void
-get_email(string email, object ob)
-{
+private void get_email(string email, object ob) {
     int c, delim=0, err=0;
 
     if( strlen(email) > 64 ) {
@@ -483,7 +433,7 @@ get_email(string email, object ob)
         write("抱歉, 線上已經有一個 Guest 了.\n");
         destruct(ob);
         return;            }
-#endif // vim: set ts=4 sw=4 syntax=lpc
+#endif
 
     // Complete non-body-specific initialization of new user here.
     ob->set("karma", 20);
@@ -491,9 +441,7 @@ get_email(string email, object ob)
     input_to("get_race", ob);
 }
 
-private void
-get_race(string race, object ob)
-{
+private void get_race(string race, object ob) {
     int kar;
     string choice;
     if( sscanf(race, "? %s", race) ) {
@@ -521,9 +469,7 @@ get_race(string race, object ob)
     input_to("get_gender", ob, race);
 }
 
-private void
-get_gender(string gender, object ob, string race)
-{
+private void get_gender(string gender, object ob, string race) {
     object body;
     string body_file;
 
@@ -564,9 +510,7 @@ get_gender(string gender, object ob, string race)
         input_to("get_name", ob, body);
 }
 
-private void
-get_name(string arg, object ob, object user)
-{
+private void get_name(string arg, object ob, object user) {
     if( !check_legal_name(arg) ) {
         write("您的中文名字﹕");
         input_to("get_name", ob, user);
@@ -587,9 +531,7 @@ get_name(string arg, object ob, object user)
     enter_world(ob, user);
 }
 
-object
-make_body(object link_ob)
-{
+object make_body(object link_ob) {
     string err;
     object user;
     int n;
@@ -601,7 +543,7 @@ make_body(object link_ob)
         return 0;
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     seteuid(getuid(link_ob));
     export_uid(user);
     seteuid(getuid());
@@ -612,9 +554,7 @@ make_body(object link_ob)
     return user;
 }
 
-private int
-check_ip(object link)
-{                                                                               
+private int check_ip(object link) {                                                                               
     string okip, cur_ip, cur_ip_num, ip_part, num_part, be_checked;
     int len, ed;
 
@@ -656,9 +596,7 @@ check_ip(object link)
     return 0;
 }
 
-private void
-init_new_body(object link, object user)
-{
+private void init_new_body(object link, object user) {
 #ifdef ENABLE_ANTISPAM
     int penalty;
     string a;
@@ -682,9 +620,7 @@ init_new_body(object link, object user)
     CHAR_D->setup_char(user);
 }
 
-varargs void
-enter_world(object ob, object user, int silent)
-{
+varargs void enter_world(object ob, object user, int silent) {
     object room;
     string startroom, err;
 
@@ -711,7 +647,7 @@ enter_world(object ob, object user, int silent)
     cat(MOTD);
     IDENT_D->query_userid((string)user->query("id"));
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     startroom = user->query("startroom");
     if( !startroom ) startroom = START_ROOM;
     err = catch(room = load_object(startroom));
@@ -727,7 +663,7 @@ NOTICE
         return;
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( ob->query("new_mail") ) {
         write( HIW "\n有您的信！請到驛站來一趟 ...\n\n" NOR);
         ob->delete("new_mail");
@@ -739,7 +675,7 @@ NOTICE
         user->delete("pker");
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !wizardp(user) && !user->query("invis") ) {
         message("vision", user->query("name") + "連線進入這個世界。\n",
                 room, user);
@@ -752,10 +688,8 @@ NOTICE
     }
 }
 
-varargs void
-reconnect(object ob, object user, int silent)
-{
-    // vim: set ts=4 sw=4 syntax=lpc
+varargs void reconnect(object ob, object user, int silent) {
+
     user->set_link(ob);
     ob->set_body(user);
     exec(user, ob);
@@ -769,7 +703,7 @@ reconnect(object ob, object user, int silent)
     if( time() - (int)user->query("last_pk_time") < 60 * 60 )
         user->set("last_pk_time", time());
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !wizardp(user) && !user->query("invis") ) {
         message("vision", user->query("name") + "重新連線回到這個世界。\n",
                 environment(user), user);
@@ -782,17 +716,13 @@ reconnect(object ob, object user, int silent)
     }
 }
 
-void
-net_dead(object ob)
-{
+void net_dead(object ob) {
     CHANNEL_D->do_channel( this_object(), "sys",
         sprintf("%s(%s)斷線了。", ob->name(1), ob->query("id")));
     ob->move("/obj/void");
 }
 
-int
-check_legal_id (string id)
-{
+int check_legal_id (string id) {
     int i;
 
     i = strlen (id);
@@ -809,9 +739,7 @@ check_legal_id (string id)
     return 1;
 }
 
-int
-check_legal_name(string name)
-{
+int check_legal_name(string name) {
     int i;
     string bname;
 
@@ -843,9 +771,7 @@ check_legal_name(string name)
     return 1;
 }
 
-object
-find_body(string name)
-{
+object find_body(string name) {
     object ob, *body;
 
     if( objectp(ob = find_player(name)) ) return ob;
@@ -859,9 +785,7 @@ find_body(string name)
     return 0;
 }
 
-int
-set_wizlock(int level)
-{
+int set_wizlock(int level) {
     if( wiz_level(this_player(1)) <= level ) return 0;
     if( geteuid(previous_object()) != ROOT_UID ) return 0;
 
@@ -869,9 +793,7 @@ set_wizlock(int level)
     return 1;
 }
 
-static int
-list_user_race(object link)
-{
+static int list_user_race(object link) {
     string msg, race;
     int karma;
 
@@ -896,11 +818,7 @@ list_user_race(object link)
     return 1;
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
-
-void
-reincarnate(object ob)
-{
+void reincarnate(object ob) {
     object link;
     int max_karma_gain, karma_gain;
 
@@ -909,7 +827,7 @@ reincarnate(object ob)
 
     seteuid(getuid());
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     link = ob->link();
     if( ! link ) {
 #ifdef	SAVE_USER
@@ -919,7 +837,7 @@ reincarnate(object ob)
         return;
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     max_karma_gain = link->query("time_aged") / 43200;
     karma_gain = ob->query_level();
     if( karma_gain > max_karma_gain ) karma_gain = max_karma_gain;
@@ -928,14 +846,14 @@ reincarnate(object ob)
     link->save();
 #endif
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     exec(link, ob);
 #ifdef	SAVE_USER
     rm(ob->query_save_file());
 #endif
     destruct(ob);
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !list_user_race(link) ) {
         write("請您重新創造一個人物，重新再來吧。\n");
 #ifdef	SAVE_USER
@@ -950,9 +868,7 @@ reincarnate(object ob)
 
 #define VISITOR_COUNTER_FILE	"/adm/etc/visitor.cnt"
 
-private void
-increment_visitor_count()
-{
+private void increment_visitor_count() {
     int t, cnt;
     string s = read_file (VISITOR_COUNTER_FILE);
 
@@ -965,4 +881,3 @@ increment_visitor_count()
     }
     write_file (VISITOR_COUNTER_FILE, s, 1);
 }
-

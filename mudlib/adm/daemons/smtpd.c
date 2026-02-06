@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 inherit F_CLEAN_UP;
 
@@ -28,7 +28,7 @@ send_mail(string from, string to, mapping mail)
     object rcpt, mbox;
     int keep_mbox = 0;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( objectp(rcpt = find_player(to))
     &&	objectp(mbox = rcpt->query_temp("mbox_ob")) )
 	keep_mbox = 1;

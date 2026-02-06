@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 // Created by Annihilator (04/16/2000)
 
@@ -47,7 +47,7 @@ private mixed compile_object(string file) {
     object daemon;
     mixed err;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     err = catch(daemon = load_object(VIRTUAL_D));
 
     if( err || !objectp(daemon) ) return 0;
@@ -173,7 +173,7 @@ string standard_trace(mapping error) {
     int i, s;
     string res = "";
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     res += sprintf("%O: %s: %s:%d: %s\n",
         error["object"],
         error["program"],
@@ -181,7 +181,7 @@ string standard_trace(mapping error) {
         error["line"],
         error["error"]);
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
 
     return res;
 }

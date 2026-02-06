@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <dbase.h>
 #include <name.h>
@@ -16,7 +16,7 @@ int drink_ob(object me)
     if( stuff + me->query_stat("water") > me->query_stat_maximum("water") )
         stuff = me->query_stat_maximum("water") - me->query_stat("water");
     if( !stuff ) return notify_fail("你已經漲得喝不下一滴水了。\n");
-// vim: set ts=4 sw=4 syntax=lpc
+
     if( !stuff ) return 0;
 
     me->supplement_stat("water", stuff);

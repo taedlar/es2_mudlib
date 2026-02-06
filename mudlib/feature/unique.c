@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 nomask int
 violate_unique()
@@ -29,5 +29,5 @@ create_replica()
 }
 
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 

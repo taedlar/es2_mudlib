@@ -1,10 +1,10 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <condition.h>
 
 mapping conditions = ([]);
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 nomask void
 update_condition()
@@ -18,7 +18,7 @@ update_condition()
 	CONDITION_D(cnd)->condition_update(this_object(), cnd, cnd_data);
 }
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 static nomask void
 restore_condition()
@@ -51,7 +51,7 @@ set_condition(string cnd, mixed info)
 {
     if( !mapp(conditions) ) conditions = ([]);
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( conditions[cnd] )
 	CONDITION_D(cnd)->condition_unapply(this_object(), cnd,
 		conditions[cnd]);

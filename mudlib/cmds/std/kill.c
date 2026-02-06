@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 
@@ -75,13 +75,13 @@ void do_kill(object me, object obj)
 
     if( userp(obj) )
     {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	obj->fight_ob(me);
 	tell_object(obj, HIR "如果你要和" + me->name() 
 	    + "性命相搏，請你也對這個人下一次 kill 指令。\n" NOR);
     }
     else {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	if( function_exists("accept_kill", obj)
 	&&  ! obj->is_killing(me)
 	&&  obj->accept_kill(me) ) {

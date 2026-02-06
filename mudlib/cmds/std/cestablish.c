@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 #include <login.h>
 #include <ansi.h>
 inherit F_CLEAN_UP;

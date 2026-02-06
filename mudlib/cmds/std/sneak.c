@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 
 // This command is another command for movement. Those NPCs who intercept
@@ -119,7 +119,7 @@ int do_sneak(object me, object obj, string dir, string exit_dir, int type)
         me->force_me("go " + exit_dir);
         break;
     case 1:
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	rating = 1 + random( me->query_skill("sneak") * 2 );
         tell_object(me, "看起來，似乎還沒有人發覺你的行動。\n");
 	me->set_temp("pending/hidden", rating);

@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #pragma save_binary
 
@@ -99,7 +99,7 @@ int do_get(object me, object obj)
 
     if( obj->is_character() ) 
 	return notify_fail("不行!\n");
-// vim: set ts=4 sw=4 syntax=lpc
+
     notify_fail("這樣東西拿不出來。\n");
     if( from_ob->hold_object(obj) ) return 0;
 

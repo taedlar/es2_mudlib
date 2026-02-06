@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #pragma optimize
 #pragma save_binary
@@ -31,7 +31,7 @@ mapping default_dirs = ([
 
 void create()
 {
-    // vim: set ts=4 sw=4 syntax=lpc
+
     seteuid(getuid());
 }
 

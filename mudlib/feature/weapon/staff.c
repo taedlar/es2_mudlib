@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 varargs void init_damage(int, int, int, int, mixed...);
 

@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #define SYNTAX	"指令格式﹕purge [<未上線天數>] | <使用者姓名> because <原因>\n"
 #define SAVE_EXTENSION ".o"

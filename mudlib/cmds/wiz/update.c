@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <command.h>
 
@@ -39,7 +39,7 @@ int main(object me, string file)
 	file = resolve_path(me->query("cwd"), file);
 
 	if( file_size(file) < 0 && file[<2..<1] != ".c" ) file += ".c";
-	if( file_size(file) < 0 )	// vim: set ts=4 sw=4 syntax=lpc
+	if( file_size(file) < 0 )
 	    return notify_fail("沒有 " + file + " 這個檔案。\n");
     }
 

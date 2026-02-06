@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <dbase.h>
 #include <name.h>
@@ -34,7 +34,7 @@ int study_ob(object me)
 	    }
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     content = query("content");
     if( !content )
 	return notify_fail("這上面沒有記載什麼有用的內容。\n");
@@ -65,14 +65,14 @@ int study_content(object me)
     if( ! mapp(content = query("content"))
     ||	! sizeof(content) ) return 0;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     skill = me->query_skill("literate");
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     cost = 1 + (9 - me->query_attr("wis")/3);
     if( cost < 1 ) cost = 1;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( (archaism = query("required/skill/archaic attainment")) ) {
 	skill = skill/10 + me->query_skill("archaic attainment");
 	cost *= 2;

@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 
@@ -9,7 +9,7 @@ int main(object me, string arg)
     if( !arg ) return notify_fail("你要替自己取什麼綽號﹖\n");
     if( strlen(arg) > 14 )
 	return notify_fail("你的綽號太長了﹐想一個短一點的、響亮一點的。\n");
-// vim: set ts=4 sw=4 syntax=lpc
+
     seteuid(getuid());
     me->set("nickname", arg);    // use arg + NOR if colorful nick is open
     write("Ok。\n");

@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 // 這個 daemon 用來管理一些會隨機在各區域間「旅行」的 NPC 及相關事務。
 

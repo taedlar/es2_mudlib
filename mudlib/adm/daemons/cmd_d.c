@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 // Created by Annihilator (11/07/94)
 
@@ -55,16 +55,16 @@ find_command(string verb, string *path)
 
     if( !pointerp(path) ) return 0;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( pointerp(p = cache[verb+".c"])
     &&	sizeof(p & path) )
         return p[0] + verb;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     p = path - cached_path;
     if( sizeof(p) ) {
-	foreach(dir in p) rehash(dir);		// vim: set ts=4 sw=4 syntax=lpc
-	if( pointerp(p = cache[verb+".c"])	// vim: set ts=4 sw=4 syntax=lpc
+	foreach(dir in p) rehash(dir);
+	if( pointerp(p = cache[verb+".c"])
 	&&  sizeof(p & path) )
 	    return p[0] + verb;
     }

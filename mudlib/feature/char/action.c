@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <dbase.h>
 #include <function.h>
@@ -68,7 +68,7 @@ interrupt(object who, string how)
 	}
     }
     else if( functionp(intr) ) {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	if( evaluate(intr, this_object(), who, how)
 	||  how[0]=='*' ) {
 	    busy = 0;

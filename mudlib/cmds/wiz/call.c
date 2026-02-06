@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <command.h>
 
@@ -19,7 +19,7 @@ main(object me, string arg)
     if( !arg || arg=="" ) return notify_fail(USAGE);
 
     if( sscanf(arg, "-%s %s", euid, arg)==2 ) {
-	// vim: set ts=4 sw=4 syntax=lpc
+
 	switch(euid)
 	{
 	case DOMAIN_UID:

@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 inherit ROOM;
 
@@ -241,7 +241,7 @@ int do_list(string arg)
     if( !sizeof(inv) ) return notify_fail("當鋪裡現在沒有可供出售的貨物。\n");
     if( arg ) inv = filter( inv, (: $1->id($(arg)) :) );
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
     msg = "當鋪裡現在有以下貨物出售﹕\n\n";
     for ( i = 0; i < sizeof(inv); i++)

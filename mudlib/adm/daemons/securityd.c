@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #pragma save_binary
 
@@ -43,7 +43,7 @@ private string *wiz_levels =
 // from the current directory to root. And exclude is checked prior than
 // trusted.
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 private mapping trusted_write =
 ([
@@ -52,7 +52,7 @@ private mapping trusted_write =
     "/data/daemon":	({ MUDLIB_UID }),
     "/open":		({ "(wizard)", "(apprentice)" }),
 #if 0
-    // vim: set ts=4 sw=4 syntax=lpc
+
     "/d/chin_palace":	({ "cuteweca" }),
     "/d/cloudy":	({ "knomo" }),
     "/d/zoo":		({ "cuteweca" }),
@@ -85,7 +85,7 @@ private mapping exclude_write =
     "/cmds":		({ "(arch)" }),
 ]);
 
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 private mapping trusted_read =
 ([
@@ -206,32 +206,32 @@ valid_write(string file, object user, string func)
 		geteuid(user));
 #endif
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !(euid = geteuid(user)) ) return 0;
     status = get_status(user);
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( euid==ROOT_UID ) return 1;
 
     path = explode(file, "/") - ({ "" });
     if( file[0] != '/' ) file = "/" + file;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( sizeof(path)>=3 && euid[0]>='a' && euid[0]<='z'
     && path[0]=="u" && path[1]==euid[0..0] && path[2]==euid ) return 1;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( file==SIMUL_EFUN_OB && path[0]=="log" ) return 1;
 
 #ifdef	SAVE_USER
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( func=="save_object"
     &&  (file==user_data(euid) || file==login_data(euid)
 	|| file==mail_data(euid)) )
 	return 1;
 #endif
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     for( i=sizeof(path)-1; i>=0; i--)
     {
 	dir = "/" + implode(path[0..i], "/");
@@ -240,7 +240,7 @@ valid_write(string file, object user, string func)
 	    return 0;
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( (member_array(euid, trusted_write["/"])>=0)
     ||	member_array(status, trusted_write["/"])>=0 )
 	return 1;
@@ -268,11 +268,11 @@ valid_read(string file, mixed user, string func)
 		geteuid(user));
 #endif
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( !(euid = geteuid(user)) ) return 0;
     status = get_status(user);
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( euid==ROOT_UID ) return 1;
 
     // allow operations on user data of the same euid
@@ -282,11 +282,11 @@ valid_read(string file, mixed user, string func)
     path = explode(file, "/") - ({ "" });
     if( file[0] != '/' ) file = "/" + file;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( sizeof(path)>=3 && euid[0]>='a' && euid[0]<='z'
     && path[0]=="u" && path[1]==euid[0..0] && path[2]==euid ) return 1;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     for(i=sizeof(path)-1; i>=0; i--) {
 	dir = "/" + implode(path[0..i], "/");
 	if( undefinedp(perm = exclude_read[dir]) ) continue;
@@ -294,7 +294,7 @@ valid_read(string file, mixed user, string func)
 	    return 0;
     }
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( member_array(euid, trusted_read["/"])!=-1 ) return 1;
     if( member_array(status, trusted_read["/"])!=-1 ) return 1;
     for(i=sizeof(path)-1; i>=0; i--) {

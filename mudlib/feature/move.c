@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #pragma optimize
 
@@ -99,7 +99,7 @@ move(mixed dest, int silently)
 void
 remove(string euid)
 {
-    // vim: set ts=4 sw=4 syntax=lpc
+
     remove_call_out();
 
     if( query("equipped") ) this_object()->unequip();

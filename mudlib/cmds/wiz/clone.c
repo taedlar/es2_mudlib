@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <command.h>
 #include "/doc/help.h"
@@ -13,7 +13,7 @@ int main(object me, string file)
 
     SECURED_WIZARD_COMMAND;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     seteuid(geteuid(this_player(1)));
 
     if (!file) file = me->query("cwf");

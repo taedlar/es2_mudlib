@@ -1,4 +1,4 @@
-// vim: set ts=4 sw=4 syntax=lpc
+
 
 #include <ansi.h>
 
@@ -20,7 +20,7 @@ main(object me, string arg)
     if( me->is_busy() )
 	return notify_fail("請先用 halt 停止你正在做的事。\n");
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( userp(me) )
     {
 	if( me->query_stat("fatigue") >= me->query_stat_maximum("fatigue") )
@@ -57,7 +57,7 @@ do_berserk(object me)
     object ob, *enemy;
     int skill, power, cost, max_attack, max_hit, penalty, exp, kee_cost;
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     // 加上膂力和膽識的效用, 並整體上調降berserk的破壞力, 除了因為
     // berserk + powerblow 目前過於暴力外, 亦先預留未開放技能有再
     // 增強軍人攻擊力的空間, 如: leadership  -dragoon
@@ -78,22 +78,22 @@ do_berserk(object me)
     message_vision(HIR "\n$N一聲怒吼，大喊：「殺～～～～～！」\n\n" NOR,
         me);
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     skill = me->query_skill("berserk");
-    power = cost * 3500;		// vim: set ts=4 sw=4 syntax=lpc
-    max_attack = skill / 20;		// vim: set ts=4 sw=4 syntax=lpc
+    power = cost * 3500;
+    max_attack = skill / 20;
     if( max_attack < 4 ) max_attack = 4;
-    max_hit = skill / 45;		// vim: set ts=4 sw=4 syntax=lpc
+    max_hit = skill / 45;
     if( max_hit < 1 ) max_hit = 1;
 
     me->add_temp("apply/attack", skill/4);
     me->add_temp("apply/strength", power);
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     enemy = me->query_enemy();
     while( max_hit-- && max_attack ) {
 	foreach(ob in enemy) {
-	    if( ! ob ) continue;	// vim: set ts=4 sw=4 syntax=lpc
+	    if( ! ob ) continue;
 	    // 若是敵人不在同一個房間, 跳過
 	    if( environment(ob) != environment(me) ) continue;
 	    me->attack(ob);
@@ -111,7 +111,7 @@ do_berserk(object me)
     me->add_temp("apply/attack", - skill/4);
     me->add_temp("apply/strength", - power);
 
-    // vim: set ts=4 sw=4 syntax=lpc
+
     if( userp(me) )
     {
 	me->damage_stat("gin", cost/6);
