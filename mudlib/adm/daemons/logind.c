@@ -118,22 +118,19 @@ private void get_id (string arg, object ob) {
     arg = lower_case (arg);
 
     if (!check_legal_id(arg)) {
-        write("您的使用者代號：");
+        write ("您的使用者代號：");
         input_to ("get_id", ob);
         return;
     }
 
-    if (getuid (ob) != ROOT_UID)
+    if (getuid (ob) != ROOT_UID) {
+        write ("權限設定失敗。\n");
         return;
-    seteuid (arg);
-    export_uid (ob);
-    seteuid (getuid());
-
+    }
     ob->set("id", arg);
 
 #ifdef MAX_USERS
-    if( wizhood(arg)=="(player)" && sizeof(users()) >= MAX_USERS )
-    {
+    if (wizhood(arg)=="(player)" && sizeof(users()) >= MAX_USERS) {
         ppl = find_body(arg);
         // Only allow reconnect an interactive player when MAX_USERS exceeded.
         if( !ppl || !interactive(ppl) ) {
@@ -146,8 +143,7 @@ private void get_id (string arg, object ob) {
 
 #ifdef ENABLE_BAN_SITE
     // Rework by Annihilator (11/10/1999), support IP address and hostname
-    if( wizhood(arg)=="(player)" )
-    {
+    if (wizhood(arg)=="(player)") {
         string ip, pattern;
 
         ip = query_ip_number(ob);
@@ -182,8 +178,12 @@ private void get_id (string arg, object ob) {
         return;
     }
 
-    if( file_size(login_data(arg)) != -1 ) {
-        if( ob->restore() ) {
+    if (file_size(login_data(arg)) != -1) {
+        seteuid (arg);
+        export_uid (ob);
+        seteuid (getuid());
+
+        if (ob->restore()) {
             if (userp(ob) == 2) { // console user
                 write("\n");
                 authorize(ob);
@@ -340,26 +340,34 @@ private void confirm_relogin(string yn, object ob, object user) {
 }
 
 private void confirm_id(string yn, object ob) {
-    if( yn=="" ) {
-        write("使用這個名字將會創造一個新的人物﹐您確定嗎(y/n)﹖");
-        input_to("confirm_id", ob);
+    if (yn=="") {
+        write ("使用這個名字將會創造一個新的人物﹐您確定嗎(y/n)﹖");
+        input_to ("confirm_id", ob);
         return;
     }       
 
-    if( yn[0]!='y' && yn[0]!='Y' ) {
-        write("好吧﹐那麼請重新輸入您的英文名字﹕");
-        input_to("get_id", ob);
+    if (yn[0]!='y' && yn[0]!='Y') {
+        write ("好吧﹐那麼請重新輸入您的英文名字﹕");
+        input_to ("get_id", ob);
         return;
     }
 
 #ifdef ENABLE_ANTISPAM
-    if( spammer_player[ob->query("id")] ) spammer_player[ob->query("id")]++;
-    else spammer_player[ob->query("id")] = 1;
-    if( spammer_ip[query_ip_number(ob)] ) spammer_ip[query_ip_number(ob)]++;
-    else spammer_ip[query_ip_number(ob)] = 1;
+    if (spammer_player[ob->query("id")])
+        spammer_player[ob->query("id")]++;
+    else
+        spammer_player[ob->query("id")] = 1;
+    if (spammer_ip[query_ip_number(ob)])
+        spammer_ip[query_ip_number(ob)]++;
+    else
+        spammer_ip[query_ip_number(ob)] = 1;
 #endif
-    write("請設定您的密碼﹕");
-    input_to("new_password", 1, ob);
+    seteuid (ob->query("id"));
+    export_uid (ob);
+    seteuid (getuid());
+
+    write ("請設定您的密碼﹕");
+    input_to ("new_password", 1, ob);
 }
 
 private void new_password(string pass, object ob) {
