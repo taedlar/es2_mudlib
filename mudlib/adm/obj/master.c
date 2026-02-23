@@ -1,6 +1,4 @@
-
-
-// Created by Annihilator (04/16/2000)
+// Originally created by Annihilator (04/16/2000)
 
 #include <http.h>
 
@@ -70,8 +68,13 @@ static string* epilog (int load_empty) {
 
 static void preload (string file) {
     object ob;
+    string err;
 
-    ob = load_object (file);
+    err = catch(ob = load_object (file));
+    if (err) {
+        debug_message (sprintf ("failed to preload %s: %O", file, err));
+        return;
+    }
     debug_message (sprintf ("preloaded %O", ob));
 }
 

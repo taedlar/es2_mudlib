@@ -17,9 +17,6 @@ string *user_race = ({
 
 string *banned_name = ({
     "你", "妳", "我", "他", "她", "牠", "它",
-});
-
-string *banned_rude_name = ({
     "幹", "操", "娘", "媽", "屌", "屄", "插", "姦", "穴",
 });
 
@@ -267,7 +264,6 @@ void authorize(object ob) {
 系統找不到您的人物資料，可能的原因包括您在創造人物或人物在投胎轉世時
 斷線，或者因為違反規定您的人物資料被刪除了。如果您確定這個人物並沒有
 上述這些情況，請用 guest 帳號洽線上巫師查詢。
-
 NOTICE
             );
             destruct(user);
@@ -393,12 +389,12 @@ private void confirm_password(string pass, object ob) {
         return;
     }
 
-    write(@TEXT
+    write (break_chinese_string(@TEXT
 為了避免您的人物遭人盜用，ES2 將採用 email 認證方式保護人物
 所有權，所以請您輸入一個可供接收認證用電子郵件的地址。 這個
 電子郵件地址除了巫師以外，不會被其他使用者看到。
 TEXT
-    );
+    + "\n", 70, ""));
     write("您的電子郵件地址：");
     input_to("get_email",  ob);
 }
@@ -429,10 +425,11 @@ private void get_email(string email, object ob) {
 
 //  If ONE_GUEST is defined in /include/login.h, only permit one guest login.
 #ifdef ONE_GUEST
-    if ((string)ob->query("id") == "guest") {
+    if ((string)ob->query("id") == "guest" && find_player("guest")) {
         write("抱歉, 線上已經有一個 Guest 了.\n");
         destruct(ob);
-        return;            }
+        return;
+    }
 #endif
 
     // Complete non-body-specific initialization of new user here.
@@ -444,36 +441,47 @@ private void get_email(string email, object ob) {
 private void get_race(string race, object ob) {
     int kar;
     string choice;
-    if( sscanf(race, "? %s", race) ) {
-        write( read_file(HELP_DIR + "help/" + race) );
+    if (race == "?") {
+        list_user_race(ob);
+        input_to("get_race", ob);
+        return;
+    }
+    if (sscanf(race, "? %s", race)) {
+        if (file_size (HELP_DIR + "help/" + race) == -1) {
+            write("\n目前沒有這個種族的說明文件﹐請您重新選擇﹕");
+            input_to("get_race", ob);
+            return;
+        }
+        write (read_file(HELP_DIR + "help/" + race));
         // add by ueiren ... 
         // list_user_race(ob);
+        write("\n您的選擇 (用 '? <種族名>' 可查閱說明，或 '?' 可列出所有種族)﹕");
         input_to("get_race", ob);
         return;
     }
     if( member_array(race, user_race)==-1 ) {
-        write("沒有這種種族﹐請您重新選擇﹕");
-        input_to("get_race", ob);
+        write ("\n沒有這種種族﹐請您重新選擇﹕");
+        input_to ("get_race", ob);
         return;
     }
 
     kar = (int)RACE_D(race)->query("karma");
-    if( wizhood(ob)=="(player)" && (int)ob->query("karma") < kar ) {
-        write("您的業力不夠﹐請您重新選擇﹕");
-        input_to("get_race", ob);
+    if (wizhood(ob)=="(player)" && (int)ob->query("karma") < kar) {
+        write ("\n您的業力不夠﹐請您重新選擇﹕");
+        input_to ("get_race", ob);
         return;
     }
     ob->add("karma", -kar);
 
-    write("您要扮演男性(m)的角色或女性(f)的角色﹖");
-    input_to("get_gender", ob, race);
+    write ("\n您要扮演男性(m)的角色或女性(f)的角色﹖");
+    input_to ("get_gender", ob, race);
 }
 
 private void get_gender(string gender, object ob, string race) {
     object body;
     string body_file;
 
-    if( gender=="" ) {
+    if (gender=="") {
         write("您要扮演男性(m)的角色或女性(f)的角色﹖");
         // fix 選性別錯誤造成 race 為 human bug  .... by ueiren
         // input_to("get_gender", ob, body);
@@ -481,8 +489,10 @@ private void get_gender(string gender, object ob, string race) {
         return;
     }
 
-    if( gender[0]=='m' || gender[0]=='M' )      gender = "male";
-    else if( gender[0]=='f' || gender[0]=='F' )     gender = "female";
+    if (gender[0]=='m' || gender[0]=='M')
+        gender = "male";
+    else if (gender[0]=='f' || gender[0]=='F')
+        gender = "female";
     else {
         write("對不起﹐您只能選擇男性(m)或女性(f)的角色﹕");
         // fix 選性別錯誤造成 race 為 human bug  .... by ueiren 
@@ -491,27 +501,27 @@ private void get_gender(string gender, object ob, string race) {
         return;
     }
 
-    if( !stringp(body_file = RACE_D(race)->query("default_body")) )
+    if (!stringp(body_file = RACE_D(race)->query("default_body")))
         body_file = USER_OB;
-        ob->set("body", body_file);
-        if( !(body = make_body(ob)) ) {
-            destruct(ob);
-            return;
-        }
+    ob->set("body", body_file);
+    if( !(body = make_body(ob)) ) {
+        destruct(ob);
+        return;
+    }
 
-        body->set("gender", gender);
-        body->set_race(race);
-        init_new_body(ob, body);
-        // Remember it so we can dest it if we go linkdead before finishing
-        // chraracter creation.
-        ob->set_temp("temp_body", body);
+    body->set("gender", gender);
+    body->set_race(race);
+    init_new_body(ob, body);
+    // Remember it so we can dest it if we go linkdead before finishing
+    // chraracter creation.
+    ob->set_temp("temp_body", body);
 
-        write("您的中文名字﹕");
-        input_to("get_name", ob, body);
+    write("您的中文名字﹕");
+    input_to("get_name", ob, body);
 }
 
 private void get_name(string arg, object ob, object user) {
-    if( !check_legal_name(arg) ) {
+    if (!check_legal_name(arg)) {
         write("您的中文名字﹕");
         input_to("get_name", ob, user);
         return;
@@ -741,33 +751,28 @@ int check_legal_id (string id) {
 
 int check_legal_name(string name) {
     int i;
-    string bname;
+    string* mbcs = explode(name, ""); // neolith extension, split a UTF-8 string to an array of MBCS characters
 
-    i = strlen(name);
+    i = sizeof(mbcs);
 
-    if( (strlen(name) < 3) || (strlen(name) > 18 ) ) {
+    if ((i < 3) || (i > 18 )) {
         write("您的顯示名稱必須使用長度 3 到 18 的合法 UTF-8 文字。\n");
         return 0;
     }
-    while(i--) {
-        if( name[i]<=' ' ) {
-            write("您的顯示名稱不能用控制字元。\n");
+    while (i--) {
+        if (mbcs[i] <= " ") {
+            write ("顯示名稱不能含有控制字元。\n");
             return 0;
         }
-        if( name[i..i+1]=="　" ) {
-            write("請不要用空白字元取名字。\n");
+        if (mbcs[i] == "　") {
+            write ("顯示名稱不可以使用空白字元。\n");
+            return 0;
+        }
+        if (member_array (mbcs[i], banned_name) != -1) {
+            write ("顯示名稱含有容易造成其他人的困擾的字元，請換一個名字。\n");
             return 0;
         }
     }
-    if( member_array(name, banned_name)!=-1 ) {
-        write("這種名字會造成其他人的困擾。\n");
-        return 0;
-    }
-    foreach(bname in banned_rude_name)
-        if( strsrch( name, bname )>-1 ) {
-            write("這種名會引起不必要的誤會。\n");
-            return 0;
-        }
     return 1;
 }
 
@@ -799,22 +804,22 @@ static int list_user_race(object link) {
 
     karma = link->query("karma");
     msg = "";
-    foreach(race in user_race) {
+    foreach (race in user_race) {
         if( RACE_D(race)->query("karma") > karma ) continue;
         msg += sprintf("%-25s %d 點業力\n",
                 to_chinese(race) + "(" + race + ")",
                 RACE_D(race)->query("karma") );
     }
 
-    if( msg=="" ) {
-        write("你所剩的業力已經沒有辦法投胎轉世了！\n");
+    if (msg=="") {
+        write ("你所剩的業力已經沒有辦法投胎轉世了！\n");
         return 0;
     }
 
     msg = "您現在共有 " + karma + " 點業力，可以選擇以下的種族：\n" + msg;
-    msg += "您的選擇(用 '? <種族名>' 可查閱說明)﹕";
+    msg += "\n您的選擇 (用 '? <種族名>' 可查閱說明，或 '?' 可列出所有種族)﹕";
 
-    write(msg);
+    write (msg);
     return 1;
 }
 
@@ -822,14 +827,13 @@ void reincarnate(object ob) {
     object link;
     int max_karma_gain, karma_gain;
 
-    if( previous_object() && geteuid(previous_object()) != ROOT_UID )
+    if (previous_object() && geteuid(previous_object()) != ROOT_UID)
         return;
 
     seteuid(getuid());
 
-
     link = ob->link();
-    if( ! link ) {
+    if (! link) {
 #ifdef	SAVE_USER
         ob->save();
 #endif
@@ -837,33 +841,31 @@ void reincarnate(object ob) {
         return;
     }
 
-
     max_karma_gain = link->query("time_aged") / 43200;
     karma_gain = ob->query_level();
-    if( karma_gain > max_karma_gain ) karma_gain = max_karma_gain;
+    if (karma_gain > max_karma_gain)
+        karma_gain = max_karma_gain;
     link->add("karma", karma_gain);
 #ifdef	SAVE_USER
     link->save();
 #endif
 
-
-    exec(link, ob);
+    exec (link, ob);
 #ifdef	SAVE_USER
-    rm(ob->query_save_file());
+    rm (ob->query_save_file());
 #endif
     destruct(ob);
 
-
-    if( !list_user_race(link) ) {
+    if (!list_user_race(link)) {
         write("請您重新創造一個人物，重新再來吧。\n");
 #ifdef	SAVE_USER
-        rm(link->query_save_file());
+        rm (link->query_save_file());
 #endif
-        destruct(link);
+        destruct (link);
         return;
     }
 
-    input_to("get_race", link);
+    input_to ("get_race", link);
 }
 
 #define VISITOR_COUNTER_FILE	"/adm/etc/visitor.cnt"
@@ -876,7 +878,10 @@ private void increment_visitor_count() {
         s = sprintf("%d 1", time());
     else {
         sscanf(s, "%d %d", t, cnt);
-        if (! t) { t = time(); cnt = 0; }
+        if (! t) {
+            t = time();
+            cnt = 0;
+        }
         s = sprintf("%d %d", t, cnt+1);
     }
     write_file (VISITOR_COUNTER_FILE, s, 1);
