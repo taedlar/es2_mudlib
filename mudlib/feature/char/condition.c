@@ -1,10 +1,6 @@
-
-
 #include <condition.h>
 
 mapping conditions = ([]);
-
-
 
 nomask void
 update_condition()
@@ -17,8 +13,6 @@ update_condition()
     foreach(cnd, cnd_data in conditions)
 	CONDITION_D(cnd)->condition_update(this_object(), cnd, cnd_data);
 }
-
-
 
 static nomask void
 restore_condition()
@@ -74,5 +68,3 @@ delete_condition(string cnd)
     CONDITION_D(cnd)->condition_unapply(this_object(), cnd);
     map_delete(conditions, cnd);
 }
-
- 

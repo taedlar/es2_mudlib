@@ -40,12 +40,12 @@ clean_up(int inherit_flag)
     // ignore it :P                                 - Annihilator
 
     if( mapp(items = query_temp("objects")) )
-	foreach(file, ob in items) {
-	    if( objectp(ob)
-	    &&	ob->is_character()
-	    &&	environment(ob)!=this_object() )
-		return 1;
-	}
+        foreach(file, ob in items) {
+            if( objectp(ob)
+            &&	ob->is_character()
+            &&	environment(ob)!=this_object() )
+                return 1;
+        }
 
     return ::clean_up(inherit_flag);
 }
@@ -62,17 +62,17 @@ remove()
 
     // Destroy wandering NPC created by this room as well.
     foreach(file, ob in items) {
-	if( objectp(ob)
-	&&  ob->is_character()
-	&&  environment(ob)!=this_object() ) {
-	    message("vision", "一陣強烈的閃光忽然出現﹐吞沒了" + ob->name() + "。\n",
-		environment(ob));
-	    destruct(ob);
-	    cnt++;
-	}
+        if( objectp(ob)
+        &&  ob->is_character()
+        &&  environment(ob)!=this_object() ) {
+            message("vision", "一陣強烈的閃光忽然出現﹐吞沒了" + ob->name() + "。\n",
+                environment(ob));
+            destruct(ob);
+            cnt++;
+        }
     }
     if( cnt && this_player() )
-	write("WARNNING: " + cnt + " wandering NPC(s) created by this room are forced destructed.\n");
+        write("WARNNING: " + cnt + " wandering NPC(s) created by this room are forced destructed.\n");
 }
 
 object
@@ -102,30 +102,30 @@ reset()
     ob_list = query("objects");
     if( mapp(ob_list) )
     {
-	if( !mapp(ob = query_temp("objects")) ) ob = ([]);
+        if( !mapp(ob = query_temp("objects")) ) ob = ([]);
 
-	foreach(file, amount in ob_list)
-	{	/* 檢查房間需要載入的物件數量是否足夠 */
-	    if( amount==1 ) {
-		if( !objectp(ob[file]) ) ob[file] = make_inventory(file);
-	    } else {
-		int i;
-		for(i=amount-1; i>=0; i--) {
-		    if( objectp(ob[file + " " + i]) ) continue;
-		    ob[file + " " + i] = make_inventory(file);
-		}
-	    }
-	}
-	set_temp("objects", ob);
+        foreach(file, amount in ob_list)
+        {	/* 檢查房間需要載入的物件數量是否足夠 */
+            if( amount==1 ) {
+                if( !objectp(ob[file]) ) ob[file] = make_inventory(file);
+            } else {
+                int i;
+                for(i=amount-1; i>=0; i--) {
+                    if( objectp(ob[file + " " + i]) ) continue;
+                    ob[file + " " + i] = make_inventory(file);
+                }
+            }
+        }
+        set_temp("objects", ob);
     }
 
     inv = all_inventory(this_object());
     foreach(obj in inv)
-	if( interactive(obj) || !clonep(obj) ) return;
+        if( interactive(obj) || !clonep(obj) ) return;
 
     // Reset resource value
     if( mapp(query("resource")) )
-	set_temp("resource", copy(query("resource")) );
+        set_temp("resource", copy(query("resource")) );
 }
 
 // Redirect item_desc of the door to this function in default.
@@ -133,11 +133,11 @@ string
 look_door(string dir)
 {
     if( !mapp(doors) || undefinedp(doors[dir]) || doors[dir]["status"]&DOOR_HIDDEN)
-	return "你要看什麼﹖\n";
+        return "你要看什麼﹖\n";
     if( doors[dir]["status"] & DOOR_CLOSED )
-	return "這個" + doors[dir]["name"] + "是關著的。\n";
+        return "這個" + doors[dir]["name"] + "是關著的。\n";
     else
-	return 0;
+        return 0;
 //	return "這個" + doors[dir]["name"] + "是開著的。\n";
 }
 
@@ -149,23 +149,23 @@ open_door(string dir, int from_other_side)
 
     if( !mapp(doors) || undefinedp(doors[dir])
     || (!from_other_side && doors[dir]["status"]&DOOR_HIDDEN))
-	return notify_fail("這個方向沒有門。\n");
+        return notify_fail("這個方向沒有門。\n");
 
     if( !from_other_side && !(doors[dir]["status"] & DOOR_CLOSED) )
-	return notify_fail( doors[dir]["name"] + "已經是開著的了。\n");
+        return notify_fail( doors[dir]["name"] + "已經是開著的了。\n");
 
     if( !from_other_side && doors[dir]["status"] & DOOR_LOCKED )
-	return notify_fail( doors[dir]["name"] + "是鎖著的。\n");
+        return notify_fail( doors[dir]["name"] + "是鎖著的。\n");
 
     exits = query("exits");
     if( !mapp(exits) || undefinedp(exits[dir]) )
-	error("Room: open_door: attempt to open a door with out an exit.\n");
+        error("Room: open_door: attempt to open a door with out an exit.\n");
 
     if( from_other_side ) {
-	message("vision", "有人從另一邊將" + doors[dir]["name"] + "打開了。\n", this_object());
+        message("vision", "有人從另一邊將" + doors[dir]["name"] + "打開了。\n", this_object());
     } else if( objectp(ob = find_object(exits[dir])) ) {
-	if( !ob->open_door(doors[dir]["other_side_dir"], 1) )
-	    return notify_fail("門的另一邊好像卡住了。\n");
+        if( !ob->open_door(doors[dir]["other_side_dir"], 1) )
+            return notify_fail("門的另一邊好像卡住了。\n");
     }
 
     doors[dir]["status"] &= (~DOOR_CLOSED);
@@ -180,19 +180,19 @@ close_door(string dir, int from_other_side)
 
     if( !mapp(doors) || undefinedp(doors[dir])
     ||    (!from_other_side && doors[dir]["status"]&DOOR_HIDDEN))
-	return notify_fail("這個方向沒有門。\n");
+        return notify_fail("這個方向沒有門。\n");
 
     if( (doors[dir]["status"] & DOOR_CLOSED) )
-	return notify_fail( doors[dir]["name"] + "已經是關著的了。\n");
+        return notify_fail( doors[dir]["name"] + "已經是關著的了。\n");
 
     exits = query("exits");
     if( !mapp(exits) || undefinedp(exits[dir]) )
-	error("Room: close_door: attempt to open a door with out an exit.\n");
+        error("Room: close_door: attempt to open a door with out an exit.\n");
 
     if( from_other_side )
-	message("vision", "有人從另一邊將" + doors[dir]["name"] + "關上了。\n", this_object());
+        message("vision", "有人從另一邊將" + doors[dir]["name"] + "關上了。\n", this_object());
     else if( objectp(ob = find_object(exits[dir])) ) {
-	if( !ob->close_door(doors[dir]["other_side_dir"], 1) ) return 0;
+        if( !ob->close_door(doors[dir]["other_side_dir"], 1) ) return 0;
     }
 
     doors[dir]["status"] |= DOOR_CLOSED;
@@ -207,24 +207,24 @@ lock_door(string dir, string key, int from_other_side)
     mapping exits;
 
     if( !mapp(doors) || undefinedp(doors[dir]) )
-	return notify_fail("這個方向沒有門。\n");
+        return notify_fail("這個方向沒有門。\n");
     if( !doors[dir]["lock"] ) return notify_fail("這個"+ doors[dir]["name"] 
-	+ "上面沒有鎖。\n");
+        + "上面沒有鎖。\n");
     if( doors[dir]["lock"] != key )
-	return notify_fail("你的鑰匙不對。\n");
+        return notify_fail("你的鑰匙不對。\n");
 
     if( doors[dir]["status"] & DOOR_LOCKED ) 
-	return notify_fail(doors[dir]["name"] + "已經鎖上了。\n");
+        return notify_fail(doors[dir]["name"] + "已經鎖上了。\n");
 
     exits = query("exits");
     if( !mapp(exits) || undefinedp(exits[dir]) )
-	error("Room: lock_door: attempt to lock a door with out an exit.\n");
+        error("Room: lock_door: attempt to lock a door with out an exit.\n");
 
     if( from_other_side )
-	message("vision", "你聽到" + doors[dir]["name"] + "發出「喀」地一聲。\n",
-	this_object());
+        message("vision", "你聽到" + doors[dir]["name"] + "發出「喀」地一聲。\n",
+        this_object());
     else if( objectp(ob = find_object(exits[dir])) )
-	if( !ob->lock_door(doors[dir]["other_side_dir"], key, 1) ) return 0;
+        if( !ob->lock_door(doors[dir]["other_side_dir"], key, 1) ) return 0;
 
     doors[dir]["status"] |= DOOR_LOCKED;
     return 1;
@@ -237,24 +237,24 @@ unlock_door(string dir, string key, int from_other_side)
     mapping exits;
 
     if( !mapp(doors) || undefinedp(doors[dir]) )
-	return notify_fail("這個方向沒有門。\n");
+        return notify_fail("這個方向沒有門。\n");
     if( !doors[dir]["lock"] ) return notify_fail("這個"+ doors[dir]["name"] 
-	+ "上面沒有鎖。\n");
+        + "上面沒有鎖。\n");
     if( doors[dir]["lock"] != key )
-	return notify_fail("你的鑰匙不對。\n");
+        return notify_fail("你的鑰匙不對。\n");
 
     if( !(doors[dir]["status"] & DOOR_LOCKED) ) 
-	return notify_fail(doors[dir]["name"] + "並沒有上鎖。\n");
+        return notify_fail(doors[dir]["name"] + "並沒有上鎖。\n");
 
     exits = query("exits");
     if( !mapp(exits) || undefinedp(exits[dir]) )
-	error("Room: unlock_door: attempt to unlock a door with out an exit.\n");
+        error("Room: unlock_door: attempt to unlock a door with out an exit.\n");
 
     if( from_other_side )
-	message("vision", "你聽到" + doors[dir]["name"] + "發出「喀」地一聲。\n",
-	this_object());
+        message("vision", "你聽到" + doors[dir]["name"] + "發出「喀」地一聲。\n",
+        this_object());
     else if( objectp(ob = find_object(exits[dir])) )
-	if( !ob->unlock_door(doors[dir]["other_side_dir"], key, 1) ) return 0;
+        if( !ob->unlock_door(doors[dir]["other_side_dir"], key, 1) ) return 0;
 
     doors[dir]["status"] &= ~DOOR_LOCKED;
     return 1;
@@ -280,26 +280,26 @@ create_door(string dir, mixed data, string other_side_dir, int door_status)
     string exit;
 
     if( !stringp(exit = query("exits/" + dir)) )
-	error("Room: create_door: attempt to create a door without exit.\n");
+        error("Room: create_door: attempt to create a door without exit.\n");
 
     // String mode.
     if( stringp(data) ) {
-	d = allocate_mapping(4);
-	d["name"] = data;
-	d["id"] = ({ dir, data, "door" });
-	d["other_side_dir"] = other_side_dir;
-	d["status"] = door_status;
+        d = allocate_mapping(4);
+        d["name"] = data;
+        d["id"] = ({ dir, data, "door" });
+        d["other_side_dir"] = other_side_dir;
+        d["status"] = door_status;
     // Compelete specification mode.
     } else if( mapp(data) )
-	d = data;
+        d = data;
     else
-	error("Create_door: Invalid door data, string or mapping expected.\n");
+        error("Create_door: Invalid door data, string or mapping expected.\n");
 
     set("detail/" + dir, (: look_door, dir :) );
 
     if( objectp(ob = find_object(exit)) ) {
-	if( !ob->check_door(other_side_dir, d) )
-	    return;
+        if( !ob->check_door(other_side_dir, d) )
+            return;
     }
 
     // Add the door.
@@ -335,11 +335,11 @@ valid_leave(object me, string dir)
     object guard, *ob;
 
     if( mapp(doors) && !undefinedp(doors[dir]) ) {
-	if( doors[dir]["status"] & DOOR_CLOSED ) {
-	    if( doors[dir]["status"]& DOOR_HIDDEN ) return notify_fail("這個方向沒有出路。\n");
-	    return notify_fail("你必須先把" + doors[dir]["name"] + "打開﹗\n");
-	}
-	// if ( door[dir]["status"] & DOOR_HAS_TRAP ) ....
+        if( doors[dir]["status"] & DOOR_CLOSED ) {
+            if( doors[dir]["status"]& DOOR_HIDDEN ) return notify_fail("這個方向沒有出路。\n");
+            return notify_fail("你必須先把" + doors[dir]["name"] + "打開﹗\n");
+        }
+        // if ( door[dir]["status"] & DOOR_HAS_TRAP ) ....
     }
     return 1;
 }
@@ -354,43 +354,43 @@ do_look(object me, string arg)
 
     // Look specific object in the room.
     if( arg ) {
-	if( str = query("detail/" + arg) ) {
-	    write(str);
-	    return 1;
-	}
-	if( strsrch(query("long"), arg) >= 0 )
-	    return notify_fail("你看不出這裡的" + arg + "有什麼特別的。\n");
-	return notify_fail("你要看什麼﹖\n");
+        if( str = query("detail/" + arg) ) {
+            write(str);
+            return 1;
+        }
+        if( strsrch(query("long"), arg) >= 0 )
+            return notify_fail("你看不出這裡的" + arg + "有什麼特別的。\n");
+        return notify_fail("你要看什麼﹖\n");
     }
 
     if( previous_object() && previous_object()->query("option/BRIEF_ROOM") )
-	str = query("short") + "，";
+        str = query("short") + "，";
     else
-	str = sprintf( "%s - %s\n    %s%s    ",
-	    query("short"),
-	    wizardp(me)? file_name(this_object()) : "",
-	    query("long"),
-	    query("outdoors") ? NATURE_D->outdoor_room_description() : "" );
+        str = sprintf( "%s - %s\n    %s%s    ",
+            query("short"),
+            wizardp(me)? file_name(this_object()) : "",
+            query("long"),
+            query("outdoors") ? NATURE_D->outdoor_room_description() : "" );
 
     if( mapp(exits = query("exits")) )
-	dirs = keys(exits);
+        dirs = keys(exits);
     
     // Check for exits with door.
     if( mapp(doors) )
-	dirs = filter(dirs, (: undefinedp(doors[$1]) || (doors[$1]["status"] & DOOR_CLOSED)==0 :));
+        dirs = filter(dirs, (: undefinedp(doors[$1]) || (doors[$1]["status"] & DOOR_CLOSED)==0 :));
 
     if( sizeof(dirs)==0 )
-	str += "這裡沒有任何明顯的出路。\n";
+        str += "這裡沒有任何明顯的出路。\n";
     else if( sizeof(dirs)==1 )
-	str += "這裡唯一的出口是 " BOLD + dirs[0] + NOR "。\n";
+        str += "這裡唯一的出口是 " BOLD + dirs[0] + NOR "。\n";
     else
-	str += sprintf("這裡明顯的出口是 " BOLD "%s" NOR " 和 " BOLD "%s" NOR "。\n",
-	    implode(dirs[0..<2], "、"), dirs[<1]);
+        str += sprintf("這裡明顯的出口是 " BOLD "%s" NOR " 和 " BOLD "%s" NOR "。\n",
+            implode(dirs[0..<2], "、"), dirs[<1]);
 
     inv = all_inventory(this_object()) - ({ me });
     foreach(ob in inv) {
-	if( !ob->visible(me) ) continue;
-	str = sprintf("%s  %s\n", str, ob->short() );
+        if( !ob->visible(me) ) continue;
+        str = sprintf("%s  %s\n", str, ob->short() );
     }
 
     message("vision", str, me);
@@ -402,10 +402,10 @@ init()
 {
     int explore_id;
     if( !undefinedp(explore_id = query("site_explore")) ) {
-	if( !this_player()->recognize(explore_id, 1) ) {
-	    this_player()->gain_score("survive", 100);
-	    this_player()->gain_score("explorer fame", 1);
-	}
+        if( !this_player()->recognize(explore_id, 1) ) {
+            this_player()->gain_score("survive", 100);
+            this_player()->gain_score("explorer fame", 1);
+        }
     }
 }
 

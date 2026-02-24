@@ -1,7 +1,9 @@
+/*
+ *  Package: Save and Restore
+ *  Summary: Saving and restoring an entity's state.
+ */
 
-
-int save()
-{
+int save() {
     string file;
 
     seteuid(getuid());
@@ -12,8 +14,7 @@ int save()
     return 0;
 }
 
-int restore()
-{
+int restore() {
     string file;
 
     seteuid(getuid());

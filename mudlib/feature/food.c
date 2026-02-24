@@ -1,5 +1,7 @@
-
-
+/*
+ *  Package: Food
+ *  Summary: An entity that can be eaten by characters to restore their health.
+ */
 #include <dbase.h>
 #include <name.h>
 

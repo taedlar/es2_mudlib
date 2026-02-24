@@ -8,13 +8,13 @@
 
 #define MAX_OPPONENT    4
 
-private object charge_target = 0;
-private object guarding = 0, *guarded = ({});
-private object *enemy = ({});
-private mapping killer = ([]);
-private int attack_patience;
+static object charge_target = 0;
+static object guarding = 0, *guarded = ({});
+static object *enemy = ({});
+static mapping killer = ([]);
+static int attack_patience;
 
-private object current_target;
+static object current_target;
 
 void fight_ob(object ob);
 void kill_ob(object ob);

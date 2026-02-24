@@ -1,5 +1,7 @@
-
-
+/*
+ *  Package: Identity
+ *  Summary: An entity's name and identity.
+ */
 #include <ansi.h>
 #include <dbase.h>
 

@@ -1,5 +1,7 @@
-
-
+/*
+ *  Package: Equip
+ *  Summary: An entity that can be equipped, such as weapon, armor, etc.
+ */
 #include <ansi.h>
 #include <combat.h>
 #include <dbase.h>
@@ -222,14 +224,14 @@ inflict_damage(int strength, object victim)
 
 
     if( stringp(skill = query("equipped")) ) {
-	if( skill[0..6] != "weapon/" ) return 0;
-	skill = skill[7..];
+        if( skill[0..6] != "weapon/" ) return 0;
+        skill = skill[7..];
     }
     else return 0;
 
     if( userp(owner) ) {
 
-	if( weight() > strength ) return 0;
+        if( weight() > strength ) return 0;
     }
 
 
@@ -246,9 +248,9 @@ inflict_damage(int strength, object victim)
     &&	owner->query_learn("powerblow")
     &&	random(max_bonus - owner->query_skill("powerblow")) < bonus )
     {
-	bonus = max_bonus;
-	damage = dam->multipler * dam->range;
-	owner->improve_skill("powerblow", 1 + bonus/5);
+        bonus = max_bonus;
+        damage = dam->multipler * dam->range;
+        owner->improve_skill("powerblow", 1 + bonus/5);
     }
     else damage = dam->multipler * (1+random(dam->range));
 
@@ -259,7 +261,7 @@ inflict_damage(int strength, object victim)
     damage -= random(victim->resist_damage(damage, this_object()));
 
     if( damage > 0 ) 
-	return (int)victim->receive_damage(damage, this_object(), owner);
+        return (int)victim->receive_damage(damage, this_object(), owner);
 
     return 0;
 }
@@ -277,7 +279,7 @@ init_damage(int x, int y, int z, int r, mixed *slist ...)
     dp->roll = r;
 
     foreach(skill in slist)
-	set("damage/" + skill, dp);
+        set("damage/" + skill, dp);
 
     set("phase", PHASE_PHYSICAL);
 }

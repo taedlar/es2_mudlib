@@ -1,5 +1,3 @@
-
-
 #include <ansi.h>
 #include <dbase.h>
 #include <origin.h>

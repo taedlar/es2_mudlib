@@ -8,7 +8,7 @@
 #include <statistic.h>
 #include <combat.h>
 
-private string combat_message = "";
+static string combat_message = "";
 
 void set_combat_message(string s) { combat_message = s; }
 void add_combat_message(string s) { combat_message += s; }

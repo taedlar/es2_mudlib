@@ -1,5 +1,17 @@
-
-
+/*
+ *  Package: Statistics
+ *  Summary: An entity's statistics, such as health, energy, etc.
+ *
+ *      If the entity is a character (living object), then the statistics will be used to
+ *      calculate the character's current health, such as whether it is exhausted, or even
+ *      dead. A living character usually "regenerates" its statistics over time, up to a
+ *      heal value. By receiving medical treatment or magical healing, the statistics can
+ *      be healed up to the maximum value. By receiving damage, the statistics can be consumed
+ *      or damaged, which reduces the current value or the heal value of the statistic.
+ *
+ *      If the entity is not a character, the statistics will be used for calculation when
+ *      a character interacts with it.
+ */
 #include <ansi.h>
 #include <dbase.h>
 #include <login.h>
@@ -10,12 +22,12 @@
 
 static int regenerating = 1;
 
-mapping st_maximum = ([]);
-mapping st_effective = ([]);
-mapping st_current = ([]);
-mapping st_notify = ([]);
+mapping stats_max = ([]); // maximum value of statistics
+mapping stats_heal = ([]); // maximum value of statistics that can heal by regeneration
+mapping stats_current = ([]); // current value of statistics
+mapping stats_notify = ([]); // notification thresholds for statistics
 
-static mapping st_regenerator;
+static mapping stats_regenerator = ([]);
 static object last_from_ob;
 static mapping f_exhausted = ([]);
 static mapping f_destroyed = ([]);
@@ -23,160 +35,127 @@ static mapping f_notified = ([]);
 
 // implementations
 
-string* query_stat_name() { return mapp(st_maximum) ? keys(st_maximum) : ({}); }
+string* query_stat_name() { return mapp(stats_max) ? keys(stats_max) : ({}); }
 object last_damage_giver() { return last_from_ob; }
 mapping query_exhausted() { return f_exhausted; }
 mapping query_destroyed() { return f_destroyed; }
 mapping query_notified() { return f_notified; }
 
-void clear_statistic_flags()
-{
+void clear_statistic_flags() {
     f_exhausted = ([]);
     f_destroyed = ([]);
     f_notified = ([]);
 }
 
 
-int
-query_stat(string what)
-{
+int query_stat (string what) {
     int val;
 
-    if( mapp(st_current)
-    &&	!undefinedp(val=st_current[what]) ) return val;
-    if( mapp(st_effective)
-    &&	!undefinedp(val=st_effective[what]) ) return val;
-    if( mapp(st_maximum)
-    &&	!undefinedp(val=st_maximum[what]) ) return val;
-
+    if (mapp(stats_current) && !undefinedp(val = stats_current[what]))
+        return val;
+    if (mapp(stats_heal) && !undefinedp(val = stats_heal[what]))
+        return val;
+    if (mapp(stats_max) && !undefinedp(val = stats_max[what]))
+        return val;
     return 0;
 }
 
-void
-delete_stat(string what)
-{
-    if( mapp(st_current) )	map_delete(st_current, what);
-    if( mapp(st_effective) )	map_delete(st_effective, what);
-    if( mapp(st_maximum) )	map_delete(st_maximum, what);
-    if( mapp(st_notify) )	map_delete(st_notify, what);
-    if( mapp(st_regenerator) )	map_delete(st_regenerator, what);
+void delete_stat(string what) {
+    if( mapp(stats_current) )	map_delete(stats_current, what);
+    if( mapp(stats_heal) )	map_delete(stats_heal, what);
+    if( mapp(stats_max) )	map_delete(stats_max, what);
+    if( mapp(stats_notify) )	map_delete(stats_notify, what);
+    if( mapp(stats_regenerator) )	map_delete(stats_regenerator, what);
 }
 
+mixed query_stat_current(string what)
+    { return mapp(stats_current) ? stats_current[what] : 0; }
 
-int query_stat_current(string what)
-    { return mapp(st_current) ? st_current[what] : 0; }
+mixed query_stat_effective(string what)
+    { return mapp(stats_heal) ? stats_heal[what] : 0; }
 
-int query_stat_effective(string what)
-    { return mapp(st_effective) ? st_effective[what] : 0; }
+mixed query_stat_maximum(string what)
+    { return mapp(stats_max) ? stats_max[what] : 0; }
 
-int query_stat_maximum(string what)
-    { return mapp(st_maximum) ? st_maximum[what] : 0; }
-
-int query_stat_notify(string what)
-    { return mapp(st_notify) ? st_notify[what] : 0; }
+mixed query_stat_notify(string what)
+    { return mapp(stats_notify) ? stats_notify[what] : 0; }
 
 mixed query_stat_regenerate(string what)
-    { return mapp(st_regenerator) ? st_regenerator[what] : 0; }
+    { return mapp(stats_regenerator) ? stats_regenerator[what] : 0; }
 
 
 int set_stat_current(string what, int val)
-    { return mapp(st_current) ? st_current[what] = val : 0; }
+    { return mapp(stats_current) ? stats_current[what] = val : 0; }
 
 int set_stat_effective(string what, int val)
-    { return mapp(st_effective) ? st_effective[what] = val : 0; }
+    { return mapp(stats_heal) ? stats_heal[what] = val : 0; }
 
 int set_stat_maximum(string what, int val)
-    { return mapp(st_maximum) ? st_maximum[what] = val : 0; }
+    { return mapp(stats_max) ? stats_max[what] = val : 0; }
 
 int set_stat_notify(string what, int val)
-    { return mapp(st_notify) ? st_notify[what] = val : 0; }
+    { return mapp(stats_notify) ? stats_notify[what] = val : 0; }
 
-int
-advance_stat(string what, int val)
-{
-    if( !mapp(st_maximum) || undefinedp(st_maximum[what]) ) return 0;
+int advance_stat (string what, int val) {
+    if (!mapp(stats_max) || undefinedp(stats_max[what]))
+        return 0;
 
-    return (st_maximum[what] += val);
+    return (stats_max[what] += val);
 }
 
-
-
-mixed
-set_stat_regenerate(string what, mixed val)
-{
+mixed set_stat_regenerate (string what, mixed val) {
     int max;
-
 
     if( !(max = query_stat_maximum(what)) ) return 0;
 
-    if( functionp(val) )
-	return (st_regenerator[what] = val);
+    if (functionp(val))
+        return (stats_regenerator[what] = val);
 
-    switch(val)
-    {
+    switch (val) {
     case TYPE_STATIC:
+        return (stats_regenerator[what] = 0);
 
-	return (st_regenerator[what] = 0);
     case TYPE_HEALTH:
+        if( undefinedp(query_stat_current(what)) )
+            set_stat_current(what, max);
+        if( undefinedp(query_stat_effective(what)) )
+            set_stat_effective(what, max);
+        return (stats_regenerator[what] = (: health_regenerator :) );
 
-	if( undefinedp(query_stat_current(what)) )
-	    set_stat_current(what, max);
-	if( undefinedp(query_stat_effective(what)) )
-	    set_stat_effective(what, max);
-	return (st_regenerator[what] = (: health_regenerator :) );
     case TYPE_WASTING:
+        if( undefinedp(query_stat_current(what)) )
+            set_stat_current(what, max);
+        if( undefinedp(query_stat_effective(what)) )
+            set_stat_effective(what, max);
+        return (stats_regenerator[what] = (: wasting_regenerator :) );
 
-	if( undefinedp(query_stat_current(what)) )
-	    set_stat_current(what, max);
-	if( undefinedp(query_stat_effective(what)) )
-	    set_stat_effective(what, max);
-	return (st_regenerator[what] = (: wasting_regenerator :) );
     default:
-	error("undefined regenerate method.\n");
+        error("undefined regenerate method.\n");
     }
     return 0;
 }
 
-
-
-void
-init_statistic(mapping base)
-{
+void init_statistic (mapping base) {
     mapping st;
     string s;
     int val;
 
-    if( mapp(st = query("statistic/maximum")) ) {
-	st_maximum = st;
-	delete("statistic/maximum");
+    if (!mapp(stats_max))
+        stats_max = allocate_mapping(NUM_STATISTICS);
+    if (!mapp(stats_heal))
+        stats_heal = allocate_mapping(NUM_STATISTICS);
+    if (!mapp(stats_current))
+        stats_current = allocate_mapping(NUM_STATISTICS);
+    if (!mapp(stats_notify))
+        stats_notify = allocate_mapping(NUM_STATISTICS);
+    if (!mapp(stats_regenerator))
+        stats_regenerator = allocate_mapping(NUM_STATISTICS);
+
+    if (mapp(base) && sizeof(base)) {
+        foreach (s, val in base)
+            if (undefinedp(stats_max[s]))
+                stats_max[s] = val;
     }
-
-    if( mapp(st = query("statistic/effective")) ) {
-	st_effective = st;
-	delete("statistic/effective");
-    }
-
-    if( mapp(st = query("statistic/current")) ) {
-	st_current = st;
-	delete("statistic/current");
-    }
-
-    if( mapp(st = query("statistic/notify")) ) {
-	st_notify = st;
-	delete("statistic/notify");
-    }
-
-    if( mapp(st = query("statistic")) ) delete("statistic");
-
-    if( !mapp(st_maximum) ) st_maximum = allocate_mapping(NUM_STATISTICS);
-    if( !mapp(st_effective) ) st_effective = allocate_mapping(NUM_STATISTICS);
-    if( !mapp(st_current) ) st_current = allocate_mapping(NUM_STATISTICS);
-    if( !mapp(st_notify) ) st_notify = allocate_mapping(NUM_STATISTICS);
-    if( !mapp(st_regenerator) ) st_regenerator = allocate_mapping(NUM_STATISTICS);
-
-    if( mapp(base) && sizeof(base) )
-	foreach(s, val in base)
-	    if( undefinedp(st_maximum[s]) ) st_maximum[s] = val;
 }
 
 // consume_stat()
@@ -188,42 +167,37 @@ init_statistic(mapping base)
 //
 // This function also starts regeneration automatically.
 
-varargs int
-consume_stat(string type, int damage, object who)
-{
-    if( damage < 0 ) error("damage less than zero.\n");
-    if( damage == 0 ) return 0;
+varargs int consume_stat(string type, int damage, object who) {
+    if (damage < 0)
+        error ("damage less than zero.\n");
+    if (damage == 0)
+        return 0;
 
-
-    if( !objectp(who) ) {
-	if( this_player() ) who = this_player();
-	else if( previous_object() && previous_object()->is_character() )
-	    who = previous_object();
-	else
-	    who = this_object();
+    if (!objectp(who)) {
+        if (this_player())
+            who = this_player();
+        else if (previous_object() && previous_object()->is_character())
+            who = previous_object();
+        else
+            who = this_object();
     }
 
-
-    if( !mapp(st_current)
-    ||	undefinedp(st_current[type])
-    ||	f_exhausted[type] )
-	return 0;
+    if (!mapp(stats_current) || undefinedp(stats_current[type]) || f_exhausted[type])
+        return 0;
 
     last_from_ob = who;
-    st_current[type] -= damage;
+    stats_current[type] -= damage;
 
-
-    if( st_current[type] < 0 ) {
-        st_current[type] = 0;
+    if (stats_current[type] < 0) {
+        stats_current[type] = 0;
         f_exhausted[type] = who;
     }
 
-
-    if( who && mapp(st_notify) && !undefinedp(st_notify[type])) {
-	if( mapp(st_maximum) && !undefinedp(st_maximum[type])
-	&&  st_maximum[type] > 0
-	&&  st_current[type]*100/st_maximum[type] < st_notify[type] )
-	    f_notified[type] = who;
+    if (who && mapp(stats_notify) && !undefinedp(stats_notify[type])) {
+        if (mapp(stats_max) && !undefinedp(stats_max[type])
+        &&  stats_max[type] > 0
+        &&  stats_current[type]*100/stats_max[type] < stats_notify[type])
+            f_notified[type] = who;
     }
 
     start_regenerate();
@@ -233,52 +207,46 @@ consume_stat(string type, int damage, object who)
 // damage_stat()
 //
 // This is the formal method to let a character receive 'damage', which
-// reduces the effective value of a statistic. Once the effective value
+// reduces the heal value of a statistic. Once the heal value
 // of a statistic drops below zero, the statistic is 'destroyed', and a
 // flag is set (to the object that causes the last damage). This flag
 // should be checked in heart_beat and make proper changes.
 //
 // This function also starts regeneration automatically.
 
-varargs int
-damage_stat(string type, int damage, object who)
-{
-    if( damage < 0 ) error("damage less than zero.\n");
-    if( damage == 0 ) return 0;
+varargs int damage_stat (string type, int damage, object who) {
+    if (damage < 0)
+        error("damage less than zero.\n");
+    if (damage == 0)
+        return 0;
 
-
-    if( !objectp(who) ) {
-	if( this_player() ) who = this_player();
-	else if( previous_object() && previous_object()->is_character() )
-	    who = previous_object();
-	else
-	    who = this_object();
+    if (!objectp(who)) {
+        if (this_player())
+            who = this_player();
+        else if (previous_object() && previous_object()->is_character())
+            who = previous_object();
+        else
+            who = this_object();
     }
 
-
-    if( !mapp(st_effective)
-    ||	undefinedp(st_effective[type])
-    ||	f_destroyed[type] )
-	return 0;
+    if (!mapp(stats_heal) || undefinedp(stats_heal[type]) || f_destroyed[type])
+        return 0;
 
     last_from_ob = who;
-    st_effective[type] -= damage;
+    stats_heal[type] -= damage;
 
+    if (mapp(stats_current) && stats_current[type] > stats_heal[type])
+        stats_current[type] = stats_heal[type];
 
-    if( mapp(st_current) && st_current[type] > st_effective[type] )
-	st_current[type] = st_effective[type];
-
-
-    if( st_effective[type] < 0 ) {
-        st_effective[type] = 0;
+    if (stats_heal[type] < 0) {
+        stats_heal[type] = 0;
         f_destroyed[type] = who;
     }
-
-    else if( who && mapp(st_notify) && !undefinedp(st_notify[type])) {
-	if( mapp(st_maximum) && !undefinedp(st_maximum[type])
-	&&  st_maximum[type] > 0
-	&&  st_effective[type]*100/st_maximum[type] < st_notify[type] )
-	    f_notified[type] = who;
+    else if (who && mapp(stats_notify) && !undefinedp(stats_notify[type])) {
+        if (mapp(stats_max) && !undefinedp(stats_max[type])
+        &&  stats_max[type] > 0
+        &&  stats_heal[type]*100/stats_max[type] < stats_notify[type])
+            f_notified[type] = who;
     }
 
     start_regenerate();
@@ -289,56 +257,56 @@ damage_stat(string type, int damage, object who)
 //
 // This is the formal method to supplement statistics of a character.
 // Note supplement can fill a statistic's current value up to its
-// effective value.
+// heal value.
 //
 // This function also starts regenerating automatically.
 
-int
-supplement_stat(string type, int heal)
-{
+int supplement_stat(string type, int heal) {
     int old_stat;
 
-    if( heal < 0 ) error("heal less than zero.\n");
+    if (heal < 0)
+        error ("heal less than zero.\n");
 
-    if( !mapp(st_current) || undefinedp(st_current[type]) ) return 0;
+    if (!mapp(stats_current) || undefinedp(stats_current[type]))
+        return 0;
 
-    old_stat = st_current[type];
-    st_current[type] += heal;
+    old_stat = stats_current[type];
+    stats_current[type] += heal;
 
-    if( mapp(st_maximum) && st_current[type] > st_maximum[type] )
-	st_current[type] = st_maximum[type];
+    if (mapp(stats_max) && stats_current[type] > stats_max[type])
+        stats_current[type] = stats_max[type];
 
-    if( mapp(st_effective) && st_current[type] > st_effective[type] )
-	st_current[type] = st_effective[type];
+    if (mapp(stats_heal) && stats_current[type] > stats_heal[type])
+        stats_current[type] = stats_heal[type];
 
     start_regenerate();
-    return st_current[type] - old_stat;
+    return stats_current[type] - old_stat;
 }
 
 // heal_stat()
 //
 // This is the formal method to heal a character's statistic. Healing
-// a statistic can fill its effective value up to its maximum.
+// a statistic can fill its heal value up to its maximum.
 //
 // This function also starts regenerating automatically.
 
-int
-heal_stat(string type, int heal)
-{
+int heal_stat(string type, int heal) {
     int old_stat;
 
-    if( heal < 0 ) error("heal less than zero.\n");
+    if (heal < 0)
+        error("heal less than zero.\n");
 
-    if( !mapp(st_effective) || undefinedp(st_effective[type]) ) return 0;
+    if (!mapp(stats_heal) || undefinedp(stats_heal[type]))
+        return 0;
 
-    old_stat = st_effective[type];
-    st_effective[type] += heal;
+    old_stat = stats_heal[type];
+    stats_heal[type] += heal;
 
-    if( mapp(st_maximum) && st_effective[type] > st_maximum[type] )
-	st_effective[type] = st_maximum[type];
+    if (mapp(stats_max) && stats_heal[type] > stats_max[type])
+        stats_heal[type] = stats_max[type];
 
     start_regenerate();
-    return st_effective[type] - old_stat;
+    return stats_heal[type] - old_stat;
 }
 
 // start_regenerate()
@@ -350,33 +318,30 @@ heal_stat(string type, int heal)
 
 void start_regenerate() { regenerating = 1; }
 
-
-
-int regenerate()
-{
+int regenerate() {
     string st;
     mixed regenerator;
     int n_updated = 0;
 
-    if( !regenerating ) return 0;
+    if (!regenerating)
+        return 0;
 
-    if( !mapp(st_regenerator)
-    ||	!mapp(st_maximum) )
-	return 0;
+    if (!mapp(stats_regenerator) ||	!mapp(stats_max))
+        return 0;
 
-    foreach(st, regenerator in st_regenerator)
-    {
-	if( evaluate( regenerator,
-	    this_object(),
-	    st,
-	    st_maximum[st],
-	    mapp(st_effective) ? st_effective[st] : 0,
-	    mapp(st_current) ? st_current[st] : 0) )
-		n_updated++;
-	if( mapp(st_effective) && st_effective[st] < 0 && !f_destroyed[st])
-	    f_destroyed[st] = this_object();
-	if( mapp(st_current) && st_current[st] < 0 && !f_exhausted[st])
-	    f_exhausted[st] = this_object();
+    foreach (st, regenerator in stats_regenerator) {
+        if (evaluate (regenerator,
+            this_object(),
+            st,
+            stats_max[st],
+            mapp(stats_heal) ? stats_heal[st] : 0,
+            mapp(stats_current) ? stats_current[st] : 0)) {
+            n_updated++;
+        }
+        if (mapp(stats_heal) && stats_heal[st] < 0 && !f_destroyed[st])
+            f_destroyed[st] = this_object();
+        if (mapp(stats_current) && stats_current[st] < 0 && !f_exhausted[st])
+            f_exhausted[st] = this_object();
     }
 
     return regenerating = (n_updated > 0);
@@ -386,62 +351,60 @@ int regenerate()
 // can either use them, or just took them as examples and write your
 // own.
 
-int
-health_regenerator(object me, string stat, int max, int eff, int cur)
-{
-    if( eff <= 0 ) return 0;
+int health_regenerator (object me, string stat, int max, int heal, int cur) {
+    if (heal <= 0)
+        return 0;
 
-    if( userp(me) ) {
-	if( me->is_fighting()
-	||  (int)me->query_stat("water") < 1
-	||  me->over_encumbranced() )
-	    return 0;
+    // Generation is stopped when the character is fighting, or has no water,
+    // or is over encumbranced.
+    if (userp(me)) {
+        if (me->is_fighting()
+        ||  (int)me->query_stat("water") < 1
+        ||  me->over_encumbranced())
+            return 0;
     }
 
-    if( cur < eff ) {
-	switch(stat)
-	{
-	case "gin":
-	    return me->supplement_stat(stat, (int)me->query_attr("dex") );
-	case "kee":
-	    return me->supplement_stat(stat, (int)me->query_attr("con") );
-	case "sen":
-	    return me->supplement_stat(stat, (int)me->query_attr("spi") );
-	case "HP":
-	    return me->supplement_stat(stat, 1 );
-	default:
-	    return me->supplement_stat(stat, (int)me->query_level() );
-	}
+    if (cur < heal) {
+        switch (stat) {
+        case "gin":
+            return me->supplement_stat(stat, (int)me->query_attr("dex") );
+        case "kee":
+            return me->supplement_stat(stat, (int)me->query_attr("con") );
+        case "sen":
+            return me->supplement_stat(stat, (int)me->query_attr("spi") );
+        case "HP":
+            return me->supplement_stat(stat, 1 );
+        default:
+            return me->supplement_stat(stat, (int)me->query_level() );
+        }
     }
 
-    if( userp(me) && ((int)me->query_stat("food") < 1) ) return 0;
+    // Slowly heal if the character is well fed.
+    if (userp(me) && ((int)me->query_stat("food") < 1))
+        return 0;
 
-    if( eff < max ) {
-        switch(stat)
-        {
-	case "gin":
-	    return me->heal_stat(stat, (int)me->query_attr("dex") / 6 + 1 );
-	case "kee":
-	    return me->heal_stat(stat, (int)me->query_attr("con") / 6 + 1);
-	case "sen":
-	    return me->heal_stat(stat, (int)me->query_attr("spi") / 6 + 1);
-	case "HP":
-	    return me->heal_stat(stat, 1 );
-	default:
-	    return me->heal_stat(stat, (int)me->query_level() / 6 + 1);
-	}
+    if (heal < max) {
+        switch (stat) {
+        case "gin":
+            return me->heal_stat(stat, (int)me->query_attr("dex") / 6 + 1 );
+        case "kee":
+            return me->heal_stat(stat, (int)me->query_attr("con") / 6 + 1);
+        case "sen":
+            return me->heal_stat(stat, (int)me->query_attr("spi") / 6 + 1);
+        case "HP":
+            return me->heal_stat(stat, 1 );
+        default:
+            return me->heal_stat(stat, (int)me->query_level() / 6 + 1);
+        }
     }
 
     return 0;
 }
 
-int
-wasting_regenerator(object me, string stat, int max, int eff, int cur)
-{
-
-    if( !userp(me) ) return 0;
-
-    return me->consume_stat(stat, 1 + (me->is_fighting() ? 2 : 0), me);
+int wasting_regenerator(object me, string stat, int max, int heal, int cur) {
+    if (!userp(me))
+        return 0;
+    return me->consume_stat (stat, 1 + (me->is_fighting() ? 2 : 0), me);
 }
 
 

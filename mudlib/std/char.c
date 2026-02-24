@@ -22,7 +22,7 @@ inherit F_CONDITION;
 inherit F_DBASE;
 inherit F_FINANCE;
 inherit F_MESSAGE;
-inherit F_MASTER;
+inherit F_RELATION;
 inherit F_MOVE;
 inherit F_NAME;
 inherit F_SCORE;

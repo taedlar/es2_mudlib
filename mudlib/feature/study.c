@@ -1,4 +1,7 @@
-
+/*
+ *  Package: Study
+ *  Summary: Studying and learning from objects.
+ */
 
 #include <dbase.h>
 #include <name.h>

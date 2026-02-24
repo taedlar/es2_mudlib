@@ -1,9 +1,7 @@
-
-
 #include <ansi.h>
 
-int i, matched, match_line, tmp_line;
-string pattern;
+static int i, matched, match_line, tmp_line;
+static string pattern;
 
 void more (string cmd, string *text, int line)
 {

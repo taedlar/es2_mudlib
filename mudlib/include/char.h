@@ -10,7 +10,7 @@
 #define F_CONDITION		"/feature/char/condition.c"
 #define F_FAMILY		"/feature/char/family.c"
 #define F_FINANCE		"/feature/char/finance.c"
-#define F_MASTER		"/feature/char/master.c"
+#define F_RELATION		"/feature/char/relation.c"
 #define F_MESSAGE		"/feature/char/message.c"
 #define F_SCORE			"/feature/char/score.c"
 #define F_SKILL			"/feature/char/skill.c"

@@ -1,5 +1,7 @@
-
-
+/*
+ *  Package: Move
+ *  Summary: An entity's movement, such as weight, encumbrance, etc.
+ */
 #pragma optimize
 
 #include <dbase.h>
@@ -16,34 +18,28 @@ nomask int query_max_inventory() { return max_inventory; }
 nomask void set_max_encumbrance(int e) { max_encumb = e; }
 nomask void set_max_inventory(int i) { max_inventory = i; }
 
-nomask void
-add_encumbrance(int w)
-{
+nomask void add_encumbrance(int w) {
     encumb += w;
     if( encumb < 0 ) error("move: encumbrance underflow.\n");
     if( environment() ) environment()->add_encumbrance(w);
 }
 
-nomask void
-set_weight(int w)
-{
+nomask void set_weight (int w) {
     if( !environment() ) {
-	weight = w;
-	return;
+        weight = w;
+        return;
     }
     if( w!=weight ) environment()->add_encumbrance( w - weight );
     weight = w;
 }
 
-int
-receive_object(object ob, int from_inventory)
-{
+int receive_object(object ob, int from_inventory) {
     if( !from_inventory
     &&	(encumb + ob->weight() > max_encumb) )
-	return notify_fail(ob->name() + "太重了。\n");
+        return notify_fail(ob->name() + "太重了。\n");
 
     if( max_inventory > 0 && sizeof(all_inventory()) >= max_inventory )
-	return notify_fail(this_object()->name() + "裝不下了。\n");
+        return notify_fail(this_object()->name() + "裝不下了。\n");
 
     return 1;
 }
@@ -52,27 +48,25 @@ receive_object(object ob, int from_inventory)
 //
 // This function actually moves this_object into another object, after
 // checking validity of destination and maintain weight/encumbrance.
-varargs int
-move(mixed dest, int silently)
-{
+varargs int move(mixed dest, int silently) {
     mixed err;
     object env;
     int w;
 
     // If we are equipped, unequip first.
     if( query("equipped") && !this_object()->unequip() )
-	return notify_fail("你沒有辦法取下這樣東西。\n");
+        return notify_fail("你沒有辦法取下這樣東西。\n");
 
     // Check validity of dest.
     switch( typeof(dest) ) {
-	case OBJECT:
-	    break;
+        case OBJECT:
+            break;
         case STRING:
-	    err = catch(dest = load_object(dest));
-	    if( err ) error("move: error loading " + dest + ":\n" + err);
-		break;
+            err = catch(dest = load_object(dest));
+            if( err ) error("move: error loading " + dest + ":\n" + err);
+                break;
         default:
-	    error( sprintf("move: Invalid destination, Expected: object or string, Got: %O.\n", dest));
+            error( sprintf("move: Invalid destination, Expected: object or string, Got: %O.\n", dest));
     }
 
     // Check if the destination is our environment ( or environment of
@@ -96,18 +90,14 @@ move(mixed dest, int silently)
     return 1;
 }
 
-void
-remove(string euid)
-{
-
+void remove(string euid) {
     remove_call_out();
 
     if( query("equipped") ) this_object()->unequip();
     if( environment() ) environment()->add_encumbrance( - weight() );
 }
 
-void inventory_burning(object ob, int heat)
-{
+void inventory_burning(object ob, int heat) {
     all_inventory()->receive_heat(ob, heat);
 }
 

@@ -6,7 +6,7 @@
 #include <login.h>
 
 /* 指令搜尋路徑。 */
-private string *path = ({});
+static string *path = ({});
 
 string
 find_command(string verb)

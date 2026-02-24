@@ -1,4 +1,7 @@
-
+/*
+ *  Package: NPC
+ *  Summary: Non-player character.
+ */
 
 #include <ansi.h>
 #include <dbase.h>
@@ -29,16 +32,16 @@ heart_beat()
     if( living(this_object())
     &&	clonep(this_object())
     &&	mapp(schedule = query("schedule")) ) {
-	mapping gt;
-	int time_tag;
+        mapping gt;
+        int time_tag;
 
-	gt = NATURE_D->game_time(1);
-	time_tag = gt[LT_HOUR] * 100 + (gt[LT_MIN] / 10) * 10;
-	if( time_tag != last_scheduled_time_tag ) {
-	    evaluate(schedule[time_tag]);
-	    last_scheduled_time_tag = time_tag;
-	}
-	if( !this_object() ) return;
+        gt = NATURE_D->game_time(1);
+        time_tag = gt[LT_HOUR] * 100 + (gt[LT_MIN] / 10) * 10;
+        if( time_tag != last_scheduled_time_tag ) {
+            evaluate(schedule[time_tag]);
+            last_scheduled_time_tag = time_tag;
+        }
+        if( !this_object() ) return;
     }
 }
 
@@ -52,11 +55,11 @@ die()
     &&	ob != this_object()
     &&	mapp(bounty = query("bounty")) )
     {
-	string score;
-	int amount;
+        string score;
+        int amount;
 
-	foreach(score, amount in bounty)
-	    ob->gain_score(score, amount);
+        foreach(score, amount in bounty)
+            ob->gain_score(score, amount);
     }
 
     ::die();
@@ -74,7 +77,7 @@ carry_object(string file)
 
     // Support of uniqueness.
     if( ob->violate_unique() ) ob = ob->create_replica();
-	if( !ob ) return VOID_OB;
+        if( !ob ) return VOID_OB;
 
     ob->varify_template(this_object());
     ob->move(this_object());
@@ -107,16 +110,16 @@ eval_chat(mixed chat)
     switch(typeof(chat))
     {
     case STRING:
-	say(CYN + chat + NOR);
-	return 0;
+        say(CYN + chat + NOR);
+        return 0;
     case ARRAY:
-	if( !sizeof(chat) ) return 0;
-	chat[0] =  eval_chat(chat[0]);
-	return chat - ({ 0 });
+        if( !sizeof(chat) ) return 0;
+        chat[0] =  eval_chat(chat[0]);
+        return chat - ({ 0 });
     case FUNCTION:
-	return chat;
+        return chat;
     default:
-	return 0;
+        return 0;
     }
 }
 
@@ -131,23 +134,23 @@ chat()
 
     // Evaluate programmed chat first.
     if( next_chat ) {
-	next_chat = eval_chat(next_chat);
-	return 1;
+        next_chat = eval_chat(next_chat);
+        return 1;
     }
 
     // Else, do random chat if any.
     if( ! (chance = (int)query(is_fighting()? "chat_chance_combat": "chat_chance")) )
-	return 0;
+        return 0;
 
     if( arrayp(msg = query(is_fighting()? "chat_msg_combat": "chat_msg"))
     &&	sizeof(msg) ) {
-	if( random(100) > chance ) return 0;
-	rnd = random(sizeof(msg));
-	if( stringp(msg[rnd]) )
-	    say(CYN + msg[rnd] + NOR);
-	else if( functionp(msg[rnd]) )
-	    evaluate(msg[rnd]);
-	return 1;
+        if( random(100) > chance ) return 0;
+        rnd = random(sizeof(msg));
+        if( stringp(msg[rnd]) )
+            say(CYN + msg[rnd] + NOR);
+        else if( functionp(msg[rnd]) )
+            evaluate(msg[rnd]);
+        return 1;
     }
 }
 
@@ -174,7 +177,7 @@ void cast_spell(string spell)
     string spell_skill;
 
     if( stringp(spell_skill = skill_mapped("spells")))
-	SKILL_D(spell_skill)->cast_spell(this_object(), spell);
+        SKILL_D(spell_skill)->cast_spell(this_object(), spell);
 }
 
 // conjure_magic() : Cuase the NPC to conjure a specific magic power
@@ -184,7 +187,7 @@ void conjure_magic(string magic)
     string magic_skill;
 
     if( stringp(magic_skill  = skill_mapped("magic")))
-	SKILL_D(magic_skill)->conjure_magic(this_object(), magic);
+        SKILL_D(magic_skill)->conjure_magic(this_object(), magic);
 }
 
 void acupuncture_cauterization(string cauterization)
@@ -192,7 +195,7 @@ void acupuncture_cauterization(string cauterization)
     string cauterization_skill;
 
     if( stringp(cauterization_skill  = skill_mapped("cauterization")))
-	SKILL_D(cauterization_skill)->acupuncture_cauterization(this_object(), cauterization);
+        SKILL_D(cauterization_skill)->acupuncture_cauterization(this_object(), cauterization);
 }
 
 // exert_function() : Cause the NPC to exert a specific martial skill
@@ -202,7 +205,7 @@ int exert_function(string func)
     string force_skill;
 
     if( stringp(force_skill = skill_mapped("force")))
-	SKILL_D(force_skill)->exert_function(this_object(), func);
+        SKILL_D(force_skill)->exert_function(this_object(), func);
 }
 
 // perform_action() : Cause the NPC to perform a specific function of a skill
@@ -210,8 +213,8 @@ int exert_function(string func)
 int perform_action(string skill, string action)
 {
     if( stringp(skill) && stringp(action) )
-	SKILL_D(skill)->perform_action(this_object(),
-		action, query_opponent());
+        SKILL_D(skill)->perform_action(this_object(),
+                action, query_opponent());
 }
 
 // This overrides default activate_guard() in F_ATTACK.

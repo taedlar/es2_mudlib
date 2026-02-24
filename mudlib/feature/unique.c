@@ -1,4 +1,7 @@
-
+/*
+ *  Package: Unique
+ *  Summary: Ensuring the uniqueness of an entity.
+ */
 
 nomask int
 violate_unique()
