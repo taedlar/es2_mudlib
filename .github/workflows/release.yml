@@ -6,6 +6,9 @@ on:
       version:
         description: 'The release version (e.g., v1.2.3)'
         required: true
+      release_name:
+        description: 'The display name for the release'
+        required: true
       prerelease:
         description: 'Is this a pre-release? (true/false)'
         required: true
@@ -23,7 +26,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.event.inputs.version }}
-          name: Release ${{ github.event.inputs.version }}
+          name: ${{ github.event.inputs.release_name }}
           generate_release_notes: true
           draft: false
           prerelease: ${{ github.event.inputs.prerelease }}
