@@ -5,14 +5,13 @@ There are many Chinese MUDs thereafter started base on its code base and develop
 
 ## Usage
 
-ES2 Mudlib is compatible to the following LPMud drivers:
-- [Neolith](https://github.com/taedlar/neolith) (*recommended*)
-- MudOS v22 (probably dead)
-> It might be possible to run ES2 mudlib on popular [FluffOS](https://github.com/fluffos/fluffos), with some efforts.
+Starting from v1.5, ES2 Mudlib requries the [neolith-1.0.0](https://github.com/taedlar/neolith) LPMud driver (alpha-8 or later) to run.
+The Neolith driver offers consistent Linux/Windows LPMud environment and **coding agent-friendly** language features (see [dot-call syntax](#neolith-dot-call-syntax)).
+Legacy LPMud or MudOS is no longer supported.
 
 To run ES2 Mudlib,
 1. Build Neolith
-2. `git clone` a copy of ES2 Mudlib from this repository to a local directory.
+2. `git clone --recurse-submodules` a copy of ES2 Mudlib from this repository to a local directory.
 3. Make a copy of [neolith.conf](neolith.conf) and edit the path settings to fit your local directory.
 4. Run  
 ```
@@ -34,14 +33,21 @@ neolith -f neolith.conf -c
 ```
 > [!CAUTION]
 > External ports works as usual when in console mode.
-> However, interruption (Ctrl-C) on console mode brings down the MUD server process and disconnect all users immediately.
+> Interruption (Ctrl-C) on console mode brings down the MUD server process and disconnect all users immediately.
 
-### Differences from v1.3
-- Changed to UTF-8. No longer using Big-5 encoding.
-- Tested with Neolith only.
-- Favors `git` based source control than in-game programming. May remove certain wizard commands in the future.
-- Supports `vim` editor for its ability to [syntax highlight](docs/syntax_highlight.md) LPC programs.
-- No longer release as specific version. If you plan to stick on particular version of ES2 Mudlib, use git commit id instead.
+## Versioning
+- The `main` branch is for v1.5 onwards and requires the Neolith driver.
+- The `v1.4` branch is the legacy version compatible with MudOS or FluffOS (with minor fixes).
+- A GitHub workflow `release.yml` is added to automate ES2 mudlib main branch releases.
+
+### Neolith dot-call syntax
+In Neolith's LPC, the form `receiver.efunction(args ...)` is equivalent to `efun::efunction(receiver, args ...)` (without routing through master object `valid_override` policy check).
+
+The rationale is to encourage more **AI coding agent friendly** coding style:
+- Dot-call provides a **static compile-time binding** semantic that eliminates the ambiguity of simul_efun calls and efun calls.
+- It allows more intuitive code style with **chaining dot-call** instead of nested function calls. (e.g. `getuid().seteuid()` vs `seteuid(getuid())`)
+- It is a **common OOP syntax** in other popular modern programming languages like Python and Java. AI coding agent already seen lots of examples in their training data.
+- Type checking and **efunction contracts** still hold, allowing AI coding agent to troubleshoot invalid usages at compile-time.
 
 ## License
 
