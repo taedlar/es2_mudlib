@@ -78,13 +78,13 @@ void logon (object ob) {
 #ifdef ENABLE_ANTISPAM
     if (spammer_ip[ob.query_ip_number()] >= 10) {
         write("從您連線的主機創造的人物太多了﹐您的主機將被拒絕往來一段時間。\n");
-        ob.destruct();
+        destruct (ob);
         return;
     }
 #endif
 
-    getuid().seteuid();
-    (read_file(WELCOME) + "\n").write();
+    seteuid (getuid());
+    write (read_file(WELCOME) + "\n");
 
     UPTIME_CMD->main();
     VISITOR_CMD->main();
@@ -108,7 +108,7 @@ void logon (object ob) {
         wiz_cnt, ppl_cnt, login_cnt );
 
     write ("您的使用者代號：");
-    "get_id".input_to (ob);
+    input_to ("get_id", ob);
 }
 
 private void get_id (string arg, object ob) {
@@ -122,7 +122,7 @@ private void get_id (string arg, object ob) {
 
     if (!check_legal_id(arg)) {
         write ("您的使用者代號：");
-        "get_id".input_to (ob);
+        input_to ("get_id", ob);
         return;
     }
 
@@ -138,7 +138,7 @@ private void get_id (string arg, object ob) {
         // Only allow reconnect an interactive player when MAX_USERS exceeded.
         if( !ppl || !ppl.interactive() ) {
             write("對不起﹐" + MUD_NAME + "的使用者已經太多了﹐請待會再來。\n");
-            ob.destruct();
+            destruct (ob);
             return;
         }
     }
@@ -153,14 +153,14 @@ private void get_id (string arg, object ob) {
         foreach(pattern in banned_ip)
             if( ip==pattern || sscanf(ip, pattern) ) {
                 write("您的連線位置目前不接受使用者登入。\n");
-                ob.destruct();
+                destruct (ob);
                 return;
             }
         ip = ob.query_ip_name();
         foreach(pattern in banned_hostname)
             if( ip==pattern || sscanf(ip, pattern) ) {
                 write("您的連線位置目前不接受使用者登入。\n");
-                ob.destruct();
+                destruct (ob);
                 return;
             }
     }
@@ -170,7 +170,7 @@ private void get_id (string arg, object ob) {
     if ((int)wiz_level(arg) < (int)wiz_lock_level) {
         write(MUD_NAME + "目前限制巫師等級 " + WIZ_LOCK_LEVEL
             + " 以上的人才能連線。\n");
-        ob.destruct();
+        destruct (ob);
         return;
     }
 #endif
@@ -184,7 +184,7 @@ private void get_id (string arg, object ob) {
     if (file_size(login_data(arg)) != -1) {
         seteuid (arg);
         export_uid (ob);
-        getuid().seteuid();
+        seteuid (getuid());
 
         if (ob->restore()) {
             if (ob.userp() == 2) { // console user
@@ -197,12 +197,12 @@ private void get_id (string arg, object ob) {
             return;
         }
         write("對不起﹐您的人物儲存檔出了一些問題﹐請利用 guest 人物通知巫師處理。\n");
-        ob.destruct();
+        destruct (ob);
         return;
     }
 
     write("使用 " + (string)ob->query("id") + " 這個名字將會創造一個新的人物﹐您確定嗎(y/n)﹖");
-    "confirm_id".input_to(ob);
+    input_to("confirm_id", ob);
 }
 
 private void get_passwd(string pass, object ob) {
@@ -212,14 +212,14 @@ private void get_passwd(string pass, object ob) {
 
     if( !check_ip(ob) ) {
         write("對不起，您的連線位置不正確。\n");
-        ob.destruct();
+        destruct (ob);
         return;
     }
 
     my_pass = ob->query("password");
     if( crypt(pass, my_pass) != my_pass ) {
         write("密碼錯誤！\n");
-        ob.destruct();
+        destruct (ob);
         return;
     }
     authorize(ob);
@@ -241,7 +241,7 @@ void authorize(object ob) {
     user = make_body(ob);
     if( ! user ) {
 
-        ob.destruct();
+        destruct (ob);
         return;
     }
 
@@ -253,8 +253,8 @@ void authorize(object ob) {
             if( (ob.query_ip_name() != "localhost")
             &&	(ob.query_ip_number() != "127.0.0.1") ) {
                 write("安全檢查失敗....自動登出。\n");
-                user.destruct();
-                ob.destruct();
+                destruct (user);
+                destruct (ob);
                 return;
             }
             write("安全檢查通過。\n");
@@ -269,7 +269,7 @@ void authorize(object ob) {
 上述這些情況，請用 guest 帳號洽線上巫師查詢。
 NOTICE
             );
-            user.destruct();
+            destruct (user);
             write(HIY "您要重新創造這個人物嗎？(y/n) " NOR);
             input_to("confirm_reincarnate", ob);
         } else {
@@ -278,8 +278,8 @@ NOTICE
 資料，請稍候再試。
 NOTICE
             );
-            user.destruct();
-            ob.destruct();
+            destruct (user);
+            destruct (ob);
         }
     }
 }
@@ -293,7 +293,7 @@ private void confirm_reincarnate(string yn, object ob) {
 
     if( yn[0]!='y' && yn[0]!='Y' ) {
         write("好吧﹐歡迎下次再來。\n");
-        ob.destruct();
+        destruct (ob);
         return;
     }
 
@@ -302,7 +302,7 @@ private void confirm_reincarnate(string yn, object ob) {
 #ifdef	SAVE_USER
         rm(ob->query_save_file());
 #endif
-        ob.destruct();
+        destruct (ob);
         return;
     }
 
@@ -320,7 +320,7 @@ private void confirm_relogin(string yn, object ob, object user) {
 
     if( yn[0]!='y' && yn[0]!='Y' ) {
         write("好吧﹐歡迎下次再來。\n");
-        ob.destruct();
+        destruct (ob);
         return;
     } else {
         tell_object(user, "有人從別處( " + ob.query_ip_number()
@@ -334,10 +334,10 @@ private void confirm_relogin(string yn, object ob, object user) {
     // Kick out tho old player.
     old_link = user->link();
     if( old_link ) {
-        getuid().seteuid();
+        seteuid (getuid());
         if (user.interactive())
-            old_link.exec (user);
-        old_link.destruct();
+            exec (old_link, user);
+        destruct(old_link);
     }
 
     reconnect(ob, user);    
