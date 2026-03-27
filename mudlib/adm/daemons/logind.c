@@ -76,7 +76,7 @@ void logon (object ob) {
     }
 
 #ifdef ENABLE_ANTISPAM
-    if (spammer_ip[ob.query_ip_number()] >= 10) {
+    if (spammer_ip[query_ip_number(ob)] >= 10) {
         write("從您連線的主機創造的人物太多了﹐您的主機將被拒絕往來一段時間。\n");
         destruct (ob);
         return;
@@ -97,7 +97,7 @@ void logon (object ob) {
     for(i=0; i<sizeof(usr); i++) {
         if (!usr[i].environment())
             login_cnt++;
-        else if (usr[i].wizardp()) {
+        else if (wizardp(usr[i])) {
             if (!usr[i]->link()->query("invis"))
                 wiz_cnt++;
         }
@@ -149,14 +149,14 @@ private void get_id (string arg, object ob) {
     if (wizhood(arg)=="(player)") {
         string ip, pattern;
 
-        ip = ob.query_ip_number();
+        ip = query_ip_number(ob);
         foreach(pattern in banned_ip)
             if( ip==pattern || sscanf(ip, pattern) ) {
                 write("您的連線位置目前不接受使用者登入。\n");
                 destruct (ob);
                 return;
             }
-        ip = ob.query_ip_name();
+        ip = query_ip_name(ob);
         foreach(pattern in banned_hostname)
             if( ip==pattern || sscanf(ip, pattern) ) {
                 write("您的連線位置目前不接受使用者登入。\n");
@@ -177,7 +177,7 @@ private void get_id (string arg, object ob) {
 
     if (arg=="guest") {
         // If guest, let them create the character.
-        get_email( "guest@" + ob.query_ip_name(), ob);
+        get_email( "guest@" + query_ip_name(ob), ob);
         return;
     }
 
@@ -247,11 +247,11 @@ void authorize(object ob) {
 
     if (user->restore()) {
         log_file( "USAGE", sprintf("[%s] %s login from %s\n",
-            ctime(time()), (string)user->query("id"), ob.query_ip_name() ) );
+            ctime(time()), (string)user->query("id"), query_ip_name(ob) ) );
 
         if (wizhood(ob)=="(admin)") {
-            if( (ob.query_ip_name() != "localhost")
-            &&	(ob.query_ip_number() != "127.0.0.1") ) {
+            if( (query_ip_name(ob) != "localhost")
+            &&	(query_ip_number(ob) != "127.0.0.1") ) {
                 write("安全檢查失敗....自動登出。\n");
                 destruct (user);
                 destruct (ob);
@@ -323,12 +323,12 @@ private void confirm_relogin(string yn, object ob, object user) {
         destruct (ob);
         return;
     } else {
-        tell_object(user, "有人從別處( " + ob.query_ip_number()
+        tell_object(user, "有人從別處( " + query_ip_number(ob)
             + " )連線取代您所控制的人物。\n");
         log_file( "USAGE", sprintf("[%s] %12s replaced @ %s\n",
             ctime(time()),
             (string)user->query("id"),
-            ob.query_ip_name()) );
+            query_ip_name(ob)) );
     }
 
     // Kick out tho old player.
