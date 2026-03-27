@@ -45,9 +45,13 @@ In Neolith's LPC, the form `receiver.efunction(args ...)` is equivalent to `efun
 
 The rationale is to encourage more **AI coding agent friendly** coding style:
 - Dot-call provides a **static compile-time binding** semantic that eliminates the ambiguity of simul_efun calls and efun calls.
-- It allows more intuitive code style with **chaining dot-call** instead of nested function calls. (e.g. `getuid().seteuid()` vs `seteuid(getuid())`)
+- It allows more intuitive code style with **chaining dot-call** instead of nested function calls. (e.g. `user.environment().first_inventory()` vs `first_inventory (environment (user))`)
 - It is a **common OOP syntax** in other popular modern programming languages like Python and Java. AI coding agent already seen lots of examples in their training data.
 - Type checking and **efunction contracts** still hold, allowing AI coding agent to troubleshoot invalid usages at compile-time.
+
+> [!IMPORTANT]
+> Not all efuns allow the dot-call syntax. Only **safe** efuns declared in a `#pragma allow_dot_call` context can be called this way.
+> See [lpc.md](neolith/docs/manual/lpc.md#allowed-efuns) for a table of latest efun contracts.
 
 ## License
 
