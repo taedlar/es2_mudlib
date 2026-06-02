@@ -1,4 +1,8 @@
-// Originally created by Annihilator (04/16/2000)
+/*---
+description: The master object of the mudlib, responsible for handling connections, compiling objects, and security checks.
+author: Annihilator <taedlar@gmail.com>
+creation-date: 04/16/2000
+---*/
 
 #include <http.h>
 
@@ -45,21 +49,21 @@ private mixed compile_object(string file) {
     object daemon;
     mixed err;
 
-
     err = catch(daemon = load_object(VIRTUAL_D));
 
-    if( err || !objectp(daemon) ) return 0;
+    if (err || !objectp(daemon))
+        return 0;
     return daemon->compile_object(file);
 }
 
-private void crash(string error, object command_giver, object current_object) {
-    efun::shout("系統核心發出一聲慘叫：哇 ....\n");
-    efun::shout("系統核心告訴你﹕要當機了﹐自己保重吧﹗\n");
-    log_file("CRASHES", sprintf("[%s] %s\n", ctime(time()), error) );
+private void crash (string error, object command_giver, object current_object) {
+    efun::shout ("系統核心發出一聲慘叫：哇 ....\n");
+    efun::shout ("系統核心告訴你﹕要當機了﹐自己保重吧﹗\n");
+    log_file ("CRASHES", sprintf("[%s] %s\n", ctime(time()), error) );
     if (command_giver)
-        log_file("CRASHES", sprintf("  this_player: %O\n", command_giver));
+        log_file ("CRASHES", sprintf("  this_player: %O\n", command_giver));
     if (current_object)
-        log_file("CRASHES", sprintf("  this_object: %O\n", current_object));
+        log_file ("CRASHES", sprintf("  this_object: %O\n", current_object));
 }
 
 static string* epilog (int load_empty) {
@@ -70,7 +74,7 @@ static void preload (string file) {
     object ob;
     string err;
 
-    err = catch(ob = load_object (file));
+    err = catch (ob = load_object (file));
     if (err) {
         debug_message (sprintf ("failed to preload %s: %O", file, err));
         return;
@@ -78,29 +82,30 @@ static void preload (string file) {
     debug_message (sprintf ("preloaded %O", ob));
 }
 
-private int save_ed_setup(object who, int code) {
+private int save_ed_setup (object who, int code) {
     return write_file(user_path(getuid(who)) + ".edrc",
         save_variable(code), 1);
 }
 
-private int retrieve_ed_setup(object who) {
+private int retrieve_ed_setup (object who) {
     string val;
-  
+
     val = read_file(user_path(getuid(who)) + ".edrc");
-    return stringp(val) ? (int)restore_variable(val) : 0; 
+    return stringp(val) ? (int)restore_variable(val) : 0;
 }
 
 private void destruct_env_of(object ob) {
-    if (!interactive(ob)) return;
-    tell_object(ob, "你所存在的空間被毀滅了。\n");
-    ob->move(VOID_OB);
+    if (!interactive(ob))
+        return;
+    tell_object (ob, "你所存在的空間被毀滅了。\n");
+    ob->move (VOID_OB);
 }
 
-static string make_path_absolute(string file) {
-    return resolve_path((string)this_player()->query("cwd"), file);
+static string make_path_absolute (string file) {
+    return resolve_path ((string)this_player()->query("cwd"), file);
 }
 
-static string get_save_file_name(string fname) {
+static string get_save_file_name (string fname) {
     return fname + "." + time();
 }
 
@@ -172,10 +177,9 @@ string object_name (object ob) {
     return "euid:" + geteuid(ob);
 }
 
-string standard_trace(mapping error) {
+string standard_trace (mapping error) {
     int i, s;
     string res = "";
-
 
     res += sprintf("%O: %s: %s:%d: %s\n",
         error["object"],
@@ -183,8 +187,6 @@ string standard_trace(mapping error) {
         error["file"],
         error["line"],
         error["error"]);
-
-
 
     return res;
 }
@@ -212,26 +214,31 @@ error_handler( mapping error, int caught )
 
 static void log_error (string file, string message) {
     string name, home;
-   
-    if( find_object(SIMUL_EFUN_OB) )
+
+    if (find_object(SIMUL_EFUN_OB))
         name = file_owner(file);
 
-    if (name) home = user_path(name);
-    else home = LOG_DIR;
+    if (name)
+        home = user_path(name);
+    else
+        home = LOG_DIR;
 
-    if(this_player(1)) efun::write("編譯時段錯誤﹕" + message );
-    
-    efun::write_file(home + "log", sprintf("[%s]%s", ctime(time())[4..18], message));
+    if (this_player(1))
+        efun::write ("編譯時段錯誤﹕" + message );
+
+    efun::write_file (home + "log", sprintf ("[%s]%s", ctime (time())[4..18], message));
 }
 
 static int valid_override (string file, string name) {
-    if (file == SIMUL_EFUN_OB || file==MASTER_OB) return 1;
+    if (file == SIMUL_EFUN_OB || file==MASTER_OB)
+        return 1;
 
-    if( file[0..15] == "/adm/simul_efun/" ) return 1;
+    if (file[0..15] == "/adm/simul_efun/")
+        return 1;
 
     // Must use the move() defined in F_MOVE.
-    if(((name == "move_object") || (name == "destruct")) && (file != F_MOVE)) {
-        log_error("override", sprintf("%s attempts to override %s(), denied.\n", file, name));
+    if (((name == "move_object") || (name == "destruct")) && (file != F_MOVE)) {
+        log_error ("override", sprintf("%s attempts to override %s(), denied.\n", file, name));
         return 0;
     }
 
@@ -259,7 +266,7 @@ static int valid_save_binary (string filename) {
 }
 
 // valid_write: write privileges; called with the file name, the object
-//   initiating the call, and the function by which they called it. 
+//   initiating the call, and the function by which they called it.
 static int valid_write (string file, mixed user, string func) {
     object ob;
     int ret = 0;
@@ -272,7 +279,7 @@ static int valid_write (string file, mixed user, string func) {
 
     if (!catch(ob = load_object(SECURITY_D)) && objectp(ob)) {
         ret = (int)SECURITY_D->valid_write (file, user, func);
-            if (0 == ret)
+        if (0 == ret)
             //error (sprintf ("%s: denied writing %s for %O", func, file, user));
             debug_message (sprintf ("%s: denied writing %s for %O", func, file, user));
     }
@@ -302,18 +309,21 @@ static int valid_read( string file, mixed user, string func ) {
 
 static int valid_bind (object binder, object old_owner, object new_owner) {
     // Root can bind anything to anything
-    if( geteuid(binder)==ROOT_UID ) return 1;
+    if (geteuid(binder)==ROOT_UID)
+        return 1;
 
     // Root's function can be bind to anyone (down-grading)
-    if( old_owner && geteuid(old_owner)==ROOT_UID ) return 1;
+    if (old_owner && geteuid(old_owner)==ROOT_UID)
+        return 1;
 
     // Any function can be bind to binder itself
-    if( binder==new_owner ) return 1;
+    if (binder == new_owner)
+        return 1;
 
-    if( !userp(new_owner) && clonep(new_owner) ) return 1;
+    if (!userp(new_owner) && clonep(new_owner))
+        return 1;
 
-    log_file("bind", sprintf("%O attempts to bind %O's function to %O\n",
+    log_file ("bind", sprintf("%O attempts to bind %O's function to %O\n",
         binder, old_owner, new_owner) );
     return 0;
 }
-
