@@ -1,52 +1,56 @@
-
+/*---
+description: User alias command.
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #include <command.h>
 
 inherit F_CLEAN_UP;
 
-void create() { seteuid(getuid()); }
+void create() {
+    // User aliases are protected.
+    // Requires EUID == ROOT_UID to set user aliases.
+    seteuid(getuid());
+}
 
-int main(object me, string arg)
-{
-    int i;
+int main (object me, string arg) {
+    int i, ret;
     mapping alias;
-    string verb, replace, *vrbs;
+    string verb, replace;
     object link;
 
     SECURED_COMMAND;
 
-    if( !(link = me->link()) )
-	return notify_fail("你沒有連線物件。\n");
+    if (!(link = me->link()))
+        return notify_fail ("你沒有連線物件。\n");
 
-    if( !arg ) {
-	alias = link->query_all_alias();
-	if( !sizeof(alias) ) {
-	    write("你目前並沒有設定任何 alias。\n");
-	    return 1;
+    if (!arg) {
+        alias = link->query_all_alias();
+        if (!sizeof (alias)) {
+            write("你目前並沒有設定任何 alias。\n");
+            return 1;
         } else  {
-	    write("你目前設定的 alias 有﹕\n");
-	    vrbs = keys(alias);
-	    for(i=0; i<sizeof(vrbs); i++)
-		printf("%-15s = %s\n", vrbs[i], alias[vrbs[i]]);
-	    return 1;
-	}
+            write ("你目前設定的 alias 有﹕\n");
+            foreach (verb, replace in alias)
+                printf ("%-15s = %s\n", verb, replace);
+            return 1;
+        }
     }
 
-    if( sscanf(arg, "%s %s", verb, replace)!=2 )
-	link->set_alias(arg, 0);
-    else if( verb=="alias" )
-	return notify_fail("你不能將 \"alias\" 指令設定其他用途。\n");
-    else if( verb=="" )
-	return notify_fail("你要設什麼 alias﹖\n");
-    else
-	link->set_alias(verb, replace);
+    if (sscanf (arg, "%s %s", verb, replace) != 2)
+        link->set_alias (arg, 0);
+    else if (verb=="alias")
+        return notify_fail ("你不能將 \"alias\" 指令設定其他用途。\n");
+    else if (verb=="")
+        return notify_fail ("你要設什麼 alias﹖\n");
+    else if (!link->set_alias (verb, replace))
+        return notify_fail ("設定 alias 失敗。\n");
 
-    write("Ok.\n");
+    write ("Ok.\n");
     return 1;
 }
 
-int help (object me)
-{
+int help (object me) {
     write(@HELP
 指令格式 : alias <欲設定之指令> <系統提供之指令>
  
