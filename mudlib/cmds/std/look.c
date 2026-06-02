@@ -1,3 +1,7 @@
+/*---
+description: The look command
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #pragma save_binary
 
@@ -5,6 +9,9 @@
 #include <ansi.h>
 
 inherit F_CLEAN_UP;
+
+static int living_desc_wrap_width = 70;
+static int item_desc_wrap_width = 70;
 
 int look_room(object me, object env);
 int look_item(object me, object obj);
@@ -61,30 +68,30 @@ int look_living (object me, object obj) {
     if (me != obj)
         message ("vision", me->name() + "正盯著你看﹐不知道打些什麼主意。\n", obj);
 
-    str = break_chinese_string (obj->long(), 70) + "\n";
+    str = cjk_wrap ("    " + obj->long(), living_desc_wrap_width, 0, 4) + "\n";
 
     pro = (me == obj) ? gender_self (obj->query ("gender")) : gender_pronoun (obj->query ("gender"));
 
     race = obj->query_race();
     if( (string)obj->query("humanoid") && intp(age = obj->query("age")) ) {
         if (race == me->query_race())
-            str += break_chinese_string (
-                sprintf ("%s%s，%s看起來%s。",
+            str += cjk_wrap (
+                sprintf ("    %s%s，%s看起來%s。",
                     obj->name(),
                     RACE_D (race)->query_appearance (obj),
                     pro,
                     (age > 10) ? ("約" + chinese_number (age / 10 * 10) + "多歲") : "不到十歲"),
-                70 ) + "\n";
+                living_desc_wrap_width, 0, 4) + "\n";
         else
-            str += break_chinese_string (
-                sprintf ("%s屬於%s族，%s%s，%s看起來%s。",
+            str += cjk_wrap (
+                sprintf ("    %s屬於%s族，%s%s，%s看起來%s。",
                     obj->name(),
                     to_chinese (race),
                     pro,
                     RACE_D (race)->query_appearance (obj),
                     pro,
                     (age > 10) ? ("約" + chinese_number (age / 10 * 10) + "多歲") : "不到十歲"),
-                70 ) + "\n";
+                living_desc_wrap_width, 0, 4) + "\n";
     }
 
     inv = all_inventory (obj);
@@ -92,7 +99,7 @@ int look_living (object me, object obj) {
         inv = map_array(inv, "inventory_look", this_object(), obj->is_corpse()? 0 : 1 );
         inv -= ({ 0 });
         if (sizeof(inv))
-            str += sprintf (obj->is_corpse() ? "%s的遺物有﹕\n%s\n" : "%s身上帶著﹕\n%s\n",
+            str += sprintf (obj->is_corpse() ? "    %s的遺物有﹕\n%s\n" : "    %s身上帶著﹕\n%s\n",
                 pro,
                 implode (inv, "\n")
             );
@@ -107,8 +114,8 @@ string inventory_look(object obj, int flag)
     string str;
 
     str = obj->short();
-    if( obj->query("equipped") )
-        str = HIY "  ˇ" + str + NOR;
+    if (obj->query("equipped"))
+        str = HIY "  + " + str + NOR;
     else if( !flag )
         str = "    " + str;
     else

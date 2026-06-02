@@ -9,6 +9,7 @@
 inherit F_DBASE;
 inherit F_CLEAN_UP;
 
+static int room_desc_wrap_width = 70;
 private mapping doors;
 private mapping guards;
 
@@ -344,56 +345,55 @@ valid_leave(object me, string dir)
     return 1;
 }
 
-varargs int
-do_look(object me, string arg)
-{
+varargs int do_look(object me, string arg) {
     int i;
     object *inv, ob;
     mapping exits;
     string str, *dirs;
 
     // Look specific object in the room.
-    if( arg ) {
-        if( str = query("detail/" + arg) ) {
-            write(str);
+    if (arg) {
+        if (str = query("detail/" + arg)) {
+            write (cjk_wrap(str, room_desc_wrap_width, 0, 0));
             return 1;
         }
-        if( strsrch(query("long"), arg) >= 0 )
-            return notify_fail("你看不出這裡的" + arg + "有什麼特別的。\n");
-        return notify_fail("你要看什麼﹖\n");
+        if (strsrch (query("long"), arg) >= 0)
+            return notify_fail ("你看不出這裡的" + arg + "有什麼特別的。\n");
+        return notify_fail ("你要看什麼﹖\n");
     }
 
-    if( previous_object() && previous_object()->query("option/BRIEF_ROOM") )
+    if (previous_object() && previous_object()->query("option/BRIEF_ROOM"))
         str = query("short") + "，";
     else
-        str = sprintf( "%s - %s\n    %s%s    ",
-            query("short"),
-            wizardp(me)? file_name(this_object()) : "",
-            query("long"),
-            query("outdoors") ? NATURE_D->outdoor_room_description() : "" );
+        str = sprintf ( "%s - %s\n    %s\n%s    ",
+            query ("short"),
+            wizardp(me)? file_name (this_object()) : "",
+            cjk_wrap (query ("long"), room_desc_wrap_width, 0, 4),
+            query ("outdoors") ? NATURE_D->outdoor_room_description() : "");
 
-    if( mapp(exits = query("exits")) )
-        dirs = keys(exits);
+    if (mapp(exits = query("exits")))
+        dirs = keys (exits);
     
     // Check for exits with door.
-    if( mapp(doors) )
-        dirs = filter(dirs, (: undefinedp(doors[$1]) || (doors[$1]["status"] & DOOR_CLOSED)==0 :));
+    if (mapp(doors))
+        dirs = filter (dirs, (: undefinedp(doors[$1]) || (doors[$1]["status"] & DOOR_CLOSED)==0 :));
 
-    if( sizeof(dirs)==0 )
+    if (sizeof(dirs) == 0)
         str += "這裡沒有任何明顯的出路。\n";
-    else if( sizeof(dirs)==1 )
+    else if (sizeof(dirs) == 1)
         str += "這裡唯一的出口是 " BOLD + dirs[0] + NOR "。\n";
     else
-        str += sprintf("這裡明顯的出口是 " BOLD "%s" NOR " 和 " BOLD "%s" NOR "。\n",
-            implode(dirs[0..<2], "、"), dirs[<1]);
+        str += sprintf ("這裡明顯的出口是 " BOLD "%s" NOR " 和 " BOLD "%s" NOR "。\n",
+            implode (dirs[0..<2], "、"), dirs[<1]);
 
-    inv = all_inventory(this_object()) - ({ me });
-    foreach(ob in inv) {
-        if( !ob->visible(me) ) continue;
-        str = sprintf("%s  %s\n", str, ob->short() );
+    inv = all_inventory (this_object()) - ({ me });
+    foreach (ob in inv) {
+        if (!ob->visible(me))
+            continue;
+        str += ob->short() + "\n";
     }
 
-    message("vision", str, me);
+    message ("vision", str, me);
     return 1;
 }
 
