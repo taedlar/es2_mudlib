@@ -1,4 +1,7 @@
-// vim: syntax=lpc
+/*---
+description: combat daemon, used to handle combat mechanics and messages.
+author: Annihilator <taedlar@gmail.com>
+---*/
 #pragma save_binary
 
 #include <ansi.h>

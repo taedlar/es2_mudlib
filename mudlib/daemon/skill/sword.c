@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: 劍術技能的定義。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <ansi.h>
 
 inherit SKILL;

@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義HTTP相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef HTTP_H
 #define HTTP_H
 

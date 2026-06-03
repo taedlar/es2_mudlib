@@ -1,4 +1,7 @@
-// vim: syntax=lpc
+/*---
+description: 定義房間相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef ROOM_H
 #define ROOM_H
 

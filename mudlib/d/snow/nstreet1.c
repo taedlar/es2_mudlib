@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: 雪亭鎮北邊的主要街道。
+author: Annihilator <taedlar@gmail.com>
+---*/
 inherit ROOM;
 
 private void

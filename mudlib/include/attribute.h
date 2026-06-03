@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義角色屬性相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef	ATTRIBUTE_H
 #define	ATTRIBUTE_H
 

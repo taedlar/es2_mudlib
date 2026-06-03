@@ -110,7 +110,6 @@ This is **ES2 (Eastern Stories II)**, a LPMud mudlib project originally started 
 
 - Project uses git for source control
 - Use git commit IDs instead of version numbers
-- Supports LPC syntax highlighting in vim, see `docs/syntax_highlight.md` for vim editor setup.
 
 ## Language and Culture
 
@@ -132,10 +131,6 @@ This is **ES2 (Eastern Stories II)**, a LPMud mudlib project originally started 
 - Use descriptive names for functions and variables
 - Comment complex logic thoroughly
 - Follow existing code structure and patterns
-- Add vim modelines for consistent formatting and syntax highlighting, e.g.:
-  ```c
-  // vim: set ts=4 sw=4 syntax=lpc
-  ```
 
 ### Adding a New Command
 1. Create file in appropriate `mudlib/cmds/` subdirectory

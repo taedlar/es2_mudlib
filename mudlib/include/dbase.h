@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義角色數據庫相關的常量和函數。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef DBASE_H
 #define DBASE_H
 

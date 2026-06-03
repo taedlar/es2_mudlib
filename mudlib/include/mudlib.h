@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義 mudlib 相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef __MUDLIB_H
 #define __MUDLIB_H
 

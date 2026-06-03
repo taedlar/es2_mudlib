@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義 origin() efun 返回的代碼。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef	ORIGIN_H
 #define ORIGIN_H
 

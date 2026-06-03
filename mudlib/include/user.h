@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義使用者相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef USER_H
 #define USER_H
 

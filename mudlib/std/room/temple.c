@@ -1,4 +1,7 @@
-// vim: syntax=lpc
+/*---
+description: 定義寺廟房間相關功能。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <ansi.h>
 
 inherit ROOM;

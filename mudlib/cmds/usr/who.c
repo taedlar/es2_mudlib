@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: who command, used to display online players and their information.
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <ansi.h>
 
 inherit F_CLEAN_UP;

@@ -1,6 +1,7 @@
-// vim: syntax=lpc
-#pragma save_binary
-
+/*---
+description: 徒手格鬥技能的定義。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <ansi.h>
 
 inherit SKILL;

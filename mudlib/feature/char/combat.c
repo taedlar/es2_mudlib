@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-#pragma save_binary
+/*---
+description: 角色戰鬥相關功能的定義。
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #include <attack.h>
 #include <dbase.h>

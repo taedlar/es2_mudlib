@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義角色行動相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef ACTION_H
 #define ACTION_H
 

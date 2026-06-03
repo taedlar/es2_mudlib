@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義角色指令相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef	COMMAND_H
 #define	COMMAND_H
 

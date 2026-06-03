@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義全局常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #define MUD_NAME "天朝帝國"
 #define MUD_NAME_INTERMUD "Celestial Empire"
 #define MUD_NAME_ABBR "es2"

@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義登入相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef LOGIN_H
 #define LOGIN_H
 

@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: 提供玩家回報問題的留言板。
+author: Annihilator <taedlar@gmail.com>
+---*/
 inherit BULLETIN_BOARD;
 
 private void
