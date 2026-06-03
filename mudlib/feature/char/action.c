@@ -1,4 +1,7 @@
-
+/*---
+description: 角色行動狀態相關功能，提供 busy 狀態的設定、查詢和中斷處理。
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #include <dbase.h>
 #include <function.h>
