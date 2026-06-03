@@ -1,4 +1,7 @@
-// vim: syntax=lpc
+/*---
+description: 標準房間物件
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #pragma save_binary
 
@@ -12,6 +15,7 @@ inherit F_CLEAN_UP;
 static int room_desc_wrap_width = 70;
 private mapping doors;
 private mapping guards;
+private mapping spawn_list = ([]);
 
 int
 receive_object(object ob, int from_inventory)
@@ -19,20 +23,7 @@ receive_object(object ob, int from_inventory)
   return 1;
 }
 
-// clean_up()
-//
-// We override the clean_up() here to provide that the room won't got
-// destructed when there is NPC(s) created in this room was wandering
-// outside, and create another copy of the same NPC when next time
-// the room is loaded.
-
-int
-clean_up(int inherit_flag)
-{
-    mapping items;
-    string file;
-    object ob;
-
+int clean_up (int inherit_flag) {
     // Don't clean up if any NPCs we created were wandering somewhere.
     // This may introduce a potential deadlock that when room-A holds
     // an NPC from room-B while room-B holds another NPC from room-A.
@@ -40,93 +31,73 @@ clean_up(int inherit_flag)
     // the room not cleaned up when deadlock exists. So, we just merely
     // ignore it :P                                 - Annihilator
 
-    if( mapp(items = query_temp("objects")) )
-        foreach(file, ob in items) {
-            if( objectp(ob)
-            &&	ob->is_character()
-            &&	environment(ob)!=this_object() )
-                return 1;
-        }
+    foreach (string id, object  ob in spawn_list) {
+        if (objectp(ob) && ob->is_character() && ob.environment() != this_object())
+            return 1; // An NPC spawned by this room is wandering outside, don't clean up.
+    }
 
-    return ::clean_up(inherit_flag);
+    return ::clean_up (inherit_flag);
 }
 
-void
-remove()
-{
-    mapping items;
-    string file;
-    object ob;
+void remove() {
     int cnt = 0;
 
-    if( !mapp(items = query_temp("objects")) ) return;
-
     // Destroy wandering NPC created by this room as well.
-    foreach(file, ob in items) {
-        if( objectp(ob)
-        &&  ob->is_character()
-        &&  environment(ob)!=this_object() ) {
-            message("vision", "一陣強烈的閃光忽然出現﹐吞沒了" + ob->name() + "。\n",
-                environment(ob));
-            destruct(ob);
+    foreach (string id, object ob in spawn_list) {
+        if (objectp(ob) && ob->is_character() && ob.environment() != this_object()) {
+            message ("vision", "一陣強烈的閃光忽然出現﹐吞沒了" + ob->name() + "。\n", ob.environment());
+            destruct (ob);
             cnt++;
         }
     }
-    if( cnt && this_player() )
-        write("WARNNING: " + cnt + " wandering NPC(s) created by this room are forced destructed.\n");
+    if (cnt && wizardp(this_player()))
+        write ("WARNNING: " + cnt + " wandering NPC(s) spawned by this room are forced destructed.\n");
 }
 
-object
-make_inventory(string file)
-{
+object make_inventory (string file) {
     object ob;
 
-    ob = new(file);
+    ob = new (file);
 
-    // Support for uniqueness
-    if( ob->violate_unique() ) ob = ob->create_replica();
-    if( !ob ) return 0;
+    // check for uniqueness
+    if (ob && ob->violate_unique())
+        ob = ob->create_replica();
+    if (!ob)
+        return 0;
 
-    ob->move(this_object());
+    // if the object's create() function doesn't move it somewhere, move it here.
+    if (!ob.environment())
+        ob->move (this_object());
 
     return ob;
 }
 
-void
-reset()
-{
-    mapping ob_list, ob;
-    string file;
-    int amount;
-    object obj, *inv;
-
-    ob_list = query("objects");
-    if( mapp(ob_list) )
-    {
-        if( !mapp(ob = query_temp("objects")) ) ob = ([]);
-
-        foreach(file, amount in ob_list)
-        {	/* 檢查房間需要載入的物件數量是否足夠 */
-            if( amount==1 ) {
-                if( !objectp(ob[file]) ) ob[file] = make_inventory(file);
-            } else {
-                int i;
-                for(i=amount-1; i>=0; i--) {
-                    if( objectp(ob[file + " " + i]) ) continue;
-                    ob[file + " " + i] = make_inventory(file);
+void reset() {
+    mapping ob_list = query ("objects");
+    if (mapp (ob_list)) {
+        foreach (string file, int amount in ob_list) {	/* 檢查房間需要載入的物件數量是否足夠 */
+            if (amount == 1) {
+                if (!objectp (spawn_list[file]))
+                    spawn_list[file] = make_inventory (file);
+            }
+            else {
+                for (int i = amount - 1; i >= 0; i--) {
+                    if (objectp (spawn_list[file + " " + i]))
+                        continue;
+                    spawn_list[file + " " + i] = make_inventory (file);
                 }
             }
         }
-        set_temp("objects", ob);
     }
 
-    inv = all_inventory(this_object());
-    foreach(obj in inv)
-        if( interactive(obj) || !clonep(obj) ) return;
+    foreach (object ob in all_inventory()) {
+        if (ob.interactive() || !ob.clonep())
+            return;
+    }
 
     // Reset resource value
-    if( mapp(query("resource")) )
-        set_temp("resource", copy(query("resource")) );
+    if (mapp(query("resource")))
+        set_temp ("resource", copy (query("resource")));
 }
 
 // Redirect item_desc of the door to this function in default.
@@ -273,28 +244,27 @@ check_door(string dir, mapping door)
     return 1;
 }
 
-varargs void
-create_door(string dir, mixed data, string other_side_dir, int door_status)
-{
+varargs void create_door (string dir, mixed data, string other_side_dir, int door_status) {
     mapping d, item_desc;
     object ob;
     string exit;
 
-    if( !stringp(exit = query("exits/" + dir)) )
-        error("Room: create_door: attempt to create a door without exit.\n");
+    if (!stringp(exit = query("exits/" + dir)))
+        error("create_door: Attempt to create a door without exit.\n");
 
-    // String mode.
-    if( stringp(data) ) {
-        d = allocate_mapping(4);
+    if (stringp(data)) {
+        // create with name of the door.
+        // example: create_door("north", "木門", "south", DOOR_CLOSED);
+        d = allocate_mapping (4);
         d["name"] = data;
         d["id"] = ({ dir, data, "door" });
         d["other_side_dir"] = other_side_dir;
         d["status"] = door_status;
-    // Compelete specification mode.
-    } else if( mapp(data) )
+    } else if (mapp(data)) {
+        // create with detailed data.
         d = data;
-    else
-        error("Create_door: Invalid door data, string or mapping expected.\n");
+    } else
+        error("create_door: Invalid door data, string or mapping expected.\n");
 
     set("detail/" + dir, (: look_door, dir :) );
 
@@ -321,11 +291,11 @@ query_door(string dir, string prop)
     else return doors[dir][prop];
 }
 
-mixed
-set_door(string dir, string prop, mixed data)
-{
-    if( !mapp(doors) || undefinedp(doors[dir]) ) return 0;
-    else return doors[dir][prop] = data;
+mixed set_door (string dir, string prop, mixed data) {
+    if (!mapp(doors) || undefinedp(doors[dir]))
+        return 0;
+    else
+        return doors[dir][prop] = data;
 }
 
 int
@@ -354,7 +324,7 @@ varargs int do_look(object me, string arg) {
     // Look specific object in the room.
     if (arg) {
         if (str = query("detail/" + arg)) {
-            write (cjk_wrap(str, room_desc_wrap_width, 0, 0));
+            write (cjk_wrap(str, room_desc_wrap_width) + "\n");
             return 1;
         }
         if (strsrch (query("long"), arg) >= 0)
@@ -383,7 +353,7 @@ varargs int do_look(object me, string arg) {
     else if (sizeof(dirs) == 1)
         str += "這裡唯一的出口是 " BOLD + dirs[0] + NOR "。\n";
     else
-        str += sprintf ("這裡明顯的出口是 " BOLD "%s" NOR " 和 " BOLD "%s" NOR "。\n",
+        str += sprintf ("這裡明顯的出口有 " BOLD "%s" NOR " 和 " BOLD "%s" NOR "。\n",
             implode (dirs[0..<2], "、"), dirs[<1]);
 
     inv = all_inventory (this_object()) - ({ me });

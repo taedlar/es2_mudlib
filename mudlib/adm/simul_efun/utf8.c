@@ -3,11 +3,13 @@ description: UTF-8 utilities
 author: Annihilator <taedlar@gmail.com>
 ---*/
 
-string cjk_wrap (string str, int width, int indent, int first_line_indent) {
+varargs string cjk_wrap (string str, int width, int indent, int first_line_indent) {
     string* mbch;
     string result = "";
     int line_length = first_line_indent;
 
+    if (!width || width < 1)
+        return str;
     mbch = explode (str, ""); // [NEOLITH-EXTENSION] explode to array of utf-8 characters
     foreach (string ch in mbch) {
         int char_width = (strlen (ch) > 1) ? 2 : 1; // CJK multi-byte chars are double width
