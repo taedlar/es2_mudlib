@@ -52,7 +52,7 @@ varargs string short (int raw) {
 
     if (this_player() &&
         this_player()->query ("option/BRIEF_SHORT") == 0)
-        str += "(" + capitalize (raw ? query ("id") : this_object()->query_id()) + ")";
+        str += " (" + capitalize (raw ? query ("id") : this_object()->query_id()) + ")";
     return str;
 }
 

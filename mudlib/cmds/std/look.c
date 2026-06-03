@@ -1,3 +1,7 @@
+/*---
+description: The look command
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #pragma save_binary
 
@@ -5,6 +9,9 @@
 #include <ansi.h>
 
 inherit F_CLEAN_UP;
+
+private int living_desc_wrap_width = 70;
+private int item_desc_wrap_width = 70;
 
 int look_room(object me, object env);
 int look_item(object me, object obj);
@@ -37,7 +44,7 @@ int main (object me, string arg) {
     return result;
 }
 
-int look_item(object me, object obj) {
+int look_item (object me, object obj) {
     mixed *inv;
 
     me->start_more(obj->long());
@@ -61,30 +68,30 @@ int look_living (object me, object obj) {
     if (me != obj)
         message ("vision", me->name() + "正盯著你看﹐不知道打些什麼主意。\n", obj);
 
-    str = break_chinese_string (obj->long(), 70) + "\n";
+    str = cjk_wrap (obj->long(), living_desc_wrap_width) + "\n";
 
     pro = (me == obj) ? gender_self (obj->query ("gender")) : gender_pronoun (obj->query ("gender"));
 
     race = obj->query_race();
-    if( (string)obj->query("humanoid") && intp(age = obj->query("age")) ) {
-        if (race == me->query_race())
-            str += break_chinese_string (
-                sprintf ("%s%s，%s看起來%s。",
+    if ((string)obj->query("humanoid") && intp(age = obj->query("age"))) {
+        if (race == me->query_race()) // same race with the viewer, omit the race
+            str += cjk_wrap (
+                sprintf ("%s%s。%s的外表看起來%s。",
                     obj->name(),
                     RACE_D (race)->query_appearance (obj),
                     pro,
                     (age > 10) ? ("約" + chinese_number (age / 10 * 10) + "多歲") : "不到十歲"),
-                70 ) + "\n";
+                living_desc_wrap_width) + "\n";
         else
-            str += break_chinese_string (
-                sprintf ("%s屬於%s族，%s%s，%s看起來%s。",
+            str += cjk_wrap (
+                sprintf ("%s屬於%s族，%s%s。%s的外表看起來%s。",
                     obj->name(),
                     to_chinese (race),
                     pro,
                     RACE_D (race)->query_appearance (obj),
                     pro,
                     (age > 10) ? ("約" + chinese_number (age / 10 * 10) + "多歲") : "不到十歲"),
-                70 ) + "\n";
+                living_desc_wrap_width) + "\n";
     }
 
     inv = all_inventory (obj);
@@ -102,13 +109,12 @@ int look_living (object me, object obj) {
     return 1;
 }
 
-string inventory_look(object obj, int flag)
-{
+string inventory_look(object obj, int flag) {
     string str;
 
     str = obj->short();
-    if( obj->query("equipped") )
-        str = HIY "  ˇ" + str + NOR;
+    if (obj->query("equipped"))
+        str = HIY "[v] " + str + NOR;
     else if( !flag )
         str = "    " + str;
     else
@@ -117,13 +123,11 @@ string inventory_look(object obj, int flag)
     return str;
 }
 
-int help (object me)
-{
-    write(@HELP
+int help (object me) {
+    write (@HELP
 指令格式: look [<物品>|<生物>|<方向>]
  
-這個指令讓你查看你所在的環境、某件物品、生物、或是方向。
- 
+這個指令讓你查看你所在的環境、某件物品、生物、或是方向。 
 HELP
 );
     return 1;
