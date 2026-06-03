@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-#pragma save_binary
+/*---
+description: 定義角色相關功能。
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #include <login.h>
 #include <action.h>

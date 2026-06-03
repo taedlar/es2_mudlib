@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: 定義旅館房間相關功能。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <daemon.h>
 
 inherit ROOM;

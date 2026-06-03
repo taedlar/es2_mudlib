@@ -1,6 +1,7 @@
-// vim: syntax=lpc
-
-#include <command.h>
+/*---
+description: quit command, used to handle player logout and cleanup.
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <login.h>
 #include <action.h>
 

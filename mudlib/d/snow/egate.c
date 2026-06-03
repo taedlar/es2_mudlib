@@ -1,10 +1,11 @@
-// vim: syntax=lpc
+/*---
+description: 河邊，兩條河流的匯流處。
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 inherit ROOM;
 
-private void
-create()
-{
+void create() {
   set("short", "河邊");
   set("long", @LONG
 破舊大宅外，你眼前是兩條河流的匯流處，來自西北、東北的兩條

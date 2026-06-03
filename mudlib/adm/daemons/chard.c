@@ -1,4 +1,7 @@
-// vim: syntax=lpc
+/*---
+description: character setup daemon, used to setup characters and create corpse/mist/ghost.
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #pragma save_binary
 

@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: 雪亭鎮的一位黑衣老人。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <npc.h>
 
 inherit F_BANDIT;

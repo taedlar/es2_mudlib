@@ -1,5 +1,7 @@
-// vim: set ts=4 sw=4 syntax=lpc
-
+/*---
+description: login daemon, used to handle user login and character creation.
+author: Annihilator <taedlar@gmail.com>
+---*/
 #pragma save_binary
 
 #include <ansi.h>

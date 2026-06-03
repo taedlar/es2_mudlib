@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: 人類種族的定義。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #define BASE_WEIGHT 40000
 
 #include <ansi.h>

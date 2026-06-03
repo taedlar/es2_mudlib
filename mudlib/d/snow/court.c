@@ -1,10 +1,11 @@
-// vim: syntax=lpc
+/*---
+description: court room, used for handling local disputes and complaints.
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 inherit ROOM;
 
-private void
-create()
-{
+void create() {
   set("short", "鄉校");
   set("long", @LONG
 這裡是雪亭鎮的鄉校﹐平常鎮民對官府的施政有什麼不滿的可以到

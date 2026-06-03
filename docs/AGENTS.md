@@ -211,7 +211,6 @@ Once logged in, you can use wizard commands like:
 ### Making Code Changes
 
 1. Edit LPC files in `mudlib/`
-   - Syntax highlight with vim (see [syntax_highlight.md](syntax_highlight.md))
    - All `.c` files are LPC code, not C
 
 2. Reload objects in-game:

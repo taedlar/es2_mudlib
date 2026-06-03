@@ -1,6 +1,10 @@
-// vim: syntax=lpc
+/*---
+description: bug report room, used for players to report bugs and strange occurrences.
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #include <room.h>
+
 inherit ROOM;
 
 private void

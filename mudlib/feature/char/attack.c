@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: 角色攻擊相關功能的定義。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <ansi.h>
 #include <dbase.h>
 #include <name.h>

@@ -1,5 +1,8 @@
-// vim: syntax=lpc
-#include <ansi.h>
+/*---
+description: 角色指令相關功能的定義。
+author: Annihilator <taedlar@gmail.com>
+---*/
+
 #include <command.h>
 #include <dbase.h>
 #include <origin.h>

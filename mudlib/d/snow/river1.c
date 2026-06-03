@@ -1,5 +1,7 @@
-// vim: syntax=lpc
-
+/*---
+description: 溪邊，通往溪邊的道路。
+author: Annihilator <taedlar@gmail.com>
+---*/
 inherit ROOM;
 
 private void

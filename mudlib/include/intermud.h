@@ -1,5 +1,7 @@
-// vim: set syntax=lpc :
-
+/*---
+description: 定義互動式多用戶地城（InterMUD）相關的常量。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #ifndef INTERMUD_H
 #define INTERMUD_H
 

@@ -1,4 +1,7 @@
-// vim: syntax=lpc
+/*---
+description: 雪亭鎮的一處小土地公廟。
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <room.h>
 
 inherit TEMPLE;
