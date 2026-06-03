@@ -3,6 +3,7 @@ description: 角色指令相關功能的定義。
 author: Annihilator <taedlar@gmail.com>
 ---*/
 
+#include <ansi.h>
 #include <command.h>
 #include <dbase.h>
 #include <origin.h>
