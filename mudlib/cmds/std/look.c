@@ -13,10 +13,8 @@ inherit F_CLEAN_UP;
 private int living_desc_wrap_width = 70;
 private int item_desc_wrap_width = 70;
 
-int look_room(object me, object env);
 int look_item(object me, object obj);
 int look_living(object me, object obj);
-int look_room_item(object me, string arg);
 
 void create() {
     seteuid (getuid());
