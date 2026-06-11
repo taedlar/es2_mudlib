@@ -11,6 +11,7 @@ author: Annihilator <taedlar@gmail.com>
 #define HTTP_STAT_OK		(HTTP_VERSION " 200 Ok" CRLF)
 #define HTTP_STAT_NOTFOUND	(HTTP_VERSION " 404 File not found" CRLF)
 #define HTTP_STAT_TIMEOUT	(HTTP_VERSION " 408 Request Time-out" CRLF)
+#define HTTP_STAT_BADREQUEST	(HTTP_VERSION " 400 Bad Request" CRLF)
 
 /* Timeout to wait for the client to send its request */
 #define HTTP_TIMEOUT	5

@@ -34,7 +34,17 @@ process_input(string str)
 
     if( ! request ) {
         if( strlen(str) < 1 ) return 1;
+        if( strlen(str) > 1024 ) {
+            receive(HTTP_STAT_BADREQUEST + CRLF);
+            destruct(this_object());
+            return 1;
+        }
         if( str[<1]=='\r' ) str = str[0..<2];
+        if( strsrch(str, "..") != -1 ) {
+            receive(HTTP_STAT_BADREQUEST + CRLF);
+            destruct(this_object());
+            return 1;
+        }
         request = str;
         return 1;
     }
@@ -53,8 +63,8 @@ process_input(string str)
         + "Connection: close" CRLF
         + CRLF;
     receive(hdr + read_file("/doc/index.html"));
-    log_file("http/access.log", sprintf("[%s] %s \"%s\"\n",
-        ctime(time()), query_ip_number(this_object()), request));
+    log_file("http/access.log", "[" + ctime(time()) + "] "
+        + query_ip_number(this_object()) + " \"" + request + "\"\n");
     destruct(this_object());
 }
 
