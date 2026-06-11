@@ -8,6 +8,23 @@
  
 #define CSI     "\x1b["         /* Control Sequence Introducer */
 
+#define CUU(n)  sprintf(CSI "%dA", n)  /* Cursor Up n times */
+#define CUD(n)  sprintf(CSI "%dB", n)  /* Cursor Down n times */
+#define CUF(n)  sprintf(CSI "%dC", n)  /* Cursor Forward n times */
+#define CUB(n)  sprintf(CSI "%dD", n)  /* Cursor Back n times */
+
+#ifdef __NO_ANSI__
+#define KEY_UP      " [A"
+#define KEY_DOWN    " [B"
+#define KEY_RIGHT   " [C"
+#define KEY_LEFT    " [D"
+#else /* !__NO_ANSI__ */
+#define KEY_UP      CSI "A"
+#define KEY_DOWN    CSI "B"
+#define KEY_RIGHT   CSI "C"
+#define KEY_LEFT    CSI "D"
+#endif
+
 #define HOME    CSI "H"         /* (CUP n=1; m=1) Move cursor left-top of scren */
 #define CLR     CSI "J"         /* (ED n=2) Clear from cursor to end of screen */
 #define CLREOL  CSI "K"         /* (EL n=0) Clear from cursor to end of line */

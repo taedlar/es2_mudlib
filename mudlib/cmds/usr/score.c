@@ -40,8 +40,8 @@ int main (object me, string arg) {
     birth = ((int)ob->query ("birthday") - 14*365*24*60) * 60 % 1892160000;
 
     line = sprintf (HIW "【 %s 】" NOR "%s\n\n", ob->rank(), ob->short(1));
-    line += break_chinese_string (sprintf(
-            "%s是一%s%s歲的 %d 級%s%s%s﹐出生於%s，目前的業力是 %d 點。",
+    line += cjk_wrap (sprintf(
+            "%s是一%s%s歲的 %d 級%s%s%s﹐出生於%s，目前的業力是 %d 點。\n\n",
                 ob==me ? gender_self (ob) : gender_pronoun (ob),
                 (tmp = ob->query ("unit")) ? tmp : "個",
                 chinese_number (ob->query ("age")),
@@ -52,9 +52,7 @@ int main (object me, string arg) {
                 CHINESE_D->chinese_date(),
                 ob->link() ? ob->link()->query ("karma") : 0
         ),
-        68,
-        " "
-    ) + "\n\n";
+        70);
 
     if (wizardp (me) || (int)me->query_level() > 1) {
         line = sprintf (

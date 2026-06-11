@@ -1,3 +1,7 @@
+/*---
+description: The user object, which represents a player in the game.
+author: Annihilator <taedlar@gmail.com>
+---*/
 #include <ansi.h>
 #include <origin.h>
 #include <user.h>
@@ -6,9 +10,10 @@
 inherit CHARACTER;
 inherit F_AUTOLOAD;
 inherit F_EDIT;
-inherit F_SAVE;
-inherit F_MORE;
 inherit F_FLAG;
+inherit F_INPUT;
+inherit F_MORE;
+inherit F_SAVE;
 
 // private prototypes
 

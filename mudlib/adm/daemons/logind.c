@@ -37,7 +37,7 @@ string *penalty_attr = ({
 #endif
 
 private void get_id(string arg, object ob);
-private void confirm_id(string yn, object ob);
+private void confirm_id(string yn, mapping args, object ob);
 private void get_email(string email, object ob);
 private void authorize(object ob);
 object make_body(object ob);
@@ -203,8 +203,13 @@ private void get_id (string arg, object ob) {
         return;
     }
 
-    write("使用 " + (string)ob->query("id") + " 這個名字將會創造一個新的人物﹐您確定嗎(y/n)﹖");
-    input_to("confirm_id", ob);
+    mapping args = ([
+        "prompt": "使用 " + (string)ob->query("id") + " 這個名字將會創造一個新的人物﹐您確定嗎﹖",
+        "options": ({ "是 (Y)", "否 (N)" }),
+        "cursor": 1
+    ]);
+    get_char ("confirm_id", 1, args, ob);
+    ob->input_prompt ("confirm_id", args, ob);
 }
 
 private void get_passwd(string pass, object ob) {
@@ -265,21 +270,21 @@ void authorize(object ob) {
         return;
     } else {
         if( file_size(user->query_save_file())==-1 ) {
-            write(@NOTICE
+            write (cjk_wrap (@NOTICE
 系統找不到您的人物資料，可能的原因包括您在創造人物或人物在投胎轉世時
 斷線，或者因為違反規定您的人物資料被刪除了。如果您確定這個人物並沒有
 上述這些情況，請用 guest 帳號洽線上巫師查詢。
 NOTICE
-            );
+            , 70));
             destruct (user);
             write(HIY "您要重新創造這個人物嗎？(y/n) " NOR);
             input_to("confirm_reincarnate", ob);
         } else {
-            write(@NOTICE
+            write (cjk_wrap (@NOTICE
 系統目前無法讀取您的人物資料，可能的原因包括系統正在備分或整理使用者
 資料，請稍候再試。
 NOTICE
-            );
+            , 70));
             destruct (user);
             destruct (ob);
         }
@@ -345,17 +350,25 @@ private void confirm_relogin(string yn, object ob, object user) {
     reconnect(ob, user);    
 }
 
-private void confirm_id(string yn, object ob) {
-    if (yn=="") {
-        write ("使用這個名字將會創造一個新的人物﹐您確定嗎(y/n)﹖");
-        input_to ("confirm_id", ob);
-        return;
-    }       
-
-    if (yn[0]!='y' && yn[0]!='Y') {
-        write ("好吧﹐那麼請重新輸入您的英文名字﹕");
-        input_to ("get_id", ob);
-        return;
+private void confirm_id(string yn, mapping args, object ob) {
+    int cur = args["cursor"];
+    int num_options = args["options"].len();
+    if (yn == " " || yn == "\r" || yn == "\n") // SPACE or ENTER
+        yn = args["options"][cur];
+    switch (yn) {
+        case "是 (Y)": case "Y": case "y":
+            break;
+        case "否 (N)": case "N": case "n":
+            write ("\r" CLR "好吧﹐那麼請重新輸入您的英文名字﹕");
+            input_to ("get_id", ob);
+            return;
+        default:
+            if (yn == KEY_UP)
+                args["cursor"] = (cur - 1 + num_options) % num_options;
+            else if (yn == KEY_DOWN)
+                args["cursor"] = (cur + 1) % num_options;
+            get_char ("confirm_id", 1, args, ob);
+            return;
     }
 
 #ifdef ENABLE_ANTISPAM
@@ -372,7 +385,7 @@ private void confirm_id(string yn, object ob) {
     export_uid (ob);
     seteuid (getuid());
 
-    write ("請設定您的密碼﹕");
+    write ("\r" CLR "請設定您的密碼﹕");
     input_to ("new_password", 1, ob);
 }
 
@@ -403,12 +416,12 @@ private void confirm_password(string pass, object ob) {
         return;
     }
 
-    write (break_chinese_string(@TEXT
+    write (cjk_wrap (@TEXT
 為了避免您的人物遭人盜用，ES2 將採用 email 認證方式保護人物
 所有權，所以請您輸入一個可供接收認證用電子郵件的地址。 這個
 電子郵件地址除了巫師以外，不會被其他使用者看到。
 TEXT
-    + "\n", 70, ""));
+    , 70));
     write("您的電子郵件地址：");
     input_to("get_email",  ob);
 }

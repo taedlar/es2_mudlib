@@ -4,6 +4,7 @@
 
 inherit F_ALIAS;
 inherit F_DBASE;
+inherit F_INPUT;
 inherit F_SAVE;
 
 void update_age();
