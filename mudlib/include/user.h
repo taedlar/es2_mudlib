@@ -8,8 +8,9 @@ author: Annihilator <taedlar@gmail.com>
 #define F_AUTOLOAD	"/feature/user/autoload.c"
 #define F_ALIAS		"/feature/user/alias.c"
 #define F_EDIT		"/feature/user/edit.c"
-#define F_MORE		"/feature/user/more.c"
 #define F_FLAG		"/feature/user/flag.c"
+#define F_INPUT		"/feature/user/input.c"
+#define F_MORE		"/feature/user/more.c"
 
 #define USER_PROTECT()	if( origin()==ORIGIN_CALL_OTHER\
 			&&  geteuid(previous_object())!=ROOT_UID\
