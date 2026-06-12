@@ -52,16 +52,12 @@ private void increment_visitor_count();
 private int check_ip(object link);
 
 private void create() {
-    seteuid(getuid());
-    set("channel_id", "連線精靈");
+    seteuid (getuid());
+    set ("channel_id", "連線精靈");
 }
 
 private void reset() {
-    object room, ob;
-
-    log_file("USRGRAPH", sprintf("[%s] %d users\n",
-        ctime(time()), sizeof(users())));
-
+    log_file ("USRGRAPH", sprintf ("[%s] %d users\n", ctime(time()), sizeof(users())));
 #ifdef ENABLE_ANTISPAM
     spammer_player = ([]);
     spammer_ip = ([]);
@@ -72,10 +68,8 @@ void logon (object ob) {
     object *usr;
     int i, wiz_cnt, ppl_cnt, login_cnt;
 
-    if (ob.getuid() != ROOT_UID) {
-        // only allow trusted login object
-        return;
-    }
+    if (ob.getuid() != ROOT_UID)
+        error ("Insecure user object."); // only allow new user object created with ROOT_UID.
 
 #ifdef ENABLE_ANTISPAM
     if (spammer_ip[query_ip_number(ob)] >= 10) {
@@ -86,7 +80,7 @@ void logon (object ob) {
 #endif
 
     seteuid (getuid());
-    write (read_file(WELCOME) + "\n");
+    write (read_file (WELCOME) + "\n");
 
     UPTIME_CMD->main();
     VISITOR_CMD->main();
@@ -96,7 +90,7 @@ void logon (object ob) {
     ppl_cnt = 0;
     login_cnt = 0;
     // invis wizard count in ppl in stead of wiz, by grain (03/25/1998)
-    for(i=0; i<sizeof(usr); i++) {
+    for (i=0; i<sizeof(usr); i++) {
         if (!usr[i].environment())
             login_cnt++;
         else if (wizardp(usr[i])) {
@@ -135,11 +129,11 @@ private void get_id (string arg, object ob) {
     ob->set("id", arg);
 
 #ifdef MAX_USERS
-    if (wizhood(arg)=="(player)" && sizeof(users()) >= MAX_USERS) {
-        ppl = find_body(arg);
+    if (wizhood(arg) == "(player)" && sizeof(users()) >= MAX_USERS) {
+        ppl = find_body (arg);
         // Only allow reconnect an interactive player when MAX_USERS exceeded.
-        if( !ppl || !ppl.interactive() ) {
-            write("對不起﹐" + MUD_NAME + "的使用者已經太多了﹐請待會再來。\n");
+        if (!ppl || !ppl.interactive()) {
+            write ("目前連線中的使用者已達上限，請稍後重新嘗試連線。\n");
             destruct (ob);
             return;
         }
@@ -178,12 +172,14 @@ private void get_id (string arg, object ob) {
 #endif
 
     if (arg=="guest") {
-        // If guest, let them create the character.
+        // let guest create a character.
+        seteuid (arg);
+        export_uid (ob);
+        seteuid (getuid());
         get_email( "guest@" + query_ip_name(ob), ob);
         return;
     }
-
-    if (file_size(login_data(arg)) != -1) {
+    else if (file_size(login_data(arg)) != -1) {
         seteuid (arg);
         export_uid (ob);
         seteuid (getuid());
