@@ -25,6 +25,9 @@
 #define KEY_LEFT    CSI "D"
 #endif
 
+#define CHA(col)        sprintf(CSI "%dG", col)  /* Cursor Horizontal Absolute */
+#define CUP(row, col)   sprintf(CSI "%d;%dH", row, col)  /* Cursor Position */
+
 #define HOME    CSI "H"         /* (CUP n=1; m=1) Move cursor left-top of scren */
 #define CLR     CSI "J"         /* (ED n=2) Clear from cursor to end of screen */
 #define CLREOL  CSI "K"         /* (EL n=0) Clear from cursor to end of line */

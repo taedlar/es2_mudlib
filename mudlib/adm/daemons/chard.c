@@ -4,6 +4,7 @@ author: Annihilator <taedlar@gmail.com>
 ---*/
 #pragma save_binary
 
+#include <ansi.h>
 #include <login.h>
 #include <statistic.h>
 
@@ -301,7 +302,10 @@ int make_living (object ob) {
 void hint_user_race (string race) {
     switch (race) {
         case "human":
-            write ("人類是最常見的種族，沒有特別的優缺點，適合初學者。");
+            write (CHA(20) + "人類是最常見的種族，沒有特別的優缺點，適合初學者。");
+            break;
+        case "avatar":
+            write (CHA(20) + "化身神的外表和屬性一般凡人幾乎無法區別，在覺醒之前也會以人類自居。");
             break;
     }
 }

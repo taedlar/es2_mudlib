@@ -14,7 +14,8 @@ inherit F_DBASE;
 int wiz_lock_level = WIZ_LOCK_LEVEL;
 
 string *user_race = ({
-    "human"
+    "human",
+    "avatar",
 });
 
 string *banned_name = ({
@@ -47,7 +48,6 @@ varargs void reconnect(object ob, object user, int silent);
 object find_body(string name);
 int check_legal_id(string arg);
 int check_legal_name(string arg);
-private int list_user_race(object link);
 private void increment_visitor_count();
 private int check_ip(object link);
 
@@ -176,7 +176,7 @@ private void get_id (string arg, object ob) {
         seteuid (arg);
         export_uid (ob);
         seteuid (getuid());
-        get_email ("", ob);
+        get_email ("none", ob);
         return;
     }
     else if (file_size (login_data (arg)) != -1) {
@@ -228,57 +228,57 @@ private void get_passwd(string pass, object ob) {
     authorize(ob);
 }
 
-void authorize(object ob) {
-    object user = find_body(ob->query("id"));
+void authorize (object ob) {
+    object user = find_body (ob->query("id"));
     if (user) {
-
-        if( !user->link() ) {
+        if (!user->link()) {
             reconnect(ob, user);
             return;
         }
-        write("您要將另一個連線中的相同人物趕出去﹐取而代之嗎﹖(y/n)");
-        input_to("confirm_relogin", ob, user);
+        write ("您要將另一個連線中的相同人物趕出去﹐取而代之嗎﹖(y/n)");
+        input_to ("confirm_relogin", ob, user);
         return;
     }
 
     user = make_body(ob);
-    if( ! user ) {
-
+    if (! user) {
         destruct (ob);
         return;
     }
 
     if (user->restore()) {
-        log_file( "USAGE", sprintf("[%s] %s login from %s\n",
+        log_file ("USAGE", sprintf("[%s] %s login from %s\n",
             ctime(time()), (string)user->query("id"), query_ip_name(ob) ) );
 
-        if (wizhood(ob)=="(admin)") {
-            if( (query_ip_name(ob) != "localhost")
-            &&	(query_ip_number(ob) != "127.0.0.1") ) {
-                write("安全檢查失敗....自動登出。\n");
+        if (wizhood(ob) == "(admin)") {
+            if ((query_ip_name(ob) != "localhost") && (query_ip_number(ob) != "127.0.0.1")) {
+                write ("安全檢查失敗！強制登出。\n");
                 destruct (user);
                 destruct (ob);
                 return;
             }
-            write("安全檢查通過。\n");
+            write ("安全檢查通過。\n");
         }
-        enter_world(ob, user);
+        enter_world (ob, user);
         return;
     } else {
-        if( file_size(user->query_save_file())==-1 ) {
+        if (file_size(user->query_save_file()) == -1) {
             write (cjk_wrap (@NOTICE
-系統找不到您的人物資料，可能的原因包括您在創造人物或人物在投胎轉世時
-斷線，或者因為違反規定您的人物資料被刪除了。如果您確定這個人物並沒有
-上述這些情況，請用 guest 帳號洽線上巫師查詢。
+系統找不到您的角色資料。
+可能的原因包括您在創造角色時斷線，或者因為其他原因導致角色資料被刪除。
+如果您認為並沒有上述這些情況，請中斷連線並且用 guest 帳號洽線上巫師確認。
 NOTICE
-            , 70));
+            , 70) + "\n\n");
             destruct (user);
-            write(HIY "您要重新創造這個人物嗎？(y/n) " NOR);
-            input_to("confirm_reincarnate", ob);
+            mapping opts = ([
+                "prompt": "您要重新創造這個角色嗎？",
+                "options": ({ "是 (Y)", "否 (N)" }),
+                "cursor": 1
+            ]);
+            get_char ("confirm_reincarnate", 1, opts, ob);
         } else {
             write (cjk_wrap (@NOTICE
-系統目前無法讀取您的人物資料，可能的原因包括系統正在備分或整理使用者
-資料，請稍候再試。
+系統目前無法讀取您的人物資料，可能的原因包括系統正在備分或整理使用者資料，請稍候再試。
 NOTICE
             , 70));
             destruct (user);
@@ -287,29 +287,28 @@ NOTICE
     }
 }
 
-private void confirm_reincarnate (string yn, object ob) {
-    if( yn=="" ) {
-        write(HIY "您要重新創造這個人物嗎？(y/n) " NOR);
-        input_to("confirm_reincarnate", ob);
-        return;
+private void confirm_reincarnate (string yn, mapping opts, object ob) {
+    string answer = cursor_translate (yn, opts);
+    switch (answer ? answer : yn) {
+        case "是 (Y)": case "Y": case "y":
+            break;
+        case "否 (N)": case "N": case "n":
+            write ("好吧﹐歡迎下次再來。\n");
+            destruct (ob);
+            return;
+        default:
+            get_char ("confirm_reincarnate", 1, opts, ob);
+            return;
     }
+    write ("\r" CLR "\n");
 
-    if( yn[0]!='y' && yn[0]!='Y' ) {
-        write("好吧﹐歡迎下次再來。\n");
-        destruct (ob);
-        return;
-    }
-
-    if (!list_user_race(ob)) {
-
-#ifdef	SAVE_USER
-        rm(ob->query_save_file());
-#endif
-        destruct (ob);
-        return;
-    }
-
-    input_to("get_race", ob);
+    mapping race_opts = ([
+        "prompt": "選擇你的角色所屬的種族：",
+        "options": user_race,
+        "option_hints": (: call_other, CHAR_D, "hint_user_race" :),
+        "cursor": 0
+    ]);
+    get_char ("get_race", 1, race_opts, ob);
 }
 
 private void confirm_relogin(string yn, object ob, object user) {
@@ -395,7 +394,7 @@ private void new_password(string pass, object ob) {
     input_to ("confirm_password", 1, ob);
 }
 
-private void confirm_password(string pass, object ob) {
+private void confirm_password (string pass, object ob) {
     string old_pass;
 
     write("\n");
@@ -412,17 +411,17 @@ private void confirm_password(string pass, object ob) {
 如果您同意的話，請提供一個可供接收認證用電子郵件的地址。
 TEXT
     , 70));
-    write ("您的電子郵件地址：");
+    write ("\n\n您的電子郵件地址 (或 none)：");
     input_to ("get_email",  ob);
 }
 
 private void get_email (string email, object ob) {
     int delim = 0, err = 0;
 
-    if (email != "") {
+    if (email != "none") {
         if (strlen(email) > 64) {
             write ("電子郵件地址最多可以有 64 個字元。\n");
-            write ("您的電子郵件地址：");
+            write ("您的電子郵件地址 (或 none)：");
             input_to ("get_email",  ob);
             return;
         }
@@ -439,7 +438,7 @@ private void get_email (string email, object ob) {
         }
         if (!delim || err) {
             write ("您的電子郵件格式錯誤，請輸入正確的電子郵件地址。\n");
-            write ("您的電子郵件地址：");
+            write ("您的電子郵件地址 (或 none)：");
             input_to ("get_email",  ob);
             return;
         }
@@ -457,41 +456,33 @@ private void get_email (string email, object ob) {
 #endif
 
     // Complete non-body-specific initialization of new user here.
-    ob->set ("karma", 20);
-    list_user_race (ob);
+    ob->set ("karma", 0);
     mapping opts = ([
-        "prompt": "您要扮演的哪種種族﹖",
+        "prompt": "選擇你的角色所屬的種族：",
         "options": user_race,
         "option_hints": (: call_other, CHAR_D, "hint_user_race" :),
         "cursor": 0
     ]);
-    get_char ("get_race", opts, ob);
+    get_char ("get_race", 1, opts, ob);
 }
 
 private void get_race (string race, mixed opts, object ob) {
-    int kar;
     string choice = cursor_translate (race, opts);
     switch (choice ? choice : race) {
         case "human":
             race = "human";
             break;
+        case "avatar":
+            race = "avatar";
+            break;
         default:
-            get_char ("get_race", opts, ob);
+            get_char ("get_race", 1, opts, ob);
             return;
     }
-    if (race == "?") {
-        list_user_race(ob);
-        input_to("get_race", opts, ob);
-        return;
-    }
 
-    kar = (int)RACE_D(race)->query("karma");
-    if (wizhood(ob)=="(player)" && (int)ob->query("karma") < kar) {
-        write ("\n您的業力不夠﹐請您重新選擇﹕");
-        input_to ("get_race", opts, ob);
-        return;
-    }
-    ob->add ("karma", -kar);
+    int kar = (int)RACE_D(race)->query("karma");
+    write ("\r" CLR HIY "選擇 " + choice + " 這個種族會累積 " + kar + " 點業力。\n" NOR);
+    ob->add ("karma", kar);
 
     mapping gender_opts = ([
         "prompt": "您要扮演的哪種性別(外觀)的角色﹖",
@@ -550,15 +541,39 @@ private void get_name (string arg, object ob, object user) {
     ob->set("name", arg);
     user->set("name", arg);
     if (!ob->query ("creation_time")) {
-        log_file ("USAGE", sprintf("[%s] %12s created @ %s\n",
-            ctime (time()),
-            user->query("id"),
-            query_ip_name(ob))
-        );
         ob->set ("creation_time", time());
         // default open chat and rumor channel -- by dragoon
         ob->set ("channels", ({ "chat", "rumor" }));
     }
+
+    mapping opts = ([
+        "prompt": "您確定要創造這個角色嗎﹖",
+        "options": ({ "是 (Y)", "否 (N)" }),
+        "cursor": 0
+    ]);
+    get_char ("confirm_incarnate", 1, opts, ob, user);
+}
+
+private void confirm_incarnate (string yn, mapping opts, object ob, object user) {
+    string answer = cursor_translate (yn, opts);
+    switch (answer ? answer : yn) {
+        case "是 (Y)": case "Y": case "y":
+            break;
+        case "否 (N)": case "N": case "n":
+            write ("\r" CLR "好的，歡迎下次再來。");
+            destruct (user);
+            destruct (ob);
+            return;
+        default:
+            get_char ("confirm_incarnate", 1, opts, ob, user);
+            return;
+    }
+    write ("\r" CLR + user->name() + "在" MUD_NAME "的冒險開始了。\n");
+    log_file ("USAGE", sprintf("[%s] %12s created @ %s\n",
+        ctime (time()),
+        user->query("id"),
+        query_ip_name (ob))
+    );
     enter_world(ob, user);
 }
 
@@ -815,56 +830,19 @@ int set_wizlock(int level) {
     return 1;
 }
 
-private int list_user_race (object link) {
-    string msg, race;
-    int karma;
-
-    karma = link->query("karma");
-    msg = "";
-    foreach (race in user_race) {
-        if (RACE_D(race)->query("karma") > karma)
-            continue;
-        msg += sprintf ("%-25s %d 點業力\n",
-                to_chinese(race) + "(" + race + ")",
-                RACE_D(race)->query("karma")
-        );
-    }
-
-    if (msg=="") {
-        write ("你所剩的業力已經沒有辦法投胎轉世了！\n");
-        return 0;
-    }
-
-    msg = "您現在共有 " + karma + " 點業力，可以選擇以下的種族：\n" + msg;
-    msg += "\n您的選擇 (用 '? <種族名>' 可查閱說明，或 '?' 可列出所有種族)﹕";
-
-    write (msg);
-    return 1;
-}
-
 void reincarnate (object ob) {
-    object link;
-    int max_karma_gain, karma_gain;
-
     if (previous_object() && geteuid(previous_object()) != ROOT_UID)
         return;
 
-    seteuid(getuid());
-
-    link = ob->link();
-    if (! link) {
+    seteuid (getuid());
+    object link = ob->link();
+    if (!link) {
 #ifdef	SAVE_USER
         ob->save();
 #endif
         destruct(ob);
         return;
     }
-
-    max_karma_gain = link->query("time_aged") / 43200;
-    karma_gain = ob->query_level();
-    if (karma_gain > max_karma_gain)
-        karma_gain = max_karma_gain;
-    link->add("karma", karma_gain);
 #ifdef	SAVE_USER
     link->save();
 #endif
@@ -875,16 +853,13 @@ void reincarnate (object ob) {
 #endif
     destruct(ob);
 
-    if (!list_user_race(link)) {
-        write("請您重新創造一個人物，重新再來吧。\n");
-#ifdef	SAVE_USER
-        rm (link->query_save_file());
-#endif
-        destruct (link);
-        return;
-    }
-
-    input_to ("get_race", ([]), link);
+    mapping opts = ([
+        "prompt": "選擇你的角色所屬的種族：",
+        "options": user_race,
+        "option_hints": (: call_other, CHAR_D, "hint_user_race" :),
+        "cursor": 0
+    ]);
+    get_char ("get_race", 1, opts, ob);
 }
 
 #define VISITOR_COUNTER_FILE	"/adm/etc/visitor.cnt"
