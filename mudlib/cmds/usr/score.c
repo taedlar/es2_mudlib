@@ -1,15 +1,18 @@
-
+/*---
+description: The score command, used to display character's basic information and statistics.
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #include <ansi.h>
 #include <combat.h>
 
-#define	SCORE_COLUMN	2
+#define	SCORE_COLUMN 2
 
 inherit F_CLEAN_UP;
 
-string display_attr (int gift, int value);
+string display_attr (int base, int value);
 string status_color (int current, int max);
-string tribar_graph (int val, int eff, int max);
+string tribar_graph (string fill_char, string sep, string empty_char, int val, int eff, int max);
 
 private void create() {
     seteuid(getuid());
@@ -41,18 +44,18 @@ int main (object me, string arg) {
 
     line = sprintf (HIW "【 %s 】" NOR "%s\n\n", ob->rank(), ob->short(1));
     line += cjk_wrap (sprintf(
-            "%s是一%s%s歲的 %d 級%s%s%s﹐出生於%s，目前的業力是 %d 點。\n\n",
+            "%s出生於%s﹐外表是一%s%s歲的%s%s。目前是等級 %d 的%s﹐累積業力共 %d 點。",
                 ob==me ? gender_self (ob) : gender_pronoun (ob),
+                CHINESE_D->chinese_date(),
                 (tmp = ob->query ("unit")) ? tmp : "個",
                 chinese_number (ob->query ("age")),
-                ob->query_level(),
                 (tmp = ob->query ("gender")) ? to_chinese (tmp) : "",
                 to_chinese (ob->query_race()),
+                ob->query_level(),
                 ob->query ("humanoid") ? ob->rank (0, 1) : "",
-                CHINESE_D->chinese_date(),
                 ob->link() ? ob->link()->query ("karma") : 0
         ),
-        70);
+        70) + "\n\n";
 
     if (wizardp (me) || (int)me->query_level() > 1) {
         line = sprintf (
@@ -68,28 +71,28 @@ int main (object me, string arg) {
             display_attr (ob->query_attr ("wis",1), ob->query_attr ("wis")));
     }
 
-    line = sprintf ("%s 形體 %s%4d/%4d  " NOR GRN "%s\n\n" NOR, line,
+    line = sprintf ("%s 形體 %s%4d/%4d  " NOR BGRN "%s" NOR "\n\n", line,
         status_color(ob->query_stat("HP"), ob->query_stat_maximum("HP")),
         ob->query_stat("HP"), ob->query_stat_maximum("HP"),
-        tribar_graph(ob->query_stat("HP"), ob->query_stat_effective("HP"), ob->query_stat_maximum("HP")) );
+        tribar_graph(" ", BRED, " ", ob->query_stat("HP"), ob->query_stat_effective("HP"), ob->query_stat_maximum("HP")) );
 
     if (ob->query_stat_maximum("gin"))
-        line = sprintf ("%s 精   %s%4d/%4d  " NOR HIY "%s\n" NOR, line,
+        line = sprintf ("%s 精   %s%4d/%4d  " NOR HIY "%s" NOR "\n", line,
             status_color (ob->query_stat("gin"), ob->query_stat_maximum ("gin")),
             ob->query_stat ("gin"), ob->query_stat_maximum ("gin"),
-            tribar_graph (ob->query_stat ("gin"), ob->query_stat_effective ("gin"), ob->query_stat_maximum ("gin"))
+            tribar_graph ("%", YEL, ">",ob->query_stat ("gin"), ob->query_stat_effective ("gin"), ob->query_stat_maximum ("gin"))
         );
     if (ob->query_stat_maximum("kee"))
-        line = sprintf ("%s 氣   %s%4d/%4d  " HIR "%s\n" NOR, line,
+        line = sprintf ("%s 氣   %s%4d/%4d  " NOR HIR "%s" NOR "\n", line,
             status_color (ob->query_stat("kee"), ob->query_stat_maximum ("kee")),
             ob->query_stat ("kee"), ob->query_stat_maximum ("kee"),
-            tribar_graph (ob->query_stat ("kee"), ob->query_stat_effective ("kee"), ob->query_stat_maximum ("kee"))
+            tribar_graph ("%", RED, ">", ob->query_stat ("kee"), ob->query_stat_effective ("kee"), ob->query_stat_maximum ("kee"))
         );
     if (ob->query_stat_maximum("sen"))
-        line = sprintf ("%s 神   %s%4d/%4d  " HIB "%s\n" NOR, line,
+        line = sprintf ("%s 神   %s%4d/%4d  " NOR HIB "%s" NOR "\n", line,
             status_color (ob->query_stat("sen"), ob->query_stat_maximum ("sen")),
             ob->query_stat ("sen"), ob->query_stat_maximum ("sen"),
-            tribar_graph (ob->query_stat ("sen"), ob->query_stat_effective ("sen"), ob->query_stat_maximum ("sen"))
+            tribar_graph ("%", BLU, ">", ob->query_stat ("sen"), ob->query_stat_effective ("sen"), ob->query_stat_maximum ("sen"))
         );
 
     line = sprintf ("%s\n 食物 %s%4d/%4d" NOR "\t\t飲水 %s%4d/%4d" NOR "\t\t疲勞 %s%4d/%4d\n" NOR, line,
@@ -127,13 +130,13 @@ int main (object me, string arg) {
     return 1;
 }
 
-string display_attr(int gift, int value) {
-    if( value > gift )
-        return sprintf( HIC "%3d%5s" NOR, value, "(+" + (value - gift) + ")" );
-    else if( value < gift )
-        return sprintf( HIB "%3d%5s" NOR, value, "(" + (value - gift) + ")" );
+string display_attr (int base, int value) {
+    if (value > base)
+        return sprintf (HIC "%3d%5s" NOR, value, "(+" + (value - base) + ")");
+    else if (value < base)
+        return sprintf (HIB "%3d%5s" NOR, value, "(" + (value - base) + ")");
     else
-        return sprintf( CYN "%3d     " NOR, value);
+        return sprintf (CYN "%3d     " NOR, value);
 }
 
 string status_color (int current, int max) {
@@ -154,7 +157,7 @@ string status_color (int current, int max) {
     }
 }
 
-string tribar_graph (int val, int eff, int max) {
+string tribar_graph (string fill_char, string sep, string empty_char, int val, int eff, int max) {
     int n_filled, n_empty;
     string bar = "";
 
@@ -168,9 +171,9 @@ string tribar_graph (int val, int eff, int max) {
         n_empty = 1;
 
     if (n_filled)
-        bar += repeat_string ("O", n_filled);
+        bar += repeat_string (fill_char, n_filled); // filled part
     if (n_empty)
-        bar += repeat_string (".", n_empty);
+        bar += sep + repeat_string (empty_char, n_empty); // regenerate part
 
     return bar;
 }

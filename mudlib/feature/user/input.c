@@ -13,10 +13,16 @@ void input_prompt (mixed func, int flags, mixed data) {
         write("\r" CLR "\n"); // placeholder for prompt
         foreach (string opt in data["options"]) {
             if (pos == data["cursor"])
-                write("-> ");
+                write ("-> " BLK BWHT);
             else
-                write("   ");
-            write ("[" + opt + "]\n");
+                write ("   ");
+            write (" " + opt + " ");
+            if (pos == data["cursor"]) {
+                write (NOR);
+                if (functionp (data["option_hints"]))
+                    evaluate (data["option_hints"], opt);
+            }
+            write ("\n");
             pos++;
         }
         write (CUU (data["options"].len() + 1) + "\r" + prompt);
