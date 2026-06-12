@@ -171,41 +171,41 @@ private void get_id (string arg, object ob) {
     }
 #endif
 
-    if (arg=="guest") {
+    if (arg == "guest") {
         // let guest create a character.
         seteuid (arg);
         export_uid (ob);
         seteuid (getuid());
-        get_email( "guest@" + query_ip_name(ob), ob);
+        get_email ("", ob);
         return;
     }
-    else if (file_size(login_data(arg)) != -1) {
+    else if (file_size (login_data (arg)) != -1) {
         seteuid (arg);
         export_uid (ob);
         seteuid (getuid());
 
         if (ob->restore()) {
             if (ob.userp() == 2) { // console user
-                write("\n");
-                authorize(ob);
+                write ("\n");
+                authorize (ob);
                 return;
             }
-            write("請輸入密碼﹕");
-            input_to("get_passwd", 1, ob);
+            write ("請輸入密碼﹕");
+            input_to ("get_passwd", 1, ob);
             return;
         }
-        write("對不起﹐您的人物儲存檔出了一些問題﹐請利用 guest 人物通知巫師處理。\n");
+        write ("對不起﹐您的人物儲存檔出了一些問題﹐請利用 guest 人物通知巫師處理。\n");
         destruct (ob);
         return;
     }
 
-    mapping args = ([
-        "prompt": "使用 " + (string)ob->query("id") + " 這個名字將會創造一個新的人物﹐您確定嗎﹖",
+    mapping opts = ([
+        "prompt": "使用 " + arg + " 這個代號將會創造一個新的人物﹐您確定嗎﹖",
         "options": ({ "是 (Y)", "否 (N)" }),
         "cursor": 1
     ]);
-    get_char ("confirm_id", 1, args, ob);
-    ob->input_prompt ("confirm_id", args, ob);
+    get_char ("confirm_id", 1, opts, ob);
+    ob->input_prompt ("confirm_id", opts, ob);
 }
 
 private void get_passwd(string pass, object ob) {
@@ -287,7 +287,7 @@ NOTICE
     }
 }
 
-private void confirm_reincarnate(string yn, object ob) {
+private void confirm_reincarnate (string yn, object ob) {
     if( yn=="" ) {
         write(HIY "您要重新創造這個人物嗎？(y/n) " NOR);
         input_to("confirm_reincarnate", ob);
@@ -300,7 +300,7 @@ private void confirm_reincarnate(string yn, object ob) {
         return;
     }
 
-    if( !list_user_race(ob) ) {
+    if (!list_user_race(ob)) {
 
 #ifdef	SAVE_USER
         rm(ob->query_save_file());
@@ -346,24 +346,18 @@ private void confirm_relogin(string yn, object ob, object user) {
     reconnect(ob, user);    
 }
 
-private void confirm_id(string yn, mapping args, object ob) {
-    int cur = args["cursor"];
-    int num_options = args["options"].len();
-    if (yn == " " || yn == "\r" || yn == "\n") // SPACE or ENTER
-        yn = args["options"][cur];
-    switch (yn) {
+/* Asked the user to confirm a non-existing username */
+private void confirm_id (string yn, mapping opts, object ob) {
+    string answer = cursor_translate (yn, opts);
+    switch (answer ? answer : yn) {
         case "是 (Y)": case "Y": case "y":
             break;
         case "否 (N)": case "N": case "n":
-            write ("\r" CLR "好吧﹐那麼請重新輸入您的英文名字﹕");
+            write ("\r" CLR "請重新輸入您的使用者代號﹕");
             input_to ("get_id", ob);
             return;
         default:
-            if (yn == KEY_UP)
-                args["cursor"] = (cur - 1 + num_options) % num_options;
-            else if (yn == KEY_DOWN)
-                args["cursor"] = (cur + 1) % num_options;
-            get_char ("confirm_id", 1, args, ob);
+            get_char ("confirm_id", 1, opts, ob);
             return;
     }
 
@@ -397,8 +391,8 @@ private void new_password(string pass, object ob) {
 #else
     ob->set("password", crypt(pass, 0) );
 #endif
-    write("請再輸入一次您的密碼﹐以確認您沒記錯﹕");
-    input_to("confirm_password", 1, ob);
+    write ("請再輸入一次您的密碼﹐以確認您沒記錯﹕");
+    input_to ("confirm_password", 1, ob);
 }
 
 private void confirm_password(string pass, object ob) {
@@ -406,59 +400,66 @@ private void confirm_password(string pass, object ob) {
 
     write("\n");
     old_pass = ob->query("password");
-    if( crypt(pass, old_pass)!=old_pass ) {
-        write("您兩次輸入的密碼並不一樣﹐請重新設定一次密碼﹕");
-        input_to("new_password", 1, ob);
+    if( crypt (pass, old_pass) != old_pass ) {
+        write ("您兩次輸入的密碼並不一樣﹐請重新設定一次密碼﹕");
+        input_to ("new_password", 1, ob);
         return;
     }
 
     write (cjk_wrap (@TEXT
-為了避免您的人物遭人盜用，ES2 將採用 email 認證方式保護人物
-所有權，所以請您輸入一個可供接收認證用電子郵件的地址。 這個
-電子郵件地址除了巫師以外，不會被其他使用者看到。
+為了避免您的人物遭人盜用﹐ES2 採用 email 認證方式保護人物所有權。
+這個電子郵件地址除了巫師以外﹐不會被其他使用者看到。
+如果您同意的話，請提供一個可供接收認證用電子郵件的地址。
 TEXT
     , 70));
-    write("您的電子郵件地址：");
-    input_to("get_email",  ob);
+    write ("您的電子郵件地址：");
+    input_to ("get_email",  ob);
 }
 
-private void get_email(string email, object ob) {
-    int c, delim=0, err=0;
+private void get_email (string email, object ob) {
+    int delim = 0, err = 0;
 
-    if( strlen(email) > 64 ) {
-        write("電子郵件地址最多可以有 64 個字元。\n");
-        write("您的電子郵件地址：");
-        input_to("get_email",  ob);
-        return;
+    if (email != "") {
+        if (strlen(email) > 64) {
+            write ("電子郵件地址最多可以有 64 個字元。\n");
+            write ("您的電子郵件地址：");
+            input_to ("get_email",  ob);
+            return;
+        }
+
+        foreach (int ch in email) {
+            if (ch=='@' && !delim) {
+                delim = 1;
+                continue;
+            }
+            if (strsrch ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.", ch) < 0) {
+                err = 1;
+                break;
+            }
+        }
+        if (!delim || err) {
+            write ("您的電子郵件格式錯誤，請輸入正確的電子郵件地址。\n");
+            write ("您的電子郵件地址：");
+            input_to ("get_email",  ob);
+            return;
+        }
     }
 
-    foreach(c in email) {
-        if( c=='@' && !delim ) { delim = 1; continue; }
-        if( strsrch("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.", c) < 0 )
-            { err = 1; break; }
-    }
-    if( !delim || err ) {
-        write("您的電子郵件格式錯誤，請輸入正確的電子郵件地址。\n");
-        write("您的電子郵件地址：");
-        input_to("get_email",  ob);
-        return;
-    }
-
-    ob->set("email", email);
+    ob->set ("email", email);
 
 //  If ONE_GUEST is defined in /include/login.h, only permit one guest login.
 #ifdef ONE_GUEST
-    if ((string)ob->query("id") == "guest" && find_player("guest")) {
-        write("抱歉, 線上已經有一個 Guest 了.\n");
+    if ((string)ob->query("id") == "guest" && find_player ("guest")) {
+        write ("目前線上已經有一位訪客了，請稍後再試。\n");
         destruct(ob);
         return;
     }
 #endif
 
     // Complete non-body-specific initialization of new user here.
-    ob->set("karma", 20);
-    list_user_race(ob);
-    input_to("get_race", ob);
+    ob->set ("karma", 20);
+    list_user_race (ob);
+    input_to ("get_race", ob);
 }
 
 private void get_race(string race, object ob) {
@@ -494,95 +495,95 @@ private void get_race(string race, object ob) {
         input_to ("get_race", ob);
         return;
     }
-    ob->add("karma", -kar);
+    ob->add ("karma", -kar);
 
-    write ("\n您要扮演男性(m)的角色或女性(f)的角色﹖");
-    input_to ("get_gender", ob, race);
+    mapping opts = ([
+        "prompt": "您要扮演的哪種性別(外觀)的角色﹖",
+        "options": ({ "女性 (F)", "男性 (M)", "無法判斷 (N)" }),
+        "cursor": 0
+    ]);
+    get_char ("get_gender", opts, ob, race);
 }
 
-private void get_gender(string gender, object ob, string race) {
+private void get_gender (string gender, mapping opts, object ob, string race) {
     object body;
     string body_file;
 
-    if (gender=="") {
-        write("您要扮演男性(m)的角色或女性(f)的角色﹖");
-        // fix 選性別錯誤造成 race 為 human bug  .... by ueiren
-        // input_to("get_gender", ob, body);
-        input_to("get_gender", ob, race);           
-        return;
+    string answer = cursor_translate (gender, opts);
+    switch (answer ? answer : gender) {
+        case "男性 (M)": case "M": case "m":
+            gender = "male";
+            break;
+        case "女性 (F)": case "F": case "f":
+            gender = "female";
+            break;
+        case "無法判斷 (N)": case "N": case "n":
+            gender = "unknown-gender";
+            break;
+        default:
+            get_char ("get_gender", opts, ob, race);
+            return;
     }
 
-    if (gender[0]=='m' || gender[0]=='M')
-        gender = "male";
-    else if (gender[0]=='f' || gender[0]=='F')
-        gender = "female";
-    else {
-        write("對不起﹐您只能選擇男性(m)或女性(f)的角色﹕");
-        // fix 選性別錯誤造成 race 為 human bug  .... by ueiren 
-        // input_to("get_gender", ob, body);
-        input_to("get_gender", ob, race);
-        return;
-    }
-
-    if (!stringp(body_file = RACE_D(race)->query("default_body")))
+    if (!stringp (body_file = RACE_D(race)->query("default_body")))
         body_file = USER_OB;
-    ob->set("body", body_file);
-    if( !(body = make_body(ob)) ) {
-        destruct(ob);
+    ob->set ("body", body_file);
+    if( !(body = make_body (ob)) ) {
+        destruct (ob);
         return;
     }
 
-    body->set("gender", gender);
-    body->set_race(race);
-    init_new_body(ob, body);
     // Remember it so we can dest it if we go linkdead before finishing
     // chraracter creation.
     ob->set_temp("temp_body", body);
+    body->set ("gender", gender); // Only for appearance
+    body->set_race (race);
+    init_new_body (ob, body);
 
-    write("您的中文名字﹕");
-    input_to("get_name", ob, body);
+    write ("\r" CLR "您的顯示名稱﹕");
+    input_to ("get_name", ob, body);
 }
 
-private void get_name(string arg, object ob, object user) {
+private void get_name (string arg, object ob, object user) {
     if (!check_legal_name(arg)) {
-        write("您的中文名字﹕");
-        input_to("get_name", ob, user);
+        write ("您的顯示名稱﹕");
+        input_to ("get_name", ob, user);
         return;
     }
 
     ob->set("name", arg);
     user->set("name", arg);
-    if( !ob->query("creation_time") ) {
-        log_file( "USAGE", sprintf("[%s] %12s created  @ %s\n",
-            ctime(time()),
+    if (!ob->query ("creation_time")) {
+        log_file ("USAGE", sprintf("[%s] %12s created @ %s\n",
+            ctime (time()),
             user->query("id"),
-            query_ip_name(ob), ) );
-            ob->set("creation_time", time());
-            // default open chat and rumor channel -- by dragoon
-            ob->set("channels", ({"chat","rumor"}));
+            query_ip_name(ob))
+        );
+        ob->set ("creation_time", time());
+        // default open chat and rumor channel -- by dragoon
+        ob->set ("channels", ({ "chat", "rumor" }));
     }
     enter_world(ob, user);
 }
 
-object make_body(object link_ob) {
+object make_body (object link_ob) {
     string err;
     object user;
     int n;
 
-    seteuid(getuid());
-    err = catch(user = new(USER_OB));
-    if(err || !user) {
-        write("現在可能有巫師正在修改使用者物件的程式﹐請稍候再試。\n");
+    seteuid (getuid());
+    err = catch (user = new (USER_OB));
+    if (err || !user) {
+        write ("現在可能有巫師正在修改使用者物件的程式﹐請稍候再試。\n");
         return 0;
     }
 
+    seteuid (getuid(link_ob));
+    export_uid (user);
+    seteuid (getuid());
 
-    seteuid(getuid(link_ob));
-    export_uid(user);
-    seteuid(getuid());
-
-    user->set("id", link_ob->query("id"));
-    user->set_name( link_ob->query("name"), link_ob->query("id") );
+    user->set ("id", link_ob->query("id"));
+    user->set_name (link_ob->query("name"), link_ob->query("id"));
 
     return user;
 }
@@ -708,20 +709,17 @@ NOTICE
         user->delete("pker");
     }
 
-
-    if( !wizardp(user) && !user->query("invis") ) {
-        message("vision", user->query("name") + "連線進入這個世界。\n",
-                room, user);
-        CHANNEL_D->do_channel( this_object(), "sys",
-                sprintf("%s(%s)由%s連線進入。",
-                user->name(1),
-                user->query("id"),
-                query_ip_name(user))
+    if (!wizardp(user) && !user->query("invis")) {
+        message ("vision", user->query("name") + "連線進入這個世界。\n", room, user);
+        CHANNEL_D->do_channel (this_object(), "sys",
+            sprintf ("%s由%s連線進入。",
+            user->short(1),
+            query_ip_name (user))
         );
     }
 }
 
-varargs void reconnect(object ob, object user, int silent) {
+varargs void reconnect (object ob, object user, int silent) {
 
     user->set_link(ob);
     ob->set_body(user);
@@ -821,17 +819,19 @@ int set_wizlock(int level) {
     return 1;
 }
 
-static int list_user_race(object link) {
+private int list_user_race (object link) {
     string msg, race;
     int karma;
 
     karma = link->query("karma");
     msg = "";
     foreach (race in user_race) {
-        if( RACE_D(race)->query("karma") > karma ) continue;
-        msg += sprintf("%-25s %d 點業力\n",
+        if (RACE_D(race)->query("karma") > karma)
+            continue;
+        msg += sprintf ("%-25s %d 點業力\n",
                 to_chinese(race) + "(" + race + ")",
-                RACE_D(race)->query("karma") );
+                RACE_D(race)->query("karma")
+        );
     }
 
     if (msg=="") {
@@ -846,7 +846,7 @@ static int list_user_race(object link) {
     return 1;
 }
 
-void reincarnate(object ob) {
+void reincarnate (object ob) {
     object link;
     int max_karma_gain, karma_gain;
 
