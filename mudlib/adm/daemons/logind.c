@@ -459,50 +459,46 @@ private void get_email (string email, object ob) {
     // Complete non-body-specific initialization of new user here.
     ob->set ("karma", 20);
     list_user_race (ob);
-    input_to ("get_race", ob);
+    mapping opts = ([
+        "prompt": "您要扮演的哪種種族﹖",
+        "options": user_race,
+        "option_hints": (: call_other, CHAR_D, "hint_user_race" :),
+        "cursor": 0
+    ]);
+    get_char ("get_race", opts, ob);
 }
 
-private void get_race(string race, object ob) {
+private void get_race (string race, mixed opts, object ob) {
     int kar;
-    string choice;
+    string choice = cursor_translate (race, opts);
+    switch (choice ? choice : race) {
+        case "human":
+            race = "human";
+            break;
+        default:
+            get_char ("get_race", opts, ob);
+            return;
+    }
     if (race == "?") {
         list_user_race(ob);
-        input_to("get_race", ob);
-        return;
-    }
-    if (sscanf(race, "? %s", race)) {
-        if (file_size (HELP_DIR + "help/" + race) == -1) {
-            write("\n目前沒有這個種族的說明文件﹐請您重新選擇﹕");
-            input_to("get_race", ob);
-            return;
-        }
-        write (read_file(HELP_DIR + "help/" + race));
-        // add by ueiren ... 
-        // list_user_race(ob);
-        write("\n您的選擇 (用 '? <種族名>' 可查閱說明，或 '?' 可列出所有種族)﹕");
-        input_to("get_race", ob);
-        return;
-    }
-    if( member_array(race, user_race)==-1 ) {
-        write ("\n沒有這種種族﹐請您重新選擇﹕");
-        input_to ("get_race", ob);
+        input_to("get_race", opts, ob);
         return;
     }
 
     kar = (int)RACE_D(race)->query("karma");
     if (wizhood(ob)=="(player)" && (int)ob->query("karma") < kar) {
         write ("\n您的業力不夠﹐請您重新選擇﹕");
-        input_to ("get_race", ob);
+        input_to ("get_race", opts, ob);
         return;
     }
     ob->add ("karma", -kar);
 
-    mapping opts = ([
+    mapping gender_opts = ([
         "prompt": "您要扮演的哪種性別(外觀)的角色﹖",
         "options": ({ "女性 (F)", "男性 (M)", "無法判斷 (N)" }),
         "cursor": 0
     ]);
-    get_char ("get_gender", opts, ob, race);
+    get_char ("get_gender", gender_opts, ob, race);
 }
 
 private void get_gender (string gender, mapping opts, object ob, string race) {
@@ -888,7 +884,7 @@ void reincarnate (object ob) {
         return;
     }
 
-    input_to ("get_race", link);
+    input_to ("get_race", ([]), link);
 }
 
 #define VISITOR_COUNTER_FILE	"/adm/etc/visitor.cnt"

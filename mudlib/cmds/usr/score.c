@@ -1,9 +1,12 @@
-
+/*---
+description: The score command, used to display character's basic information and statistics.
+author: Annihilator <taedlar@gmail.com>
+---*/
 
 #include <ansi.h>
 #include <combat.h>
 
-#define	SCORE_COLUMN	2
+#define	SCORE_COLUMN 2
 
 inherit F_CLEAN_UP;
 
@@ -41,15 +44,15 @@ int main (object me, string arg) {
 
     line = sprintf (HIW "【 %s 】" NOR "%s\n\n", ob->rank(), ob->short(1));
     line += cjk_wrap (sprintf(
-            "%s的外表是一%s%s歲的 %d 級%s%s%s﹐出生於%s。目前的業力是 %d 點。",
+            "%s出生於%s﹐外表是一%s%s歲的%s%s。目前是等級 %d 的%s﹐累積業力共 %d 點。",
                 ob==me ? gender_self (ob) : gender_pronoun (ob),
+                CHINESE_D->chinese_date(),
                 (tmp = ob->query ("unit")) ? tmp : "個",
                 chinese_number (ob->query ("age")),
-                ob->query_level(),
                 (tmp = ob->query ("gender")) ? to_chinese (tmp) : "",
                 to_chinese (ob->query_race()),
+                ob->query_level(),
                 ob->query ("humanoid") ? ob->rank (0, 1) : "",
-                CHINESE_D->chinese_date(),
                 ob->link() ? ob->link()->query ("karma") : 0
         ),
         70) + "\n\n";

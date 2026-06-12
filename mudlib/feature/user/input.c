@@ -19,6 +19,8 @@ void input_prompt (mixed func, int flags, mixed data) {
             write (" " + opt + " ");
             if (pos == data["cursor"])
                 write (NOR);
+            if (functionp(data["option_hints"]))
+                evaluate (data["option_hints"], opt);
             write("\n");
             pos++;
         }

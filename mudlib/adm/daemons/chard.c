@@ -297,3 +297,11 @@ int make_living (object ob) {
     ob->setup();
     return 1;
 }
+
+void hint_user_race (string race) {
+    switch (race) {
+        case "human":
+            write ("人類是最常見的種族，沒有特別的優缺點，適合初學者。");
+            break;
+    }
+}
