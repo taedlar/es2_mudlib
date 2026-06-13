@@ -298,9 +298,7 @@ mixed set_door (string dir, string prop, mixed data) {
         return doors[dir][prop] = data;
 }
 
-int
-valid_leave(object me, string dir)
-{
+int valid_leave(object me, string dir) {
     int i, move_skill;
     string my_name;
     object guard, *ob;
@@ -315,33 +313,39 @@ valid_leave(object me, string dir)
     return 1;
 }
 
-varargs int do_look(object me, string arg) {
+string extra_room_desc() {
+    return "";
+}
+
+varargs int do_look (object me, string arg) {
     int i;
     object *inv, ob;
     mapping exits;
     string str, *dirs;
 
-    // Look specific object in the room.
+    // Look in details in the room.
     if (arg) {
-        if (str = query("detail/" + arg)) {
-            write (cjk_wrap(str, room_desc_wrap_width) + "\n");
+        if (str = query ("detail/" + arg)) {
+            write (cjk_wrap (str, room_desc_wrap_width) + "\n");
             return 1;
         }
-        if (strsrch (query("long"), arg) >= 0)
+        if (strsrch (query ("long"), arg) >= 0)
             return notify_fail ("你看不出這裡的" + arg + "有什麼特別的。\n");
         return notify_fail ("你要看什麼﹖\n");
     }
 
+    // room description
     if (previous_object() && previous_object()->query("option/BRIEF_ROOM"))
-        str = query("short") + "，";
+        str = query("short") + "﹐";
     else
-        str = sprintf ( "%s - %s\n    %s\n%s    ",
+        str = sprintf ( "%s - %s\n    %s\n%s%s    ",
             query ("short"),
             wizardp(me)? file_name (this_object()) : "",
             cjk_wrap (query ("long"), room_desc_wrap_width, 0, 4),
+            this_object()->extra_room_desc(),
             query ("outdoors") ? NATURE_D->outdoor_room_description() : "");
 
-    if (mapp(exits = query("exits")))
+    if (mapp (exits = query("exits")))
         dirs = keys (exits);
     
     // Check for exits with door.
@@ -367,21 +371,17 @@ varargs int do_look(object me, string arg) {
     return 1;
 }
 
-void
-init()
-{
+void init() {
     int explore_id;
-    if( !undefinedp(explore_id = query("site_explore")) ) {
-        if( !this_player()->recognize(explore_id, 1) ) {
-            this_player()->gain_score("survive", 100);
-            this_player()->gain_score("explorer fame", 1);
+    if (!undefinedp (explore_id = query("site_explore"))) {
+        if (!this_player()->recognize (explore_id, 1)) {
+            this_player()->gain_score ("survive", 100);
+            this_player()->gain_score ("explorer fame", 1);
         }
     }
 }
 
-void
-setup()
-{
-    seteuid(getuid());
+void setup() {
+    seteuid (getuid());
     this_object()->reset();
 }
