@@ -15,6 +15,11 @@ varargs string cjk_wrap (string str, int width, int indent, int first_line_inden
     foreach (string ch in mbch) {
         int char_width = (strlen (ch) > 1) ? 2 : 1; // CJK multi-byte chars are double width
         if (ch == "\n" || ch == "\r") {
+            if (indent < 0) {
+                result += ch;
+                line_length = 0;
+                continue; // preserve existing newlines if indent is negative
+            }
             if (prev_char_width > 1)
                 continue; // skip newlines immediately following multi-byte characters to avoid breaking them
             ch = " "; // treat newlines as spaces for wrapping purposes
