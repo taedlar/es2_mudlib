@@ -1,6 +1,6 @@
 ---
-description: ES2 
-author: Annihilator <taedlar@gmail.com>
+description: "ES2 administrator space"
+author: "Annihilator <taedlar@gmail.com>"
 created: 1995-06-17
 ---
 管理者工作區
