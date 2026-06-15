@@ -103,7 +103,7 @@ void logon (object ob) {
     printf ("目前共有 %d 位巫師、%d 位玩家在線上﹐以及 %d 位使用者嘗試連線中。\n\n",
         wiz_cnt, ppl_cnt, login_cnt );
 
-    write ("您的使用者代號：");
+    write ("您的使用者代號: ");
     input_to ("get_id", ob);
 }
 
@@ -117,7 +117,7 @@ private void get_id (string arg, object ob) {
     arg = arg.lower_case ();
 
     if (!check_legal_id(arg)) {
-        write ("您的使用者代號：");
+        write ("您的使用者代號: ");
         input_to ("get_id", ob);
         return;
     }
@@ -190,7 +190,7 @@ private void get_id (string arg, object ob) {
                 authorize (ob);
                 return;
             }
-            write ("請輸入密碼﹕");
+            write ("請輸入密碼: ");
             input_to ("get_passwd", 1, ob);
             return;
         }
@@ -200,7 +200,7 @@ private void get_id (string arg, object ob) {
     }
 
     mapping opts = ([
-        "prompt": "使用 " + arg + " 這個代號將會創造一個新的人物﹐您確定嗎﹖",
+        "prompt": "使用 " + arg + " 這個代號將會創造一個新的人物﹐您確定嗎? ",
         "options": ({ "Y) 是", "N) 否" }),
         "cursor": 1
     ]);
@@ -232,11 +232,15 @@ void authorize (object ob) {
     object user = find_body (ob->query("id"));
     if (user) {
         if (!user->link()) {
-            reconnect(ob, user);
+            reconnect (ob, user);
             return;
         }
-        write ("您要將另一個連線中的相同人物趕出去﹐取而代之嗎﹖(y/n)");
-        input_to ("confirm_relogin", ob, user);
+        mapping opts = ([
+            "prompt": "您要將另一個連線中的相同人物趕出去﹐取而代之嗎? ",
+            "options": ({ "Y) 是", "N) 否" }),
+            "cursor": 1
+        ]);
+        get_char ("confirm_relogin", 1, opts, ob, user);
         return;
     }
 
@@ -271,7 +275,7 @@ NOTICE
             , 70) + "\n\n");
             destruct (user);
             mapping opts = ([
-                "prompt": "您要重新創造這個角色嗎？",
+                "prompt": "您要重新創造這個角色嗎? ",
                 "options": ({ "Y) 是", "N) 否" }),
                 "cursor": 1
             ]);
@@ -303,7 +307,7 @@ private void confirm_reincarnate (string yn, mapping opts, object ob) {
     write ("\r" CLR "\n");
 
     mapping race_opts = ([
-        "prompt": "選擇你的角色所屬的種族：",
+        "prompt": "選擇你的角色所屬的種族: ",
         "options": user_race,
         "option_hints": (: call_other, CHAR_D, "hint_user_race" :),
         "cursor": 0
@@ -311,38 +315,38 @@ private void confirm_reincarnate (string yn, mapping opts, object ob) {
     get_char ("get_race", 1, race_opts, ob);
 }
 
-private void confirm_relogin(string yn, object ob, object user) {
+private void confirm_relogin (string yn, mapping opts, object ob, object user) {
+    string answer = cursor_translate (yn, opts);
     object old_link;
 
-    if( yn=="" ) {
-        write("您要將另一個連線中的相同人物趕出去﹐取而代之嗎﹖(y/n)");
-        input_to("confirm_relogin", ob, user);
-        return;
-    }       
-
-    if( yn[0]!='y' && yn[0]!='Y' ) {
-        write("好吧﹐歡迎下次再來。\n");
-        destruct (ob);
-        return;
-    } else {
-        tell_object(user, "有人從別處( " + query_ip_number(ob)
-            + " )連線取代您所控制的人物。\n");
-        log_file( "USAGE", sprintf("[%s] %12s replaced @ %s\n",
-            ctime(time()),
-            (string)user->query("id"),
-            query_ip_name(ob)) );
+    switch (answer ? answer : yn) {
+        case "Y": case "y":
+            break;
+        case "N": case "n":
+            write ("好吧﹐歡迎下次再來。\n");
+            destruct (ob);
+            return;
+        default:
+            get_char ("confirm_relogin", 1, opts, ob, user);
+            return;
     }
+    tell_object (user, "有人從別處( " + query_ip_number (ob) + " )連線取代您所控制的人物。\n");
+    log_file ("USAGE", sprintf ("[%s] %12s replaced @ %s\n",
+        ctime (time()),
+        (string)user->query("id"),
+        query_ip_name (ob))
+    );
 
-    // Kick out tho old player.
+    // Kick out the old player.
     old_link = user->link();
-    if( old_link ) {
+    if (old_link) {
         seteuid (getuid());
         if (user.interactive())
             exec (old_link, user);
-        destruct(old_link);
+        destruct (old_link);
     }
 
-    reconnect(ob, user);    
+    reconnect (ob, user);
 }
 
 /* Asked the user to confirm a non-existing username */
@@ -352,7 +356,7 @@ private void confirm_id (string yn, mapping opts, object ob) {
         case "Y": case "y":
             break;
         case "N": case "n":
-            write ("\r" CLR "請重新輸入您的使用者代號﹕");
+            write ("\r" CLR "請重新輸入您的使用者代號: ");
             input_to ("get_id", ob);
             return;
         default:
@@ -374,33 +378,33 @@ private void confirm_id (string yn, mapping opts, object ob) {
     export_uid (ob);
     seteuid (getuid());
 
-    write ("\r" CLR "請設定您的密碼﹕");
+    write ("\r" CLR "請設定您的密碼: ");
     input_to ("new_password", 1, ob);
 }
 
 private void new_password(string pass, object ob) {
-    write("\n");
-    if( strlen(pass)<5 ) {
-        write("密碼的長度至少要五個字元﹐請重設您的密碼﹕");
-        input_to("new_password", 1, ob);
+    write ("\n");
+    if (strlen(pass) < 5) {
+        write ("密碼的長度至少要五個字元﹐請重設您的密碼: ");
+        input_to ("new_password", 1, ob);
         return;
     }
 #ifdef	ENABLE_MD5_PASSWORD
-    ob->set("password", crypt(pass, sprintf("$1$%d", random(99999999))));
+    ob->set ("password", crypt (pass, sprintf ("$1$%d", random(99999999))));
 #else
-    ob->set("password", crypt(pass, 0) );
+    ob->set ("password", crypt (pass, 0) );
 #endif
-    write ("請再輸入一次您的密碼﹐以確認您沒記錯﹕");
-    input_to ("confirm_password", 1, ob);
+    write ("請再輸入一次您的密碼﹐以確認您沒記錯: ");
+    input_to ("retype_password", 1, ob);
 }
 
-private void confirm_password (string pass, object ob) {
+private void retype_password (string pass, object ob) {
     string old_pass;
 
-    write("\n");
+    write ("\n");
     old_pass = ob->query("password");
-    if( crypt (pass, old_pass) != old_pass ) {
-        write ("您兩次輸入的密碼並不一樣﹐請重新設定一次密碼﹕");
+    if (crypt (pass, old_pass) != old_pass) {
+        write ("您兩次輸入的密碼並不一樣﹐請重新設定一次密碼: ");
         input_to ("new_password", 1, ob);
         return;
     }
@@ -411,18 +415,18 @@ private void confirm_password (string pass, object ob) {
 如果您同意的話，請提供一個可供接收認證用電子郵件的地址。
 TEXT
     , 70));
-    write ("\n\n您的電子郵件地址 (或 none)：");
-    input_to ("get_email",  ob);
+    write ("\n\n您的電子郵件地址 (或 none): ");
+    input_to ("get_email", ob);
 }
 
 private void get_email (string email, object ob) {
     int delim = 0, err = 0;
 
     if (email != "none") {
-        if (strlen(email) > 64) {
+        if (email.len() > 64) {
             write ("電子郵件地址最多可以有 64 個字元。\n");
-            write ("您的電子郵件地址 (或 none)：");
-            input_to ("get_email",  ob);
+            write ("您的電子郵件地址 (或 none): ");
+            input_to ("get_email", ob);
             return;
         }
 
@@ -438,7 +442,7 @@ private void get_email (string email, object ob) {
         }
         if (!delim || err) {
             write ("您的電子郵件格式錯誤，請輸入正確的電子郵件地址。\n");
-            write ("您的電子郵件地址 (或 none)：");
+            write ("您的電子郵件地址 (或 none): ");
             input_to ("get_email",  ob);
             return;
         }
@@ -458,7 +462,7 @@ private void get_email (string email, object ob) {
     // Complete non-body-specific initialization of new user here.
     ob->set ("karma", 0);
     mapping opts = ([
-        "prompt": "選擇你的角色所屬的種族：",
+        "prompt": "選擇你的角色所屬的種族: ",
         "options": user_race,
         "option_hints": (: call_other, CHAR_D, "hint_user_race" :),
         "cursor": 0
@@ -485,7 +489,7 @@ private void get_race (string race, mixed opts, object ob) {
     ob->add ("karma", kar);
 
     mapping gender_opts = ([
-        "prompt": "您要扮演的哪種性別(外觀)的角色﹖",
+        "prompt": "您要扮演的哪種性別(外觀)的角色? ",
         "options": ({ "F) 女性", "M) 男性", "N) 無法判斷" }),
         "cursor": 0
     ]);
@@ -527,13 +531,13 @@ private void get_gender (string gender, mapping opts, object ob, string race) {
     body->set_race (race);
     init_new_body (ob, body);
 
-    write ("\r" CLR "您的顯示名稱﹕");
+    write ("\r" CLR "您的顯示名稱: ");
     input_to ("get_name", ob, body);
 }
 
 private void get_name (string arg, object ob, object user) {
     if (!check_legal_name(arg)) {
-        write ("您的顯示名稱﹕");
+        write ("您的顯示名稱: ");
         input_to ("get_name", ob, user);
         return;
     }
@@ -547,7 +551,7 @@ private void get_name (string arg, object ob, object user) {
     }
 
     mapping opts = ([
-        "prompt": "您確定要創造這個角色嗎﹖",
+        "prompt": "您確定要創造這個角色嗎? ",
         "options": ({ "Y) 是", "N) 否" }),
         "cursor": 0
     ]);
@@ -676,7 +680,7 @@ varargs void enter_world(object ob, object user, int silent) {
     exec (user, ob);
 
     if (!silent)
-        write ("目前權限﹕" + wizhood(user) + "\n");
+        write ("目前權限: " + wizhood(user) + "\n");
 
     user->setup();
     increment_visitor_count();
@@ -854,7 +858,7 @@ void reincarnate (object ob) {
     destruct(ob);
 
     mapping opts = ([
-        "prompt": "選擇你的角色所屬的種族：",
+        "prompt": "選擇你的角色所屬的種族: ",
         "options": user_race,
         "option_hints": (: call_other, CHAR_D, "hint_user_race" :),
         "cursor": 0
