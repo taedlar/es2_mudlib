@@ -21,20 +21,23 @@ git submodule update --init --recursive
 Follow [`neolith/docs/INSTALL.md`](neolith/docs/INSTALL.md) to build the `neolith` executable.
 
 Neolith uses CMake presets. Build output is always placed under `neolith/out/build/<presetName>/`.
-Use the preset matching your platform:
+Use the preset matching your platform (use `pr-<presetName>` for `--build` if not otherwise specified):
 
 ```bash
 # Linux
-cmake --preset linux          -S neolith
-cmake --build --preset dev-linux
+cd neolith
+cmake --preset linux
+cmake --build --preset pr-linux
 
 # macOS
-cmake --preset macos          -S neolith
-cmake --build --preset dev-macos
+cd neolith
+cmake --preset macos
+cmake --build --preset pr-macos
 
 # Windows (VS2019 x64)
-cmake --preset vs16-x64       -S neolith
-cmake --build --preset dev-vs16-x64
+cd neolith
+cmake --preset vs16-x64
+cmake --build --preset pr-vs16-x64
 ```
 
 The resulting executable:
