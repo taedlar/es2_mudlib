@@ -7,67 +7,66 @@ author: Annihilator <taedlar@gmail.com>
 
 inherit F_CLEAN_UP;
 
-static string *default_search = DEFAULT_SEARCH_PATHS;
+private string *player_doc_paths = PLAYER_HELP_DOC_PATHS;
+private string* wizard_doc_paths = PLAYER_HELP_DOC_PATHS + WIZ_HELP_DOC_PATHS;
 
-private void create() { seteuid(getuid()); }
-
-int main(object me, string arg)
-{
+int main (object me, string arg) {
     string file, *search;
 
-    if( !arg ) {
-        cat(HELP_DIR + "help/topics");
+    seteuid (getuid());
+    if (!arg) {
+        string topics = HELP_DIR + "topics.txt";
+        if (file_size (topics) < 0)
+            return notify_fail ("沒有說明文件的主題列表。\n");
+        me->start_more (read_file (topics));
         return 1;
     }
 
-    arg = replace_string(arg, " ", "_");
-
-    // Else, try if a command name is specified.
-    seteuid(getuid());
-    if( stringp(file = me->find_command(arg)) ) {
-        notify_fail("有這個指令存在﹐但是並沒有詳細的說明文件。\n");
-        return file->help(me);
+    // try if a command name is specified.
+    arg = replace_string (arg, " ", "_");
+    if (stringp (file = me->find_command (arg))) {
+        notify_fail ("有這個指令存在﹐但是並沒有詳細的說明文件。\n");
+        return file->help (me);
     }
 
-    // Support efun/lfun help with same name as other topics such as
+    // support efun/lfun help with same name as other topics such as
     // ed() and ed command.
-    sscanf(arg, "%s()", arg);
+    sscanf (arg, "%s()", arg);
 
-    search = DEFAULT_SEARCH_PATHS;
-    if( wizardp(me) )
-        search += WIZARD_SEARCH_PATHS;
-        
-    foreach(string path in search)
-    {
-	if( file_size(path + arg) < 0 ) continue;
-	if( wizardp(me) )
-	    write("說明文件：" + path + arg
-		+ "\n---------------------------------------------------------------------\n");
-	me->start_more( read_file(path + arg) ); 
-	return 1;
+    search = wizardp(me) ? wizard_doc_paths : player_doc_paths;
+    foreach (string path in search) {
+        string file_path = path + arg + ".txt";
+        if (file_size (file_path) < 0)
+            continue;
+        if (wizardp (me))
+            write ("說明文件：" + file_path
+                + "\n---------------------------------------------------------------------\n");
+        me->start_more (read_file (file_path)); 
+        return 1;
     }
 
-    return notify_fail("沒有針對這項主題的說明文件。\n");
+    // allow wizard to specify a path in the HELP_DIR, e.g. "help wiz/alias" to read "/docs/help/wiz/alias.txt".
+    if (wizardp (me)) {
+        string help_file = HELP_DIR + arg + ".txt";
+        if (file_size (help_file) < 0)
+            return notify_fail ("沒有針對這項主題的說明文件。\n");
+        write ("說明文件：" + help_file
+            + "\n---------------------------------------------------------------------\n");
+        me->start_more (read_file (help_file));
+        return 1;
+    }
+
+    return notify_fail ("沒有針對這項主題的說明文件。\n");
 }
 
-int help(object me)
-{
-    write(@HELP
-指令格式﹕help <主題>              例如﹕> help all
-          help <函數名稱>()        例如﹕> help call_out()
+int help (object me) {
+    write (@HELP
+指令格式﹕help <主題>
 
 這個指令提供你針對某一主題的詳細說明文件﹐若是不指定主題﹐則提供你有關主題
 的文件﹐所有的主題與函數名稱皆為英文。
 HELP
     );
-    if( wizardp(me) )
-        write(@HELP
-本指令會先搜尋主題是否為 command, ( 若呼叫者為巫師, 則接著搜尋 <help.h>
-中的 WIZARD_SEARCH_PATHS ), 再搜尋 DEFAULT_SEARCH_PATHS。 
-若有同檔名之文件處於這些搜尋位置中, 則位於後搜路徑者將不被搜尋, 即只看到先
-前搜尋之 docs, 編製新文件時請留意。
-HELP
-        );
     return 1;
 }
 

@@ -15,7 +15,7 @@ author: Annihilator <taedlar@gmail.com>
 #define COMMAND_DIR "/cmds/"
 #define CONFIG_DIR "/adm/etc/"
 #define DATA_DIR "/data/"
-#define HELP_DIR "/doc/"
+#define HELP_DIR "/docs/help/"
 #define LOG_DIR "/log/"
 
 // Daemons
