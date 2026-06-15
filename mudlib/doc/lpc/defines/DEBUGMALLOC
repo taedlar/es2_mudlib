@@ -1,3 +1,0 @@
-DEBUGMALLOC provides exact information about how much memory has been
-allocated by what.  It is considerably slower and takes up quite a bit
-more memory as a result.

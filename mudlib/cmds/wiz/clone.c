@@ -1,7 +1,4 @@
-
-
 #include <command.h>
-#include "/doc/help.h"
 
 inherit F_CLEAN_UP;
 

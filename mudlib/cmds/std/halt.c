@@ -1,6 +1,4 @@
 
-
-#include "/doc/help.h"
 #include <action.h>
 #include <command.h>
 
