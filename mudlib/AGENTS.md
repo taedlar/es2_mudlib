@@ -91,14 +91,6 @@ This document provides specific instructions for working with LPC (Lars Pensjö 
 ## Resources
 
 - Neolith driver docs: `neolith/docs/`
-- LPC language manual: `neolith/docs/manual/`
+- LPC language manual: `neolith/docs/manual/`, `neolith/docs/efuns`, `neolith/docs/applies`
 - ES2 specific docs: `mudlib/doc/` and `docs/`
 - Example code: `mudlib/d/` and `neolith/examples/`
-
-## Troubleshooting
-
-- Check `mudlib/log/debug.log` for driver errors.
-- LPC compile errors show file and line number.
-- Runtime errors logged to debug log.
-- Use `#pragma optimize` for performance-critical files.
-- Binary files (`.b`) auto-generated, can be deleted to force recompile.

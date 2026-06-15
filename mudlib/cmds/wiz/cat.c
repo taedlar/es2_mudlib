@@ -1,7 +1,5 @@
 // cat.c
 
-#include "/doc/help.h"
-
 inherit F_CLEAN_UP;
 int help(object me);
 
