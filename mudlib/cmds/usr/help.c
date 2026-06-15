@@ -3,7 +3,7 @@ description: Online "help" command
 author: Annihilator <taedlar@gmail.com>
 ---*/
 
-#include "/docs/help.h"
+#include <help.h>
 
 inherit F_CLEAN_UP;
 
@@ -62,7 +62,7 @@ HELP
     );
     if( wizardp(me) )
         write(@HELP
-本指令會先搜尋主題是否為 command, ( 若呼叫者為巫師, 則接著搜尋 /docs/help.h
+本指令會先搜尋主題是否為 command, ( 若呼叫者為巫師, 則接著搜尋 <help.h>
 中的 WIZARD_SEARCH_PATHS ), 再搜尋 DEFAULT_SEARCH_PATHS。 
 若有同檔名之文件處於這些搜尋位置中, 則位於後搜路徑者將不被搜尋, 即只看到先
 前搜尋之 docs, 編製新文件時請留意。
