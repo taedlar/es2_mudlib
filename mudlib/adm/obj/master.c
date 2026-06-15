@@ -1,7 +1,7 @@
 /*---
 description: The master object of the mudlib, responsible for handling connections, compiling objects, and security checks.
 author: Annihilator <taedlar@gmail.com>
-creation-date: 04/16/2000
+created: 2000-04-16
 ---*/
 
 #include <http.h>
@@ -66,11 +66,11 @@ private void crash (string error, object command_giver, object current_object) {
         log_file ("CRASHES", sprintf("  this_object: %O\n", current_object));
 }
 
-static string* epilog (int load_empty) {
+private string* epilog (int load_empty) {
     return filter (explode (read_file (CONFIG_DIR + "preload"), "\n"), (: strlen($1) && ($1[0] != '#') :));
 }
 
-static void preload (string file) {
+private void preload (string file) {
     object ob;
     string err;
 
@@ -101,19 +101,19 @@ private void destruct_env_of(object ob) {
     ob->move (VOID_OB);
 }
 
-static string make_path_absolute (string file) {
+private string make_path_absolute (string file) {
     return resolve_path ((string)this_player()->query("cwd"), file);
 }
 
-static string get_save_file_name (string fname) {
+private string get_save_file_name (string fname) {
     return fname + "." + time();
 }
 
-static string get_root_uid() {
+private string get_root_uid() {
    return ROOT_UID;
 }
 
-static string get_bb_uid() {
+private string get_bb_uid() {
    return BACKBONE_UID;
 }
 
@@ -124,7 +124,7 @@ static string get_bb_uid() {
 // temporarily to restrict its access when it acts as an delegate of operations from users.
 //
 // If creator_file() returns -1, the LPMud driver will destruct the object.
-static mixed creator_file (string file) {
+private mixed creator_file (string file) {
     string *dirs, euid;
 
     dirs = explode (file, "/") - ({""});
@@ -212,28 +212,25 @@ error_handler( mapping error, int caught )
 }
 #endif
 
-static void log_error (string file, string message) {
+private void log_error (string file, string message) {
     string name, home;
 
-    if (find_object(SIMUL_EFUN_OB))
-        name = file_owner(file);
+    if (find_object (SIMUL_EFUN_OB))
+        name = file_owner (file);
 
     if (name)
         home = user_path(name);
     else
         home = LOG_DIR;
 
-    if (this_player(1))
+    if (this_player (1))
         efun::write ("編譯時段錯誤﹕" + message );
 
     efun::write_file (home + "log", sprintf ("[%s]%s", ctime (time())[4..18], message));
 }
 
-static int valid_override (string file, string name) {
-    if (file == SIMUL_EFUN_OB || file==MASTER_OB)
-        return 1;
-
-    if (file[0..15] == "/adm/simul_efun/")
+private int valid_override (string file, string name) {
+    if (file == SIMUL_EFUN_OB || file == MASTER_OB || file[0..15] == "/adm/simul_efun/")
         return 1;
 
     // Must use the move() defined in F_MOVE.
@@ -246,28 +243,28 @@ static int valid_override (string file, string name) {
     return 1;
 }
 
-static int valid_seteuid (object ob, string str) {
+private int valid_seteuid (object ob, string str) {
     return (int)SECURITY_D->valid_seteuid( ob, str );
 }
 
-static int valid_socket (object eff_user, string fun, mixed *info) {
+private int valid_socket (object eff_user, string fun, mixed *info) {
     return 1;
 }
 
-static int valid_object (object ob) {
+private int valid_object (object ob) {
     return (!clonep(ob)) || inherits(F_MOVE, ob);
 }
 
 // valid_save_binary: controls whether an object can save a binary
 //   image of itself to the specified "save binaries directory"
 //   (see config file)
-static int valid_save_binary (string filename) {
+private int valid_save_binary (string filename) {
     return 1;
 }
 
 // valid_write: write privileges; called with the file name, the object
 //   initiating the call, and the function by which they called it.
-static int valid_write (string file, mixed user, string func) {
+private int valid_write (string file, mixed user, string func) {
     object ob;
     int ret = 0;
 
@@ -287,7 +284,7 @@ static int valid_write (string file, mixed user, string func) {
     return ret;
 }
 
-static int valid_read( string file, mixed user, string func ) {
+private int valid_read( string file, mixed user, string func ) {
     object ob;
     int ret = 1;
 
@@ -307,7 +304,7 @@ static int valid_read( string file, mixed user, string func ) {
     return ret;
 }
 
-static int valid_bind (object binder, object old_owner, object new_owner) {
+private int valid_bind (object binder, object old_owner, object new_owner) {
     // Root can bind anything to anything
     if (geteuid(binder)==ROOT_UID)
         return 1;
