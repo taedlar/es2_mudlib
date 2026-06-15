@@ -1,4 +1,4 @@
-# Agent Instructions for ES2 MUDlib LPC Code
+# Agent Instructions for ES2 Mudlib LPC Code
 
 ## Project Overview
 This document provides specific instructions for working with LPC (Lars Pensjö C) code within the `mudlib/` directory of the ES2 (Eastern Stories II) project.
