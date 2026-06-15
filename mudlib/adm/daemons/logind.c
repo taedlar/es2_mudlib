@@ -201,7 +201,7 @@ private void get_id (string arg, object ob) {
 
     mapping opts = ([
         "prompt": "使用 " + arg + " 這個代號將會創造一個新的人物﹐您確定嗎﹖",
-        "options": ({ "是 (Y)", "否 (N)" }),
+        "options": ({ "Y) 是", "N) 否" }),
         "cursor": 1
     ]);
     get_char ("confirm_id", 1, opts, ob);
@@ -272,7 +272,7 @@ NOTICE
             destruct (user);
             mapping opts = ([
                 "prompt": "您要重新創造這個角色嗎？",
-                "options": ({ "是 (Y)", "否 (N)" }),
+                "options": ({ "Y) 是", "N) 否" }),
                 "cursor": 1
             ]);
             get_char ("confirm_reincarnate", 1, opts, ob);
@@ -290,9 +290,9 @@ NOTICE
 private void confirm_reincarnate (string yn, mapping opts, object ob) {
     string answer = cursor_translate (yn, opts);
     switch (answer ? answer : yn) {
-        case "是 (Y)": case "Y": case "y":
+        case "Y": case "y":
             break;
-        case "否 (N)": case "N": case "n":
+        case "N": case "n":
             write ("好吧﹐歡迎下次再來。\n");
             destruct (ob);
             return;
@@ -349,9 +349,9 @@ private void confirm_relogin(string yn, object ob, object user) {
 private void confirm_id (string yn, mapping opts, object ob) {
     string answer = cursor_translate (yn, opts);
     switch (answer ? answer : yn) {
-        case "是 (Y)": case "Y": case "y":
+        case "Y": case "y":
             break;
-        case "否 (N)": case "N": case "n":
+        case "N": case "n":
             write ("\r" CLR "請重新輸入您的使用者代號﹕");
             input_to ("get_id", ob);
             return;
@@ -486,7 +486,7 @@ private void get_race (string race, mixed opts, object ob) {
 
     mapping gender_opts = ([
         "prompt": "您要扮演的哪種性別(外觀)的角色﹖",
-        "options": ({ "女性 (F)", "男性 (M)", "無法判斷 (N)" }),
+        "options": ({ "F) 女性", "M) 男性", "N) 無法判斷" }),
         "cursor": 0
     ]);
     get_char ("get_gender", gender_opts, ob, race);
@@ -498,13 +498,13 @@ private void get_gender (string gender, mapping opts, object ob, string race) {
 
     string answer = cursor_translate (gender, opts);
     switch (answer ? answer : gender) {
-        case "男性 (M)": case "M": case "m":
+        case "M": case "m":
             gender = "male";
             break;
-        case "女性 (F)": case "F": case "f":
+        case "F": case "f":
             gender = "female";
             break;
-        case "無法判斷 (N)": case "N": case "n":
+        case "N": case "n":
             gender = "unknown-gender";
             break;
         default:
@@ -548,7 +548,7 @@ private void get_name (string arg, object ob, object user) {
 
     mapping opts = ([
         "prompt": "您確定要創造這個角色嗎﹖",
-        "options": ({ "是 (Y)", "否 (N)" }),
+        "options": ({ "Y) 是", "N) 否" }),
         "cursor": 0
     ]);
     get_char ("confirm_incarnate", 1, opts, ob, user);
@@ -557,9 +557,9 @@ private void get_name (string arg, object ob, object user) {
 private void confirm_incarnate (string yn, mapping opts, object ob, object user) {
     string answer = cursor_translate (yn, opts);
     switch (answer ? answer : yn) {
-        case "是 (Y)": case "Y": case "y":
+        case "Y": case "y":
             break;
-        case "否 (N)": case "N": case "n":
+        case "N": case "n":
             write ("\r" CLR "好的，歡迎下次再來。");
             destruct (user);
             destruct (ob);
