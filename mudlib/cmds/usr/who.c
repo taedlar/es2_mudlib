@@ -178,7 +178,7 @@ main(object me, string arg, int remote)
     
     if( remote ) return msg;
 
-    me->start_more(msg);
+    me->start_more_if_needed (msg);
     return 1;
 }
 

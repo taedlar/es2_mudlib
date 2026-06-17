@@ -14,15 +14,23 @@
 #define CUB(n)  sprintf(CSI "%dD", n)  /* Cursor Back n times */
 
 #ifdef __NO_ANSI__
-#define KEY_UP      " [A"
-#define KEY_DOWN    " [B"
-#define KEY_RIGHT   " [C"
-#define KEY_LEFT    " [D"
+#define KEY_UP          " [A"
+#define KEY_DOWN        " [B"
+#define KEY_RIGHT       " [C"
+#define KEY_LEFT        " [D"
+#define KEY_PAGE_UP     " [5~"
+#define KEY_PAGE_DOWN   " [6~"
+#define KEY_HOME        " [H"
+#define KEY_END         " [F"
 #else /* !__NO_ANSI__ */
-#define KEY_UP      CSI "A"
-#define KEY_DOWN    CSI "B"
-#define KEY_RIGHT   CSI "C"
-#define KEY_LEFT    CSI "D"
+#define KEY_UP          CSI "A"
+#define KEY_DOWN        CSI "B"
+#define KEY_RIGHT       CSI "C"
+#define KEY_LEFT        CSI "D"
+#define KEY_PAGE_UP     CSI "5~"
+#define KEY_PAGE_DOWN   CSI "6~"
+#define KEY_HOME        CSI "H"
+#define KEY_END         CSI "F"
 #endif
 
 #define CHA(col)        sprintf(CSI "%dG", col)  /* Cursor Horizontal Absolute */

@@ -127,7 +127,7 @@ int main(object me, string arg)
         line += "\n";
     }
 
-    this_player()->start_more(line);
+    this_player()->start_more_if_needed (line);
     return 1;
 }
 

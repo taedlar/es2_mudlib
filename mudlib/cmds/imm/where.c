@@ -23,7 +23,7 @@ int main(object me, string str)
 				file_name(environment(ob))
 			);
 		}
-		me->start_more(msg);
+		me->start_more_if_needed (msg);
 		return 1;
 	}
 
@@ -55,7 +55,7 @@ int main(object me, string str)
 			msg += "\n";
 		}
 		msg += "Object " + dir_str + ".c located.\n";
-		this_player()->start_more(msg);
+		this_player()->start_more_if_needed (msg);
 		return 1;
 	}
 	if (!ob) return notify_fail("現在沒 " + str + " 這個人物 (include ppl and npc), 也沒有 " + dir_str + ".c 的存在.\n");

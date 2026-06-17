@@ -22,7 +22,7 @@ int main(object me, string arg)
             if( arg && strsrch(t[i], arg)!=0 ) continue;
             list += sprintf("%-30s %s\n", t[i], dmap[t[i]]);
         }
-        me->start_more(list);
+        me->start_more_if_needed (list);
         return 1;
         } else if( sscanf(arg, "-d %s", term) ) {
         wiz_status = SECURITY_D->get_status(me);

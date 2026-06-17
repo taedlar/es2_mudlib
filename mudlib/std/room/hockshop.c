@@ -249,7 +249,7 @@ int do_list(string arg)
         i+1,
         inv[i]->short(),
         value_string(inv[i]->query("value") * 2));
-    this_player()->start_more(msg);
+    this_player()->start_more_if_needed (msg);
     return 1;
 }
 

@@ -173,7 +173,7 @@ do_from(string arg)
     if( all ) txt = "你現在共有 " + sizeof(mails) + " 封信件﹕\n" + txt;
     else txt = sprintf("你共有 %d/%d 封未讀的信：\n%s", n_listed,
 	sizeof(mails), txt);
-    this_player()->start_more(txt);
+    this_player()->start_more_if_needed (txt);
 
     return 1;
 }
