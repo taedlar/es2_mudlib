@@ -29,7 +29,7 @@ author: Annihilator <taedlar@gmail.com>
  * NOTE: Always call get_char() with no-echo flag set to 1 when using this input prompt, so
  * that the input_prompt()'s output is not interleaved with the user's input.
  */
-void input_prompt (mixed func, int flags, mixed data) {
+void input_prompt (mixed func, int flags, mixed data, mixed arg1) {
     if (mapp(data) && arrayp(data["options"]) && intp(data["cursor"])) {
         string prompt = data["prompt"] || "你的選擇：";
         int pos = 0;
@@ -49,5 +49,18 @@ void input_prompt (mixed func, int flags, mixed data) {
             pos++;
         }
         write (CUU (data["options"].len() + 1) + "\r" + prompt);
+    }
+    else if (func == "more" && arrayp (data) && intp (arg1)) {
+        int page_size = this_object()->query("pager_size") || 22;
+        if (arg1 < 0)
+            arg1 = 0;
+        else if (arg1 > sizeof (data))
+            arg1 = sizeof (data);
+        // The pager has two arguments: the text array and the current line number.
+        printf (
+            "\n" CLR BGRN "--More-- Lines %d-%d (%d%%)  "
+            BWHT "  [PgDn|Space, PgUp|b, Up|k, Down|j, Home|g, End|G, q]  " NOR,
+            arg1 - page_size + 1, arg1, arg1 * 100 / sizeof (data)
+        );
     }
 }

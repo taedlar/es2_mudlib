@@ -45,7 +45,7 @@ int main (object me, string arg) {
 int look_item (object me, object obj) {
     mixed *inv;
 
-    me->start_more(obj->long());
+    me->start_more_if_needed (obj->long());
     inv = all_inventory(obj);
     if( sizeof(inv) ) {
         // if too many items, show a simple message -dragoon

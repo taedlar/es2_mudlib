@@ -48,7 +48,7 @@ main(object me, string arg)
     }
 
     if( listing[<1] != '\n' ) listing += "\n";
-    me->start_more( listing );
+    me->start_more_if_needed (listing);
 
     return 1;    
 }

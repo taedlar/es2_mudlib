@@ -13,7 +13,7 @@ int main(object me, string arg)
     if( !arg ) {
 	if( !wizardp(me) )
 	    return notify_fail("你要查詢哪位使用者的資料？\n");
-	me->start_more( FINGER_D->finger_all() );
+	me->start_more_if_needed (FINGER_D->finger_all());
     } else
 	write( FINGER_D->finger_user(arg) );
 

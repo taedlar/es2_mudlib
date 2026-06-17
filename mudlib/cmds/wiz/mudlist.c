@@ -78,7 +78,7 @@ main(object me, string arg)
     }
 
     //    Display dumped mudlist output through user's more pager
-    this_player()->start_more( output );
+    this_player()->start_more_if_needed (output);
 
     return 1;
 }

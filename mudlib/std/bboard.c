@@ -26,7 +26,7 @@ setup()
     seteuid(getuid());
     ::setup();
     if( stringp(loc = query("location")) )
-	move(loc);
+        move(loc);
     set("no_get", 1);
     restore();
 }
@@ -59,17 +59,17 @@ short()
 
     notes = query("notes");
     if( !pointerp(notes) || !sizeof(notes) )
-	return ::short() + " [沒有任何留言]";
+        return ::short() + " [沒有任何留言]";
 
     if( this_player() && this_player()->link() ) {
-	last_read_time = (int)this_player()->link()->query("board_last_read/" + (string)query("board_id"));
-	for(unread = 0, i=sizeof(notes)-1; i>=0; i--, unread ++)
-	    if( notes[i]["time"] <= last_read_time ) break;
+        last_read_time = (int)this_player()->link()->query("board_last_read/" + (string)query("board_id"));
+        for(unread = 0, i=sizeof(notes)-1; i>=0; i--, unread ++)
+            if( notes[i]["time"] <= last_read_time ) break;
     }
     if( unread )
-	return sprintf("%s [%d 張留言﹐%d 張未讀]", ::short(), sizeof(notes), unread);
+        return sprintf("%s [%d 張留言﹐%d 張未讀]", ::short(), sizeof(notes), unread);
     else
-	return sprintf("%s [%d 張留言]", ::short(), sizeof(notes));
+        return sprintf("%s [%d 張留言]", ::short(), sizeof(notes));
 }
 
 string
@@ -83,17 +83,17 @@ long()
     msg = query("long");
     if( !msg ) msg = "";
     if( !pointerp(notes) || !sizeof(notes) )
-	return msg += query("name") + "使用方法請見 help board，留言板約可容納 " +BOARD_CAPACITY+ " 篇留言。\n";
+        return msg += query("name") + "使用方法請見 help board，留言板約可容納 " +BOARD_CAPACITY+ " 篇留言。\n";
 
     last_time_read = this_player()->link()->query("board_last_read/" + (string)query("board_id"));
     for(i=0; i<sizeof(notes); i++)
-	msg += sprintf("%s[%2d]" NOR "  %-34s %+22s - %s\n",
-	    ( notes[i]["time"] > last_time_read ? HIY: ""),
-	    i+1,
-	    notes[i]["title"],
-	    notes[i]["author"],
-	    ctime(notes[i]["time"])[0..9]
-	);
+        msg += sprintf("%s[%2d]" NOR "  %-34s %+22s - %s\n",
+            ( notes[i]["time"] > last_time_read ? HIY: ""),
+            i+1,
+            notes[i]["title"],
+            notes[i]["author"],
+            ctime(notes[i]["time"])[0..9]
+        );
     return msg += "\n=== " + query("name") + "使用方法請見 help board，留言版約可容納 " +BOARD_CAPACITY+ " 篇留言 ===\n";
 }
 
@@ -116,17 +116,17 @@ done_post(object me, mapping note, string text)
     string sig;
 
     if( stringp(sig = me->link()->query("signature")) )
-	text += "--\n" + sig;   // 加 -- 好在 followup 可以知道
+        text += "--\n" + sig;   // 加 -- 好在 followup 可以知道
     note["msg"] = text;
     notes = query("notes");
     if( !pointerp(notes) || !sizeof(notes) )
-	notes = ({ note });
+        notes = ({ note });
     else
-	notes += ({ note });
+        notes += ({ note });
 
     // Truncate the notes if maximum capacity exceeded.
     if( sizeof(notes) > BOARD_CAPACITY )
-	notes = notes[BOARD_CAPACITY / 4 .. BOARD_CAPACITY];
+        notes = notes[BOARD_CAPACITY / 4 .. BOARD_CAPACITY];
 
     set("notes", notes);
     tell_object(me, "留言完畢。\n");
@@ -146,7 +146,7 @@ do_post(string arg)
     return notify_fail("玩家不可在此公佈欄留言。\n");
 
     if( strlen(arg) > 40 )
-	return notify_fail("您的標題太長了﹐換一個 40 個字元以內的吧。\n");
+        return notify_fail("您的標題太長了﹐換一個 40 個字元以內的吧。\n");
         
     note = allocate_mapping(4);
     note["title"] = arg;
@@ -168,37 +168,37 @@ do_read(string arg)
     notes = query("notes");
 
     if( !pointerp(notes) || !sizeof(notes) )
-	return notify_fail("留言板上目前沒有任何留言。\n");
+        return notify_fail("留言板上目前沒有任何留言。\n");
 
     if( !arg ) return notify_fail("指令格式﹕read <留言編號>|new|next\n");
     if( arg=="new" || arg=="next" ) {
-	if( !mapp(last_read_time) || undefinedp(last_read_time[myid]) )
-	    num = 1;
-	else
-	    for(num = 1; num<=sizeof(notes); num++)
-		if( notes[num-1]["time"] > last_read_time[myid] ) break;
+        if( !mapp(last_read_time) || undefinedp(last_read_time[myid]) )
+            num = 1;
+        else
+            for(num = 1; num<=sizeof(notes); num++)
+                if( notes[num-1]["time"] > last_read_time[myid] ) break;
                         
     } else if( !sscanf(arg, "%d", num) )
-	return notify_fail("你要讀第幾張留言﹖\n");
+        return notify_fail("你要讀第幾張留言﹖\n");
 
     if( num < 1 || num > sizeof(notes) )
-	return notify_fail("沒有這張留言。\n");
+        return notify_fail("沒有這張留言。\n");
     num--;
-    this_player()->start_more( sprintf("[%2d]  %-34s %+26s%s%s%s\n",
-	num + 1,
-	notes[num]["title"],
-	notes[num]["author"],
-	"(" + ctime(notes[num]["time"])[0..9] + ")",
-	"\n---------------------------------------------------------------------------\n",
-	notes[num]["msg"]));
+    this_player()->start_more_if_needed (sprintf("[%2d]  %-34s %+26s%s%s%s\n",
+        num + 1,
+        notes[num]["title"],
+        notes[num]["author"],
+        "(" + ctime(notes[num]["time"])[0..9] + ")",
+        "\n---------------------------------------------------------------------------\n",
+        notes[num]["msg"]));
 
     // Keep track which post we were reading last time.
     if( !mapp(last_read_time) ) {
-	this_player()->link()->set("board_last_read", ([ myid: notes[num]["time"] ]) );
+        this_player()->link()->set("board_last_read", ([ myid: notes[num]["time"] ]) );
     }
     else 
-	if( undefinedp(last_read_time[myid]) || notes[num]["time"] > last_read_time[myid] )
-	    last_read_time[myid] = notes[num]["time"];
+        if( undefinedp(last_read_time[myid]) || notes[num]["time"] > last_read_time[myid] )
+            last_read_time[myid] = notes[num]["time"];
 
     return 1;
 }
@@ -211,14 +211,14 @@ do_discard(string arg)
     int num;
 
     if( !arg || sscanf(arg, "%d", num)!=1 )
-	return notify_fail("指令格式﹕discard <留言編號>\n");
+        return notify_fail("指令格式﹕discard <留言編號>\n");
     notes = query("notes");
     if( !arrayp(notes) || num < 1 || num > sizeof(notes) )
-	return notify_fail("沒有這張留言。\n");
+        return notify_fail("沒有這張留言。\n");
     num--;
     if( notes[num]["author"] != (string) this_player(1)->query("name")+ "(" + this_player(1)->query("id") + ")"
     &&	wiz_level(this_player(1)) < 4 )
-	return notify_fail("這個留言不是你寫的。\n");
+        return notify_fail("這個留言不是你寫的。\n");
 
     notes = notes[0..num-1] + notes[num+1..sizeof(notes)-1];
     set("notes", notes);
@@ -240,13 +240,13 @@ do_save_article(string arg)
     if( !arrayp(notes = query("notes"))
     ||	num<1
     ||	num>sizeof(notes) )
-	return notify_fail("沒有這張留言。\n");
+        return notify_fail("沒有這張留言。\n");
     num--;
     file = resolve_path(this_player()->query("cwd"), file);
     if( write_file(file, notes[num]["msg"]) )
-	write("Ok.\n");
+        write("Ok.\n");
     else
-	return notify_fail("儲存失敗。\n");
+        return notify_fail("儲存失敗。\n");
     return 1;
 }
 
@@ -259,19 +259,19 @@ do_followup(string str)
         
     // add by dragoon
     if ( NO_PLAYER_POST && (!wizardp(this_player())))
-	return notify_fail("玩家不可在此公佈欄留言。\n");
+        return notify_fail("玩家不可在此公佈欄留言。\n");
 
     if( !str )
-	return notify_fail("指令格式﹕followup <留言編號> [新的標題]\n");
+        return notify_fail("指令格式﹕followup <留言編號> [新的標題]\n");
 
     if( sscanf(str, "%d %s", num, title) != 2 )
-	if( sscanf(str, "%d", num) != 1 )
-	    return notify_fail("你要回第幾篇的留言﹖\n");
+        if( sscanf(str, "%d", num) != 1 )
+            return notify_fail("你要回第幾篇的留言﹖\n");
         
     notes = query("notes");
         
     if( num < 1 || num > sizeof(notes) )
-	return notify_fail("沒有這篇留言。\n");
+        return notify_fail("沒有這篇留言。\n");
 
     num--;
     if( !title ) title = "Re﹕" + notes[num]["title"];
@@ -283,19 +283,19 @@ do_followup(string str)
     text = explode( notes[num]["msg"], "\n" );
     // title, num 這兩個變數拿來再利用
     title = sprintf(GRN"> %s 在 %s 留下這篇留言﹕\n"NOR,
-	notes[num]["author"],
-	"(" + ctime(notes[num]["time"])[0..9] + ")" );
+        notes[num]["author"],
+        "(" + ctime(notes[num]["time"])[0..9] + ")" );
 
     num = sizeof(text);
     for( i=0; i<num; i++ ) 
     {
-	// 空行跳過, 上上一篇跳過
-	if( text[i] == "" || strsrch(text[i], "> ") != -1)
-	    continue;
-	// 簽名檔, 結束
-	if( text[i][0..1] == "--" )
-	    i=num;
-	else title = title + GRN + "> " + text[i] + NOR + "\n";
+        // 空行跳過, 上上一篇跳過
+        if( text[i] == "" || strsrch(text[i], "> ") != -1)
+            continue;
+        // 簽名檔, 結束
+        if( text[i][0..1] == "--" )
+            i=num;
+        else title = title + GRN + "> " + text[i] + NOR + "\n";
     }
     note["msg"] = title;
     this_player()->edit( (: done_post, this_player(), note :), title );

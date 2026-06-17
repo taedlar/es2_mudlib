@@ -18,7 +18,7 @@ int main(object me, string arg)
 	output += sprintf("%-30O %-20s %5d \n",
 	    info[i][0], info[i][1], info[i][2] );
 
-    me->start_more(output);
+    me->start_more_if_needed (output);
     return 1;
 }
 
