@@ -17,6 +17,5 @@
 neolith.local.conf
 
 # vscode local settings
-.vscode/settings.json
 .vscode/tasks.json
 .vscode/launch.json
