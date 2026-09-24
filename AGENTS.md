@@ -11,8 +11,10 @@ This file covers environment setup, configuration, and troubleshooting for the E
 Always clone with submodules to include both mudlib and the Neolith driver source:
 
 ```bash
-git clone --recurse-submodules <repo-url>
-# or, if already cloned:
+git clone --recurse-submodules https://github.com/taedlar/es2_mudlib.git
+```
+Or, if already cloned:
+```bash
 git submodule update --init --recursive
 ```
 
@@ -23,29 +25,14 @@ Follow [`neolith/docs/INSTALL.md`](neolith/docs/INSTALL.md) to build the `neolit
 Neolith uses CMake presets. Build output is always placed under `neolith/out/build/<presetName>/`.
 Use the preset matching your platform (use `pr-<presetName>` for `--build` if not otherwise specified):
 
+For example, on Linux:
 ```bash
-# Linux
 cd neolith
-cmake --preset linux
-cmake --build --preset pr-linux
-
-# macOS
-cd neolith
-cmake --preset macos
-cmake --build --preset pr-macos
-
-# Windows (VS2019 x64)
-cd neolith
-cmake --preset vs16-x64
-cmake --build --preset pr-vs16-x64
+cmake --preset linux-gcc
+cmake --build --preset pr-linux-gcc
 ```
 
-The resulting executable:
-- Linux: `neolith/out/build/linux/src/Debug/neolith`
-- macOS: `neolith/out/build/macos/src/Debug/neolith`
-- Windows: `neolith\out\build\vs16-x64\src\Debug\neolith.exe`
-
-For a release build, substitute `pr-<preset>` (e.g. `pr-linux`) to get a `RelWithDebInfo` binary.
+The resulting executable for `linux-gcc` configuration is `neolith/out/build/linux-gcc/src/RelWithDebInfo/neolith`. For a debug build, substitute `pr-<preset>` (e.g. `pr-linux`) with `dev-<preset>` to get a `Debug/neolith` binary.
 
 ### 3. Configuration
 
