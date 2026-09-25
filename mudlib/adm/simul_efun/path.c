@@ -18,19 +18,19 @@ string user_path(string name)
 string user_data(string name)
 {
     return stringp(name) ?
-	sprintf("%suser/%c/%s.o", DATA_DIR, name[0], name) : 0;
+        sprintf("%suser/%c/%s.o", DATA_DIR, name[0], name) : 0;
 }
 
 string login_data(string name)
 {
     return stringp(name) ?
-	sprintf("%slogin/%c/%s.o", DATA_DIR, name[0], name) : 0;
+        sprintf("%slogin/%c/%s.o", DATA_DIR, name[0], name) : 0;
 }
 
 string mail_data(string name)
 {
     return stringp(name) ?
-	sprintf("%smail/%c/%s.o", DATA_DIR, name[0], name) : 0;
+        sprintf("%smail/%c/%s.o", DATA_DIR, name[0], name) : 0;
 }
 
 string
@@ -42,11 +42,11 @@ resolve_path(string cwd, string new_path)
 
     // Shortcuts for fast resolve
     if( this_player() ) {
-	switch(new_path) {
-	case "here" : return file_name(environment(this_player())) + ".c";
-	case "it" : return this_player()->query("cwf");
-	default: break;
-	}
+        switch(new_path) {
+        case "here" : return file_name(environment(this_player()));
+        case "it" : return this_player()->query("cwf");
+        default: break;
+        }
     }
     if( !cwd ) cwd = "/";
     if( !new_path || new_path=="." ) return cwd;
@@ -56,24 +56,24 @@ resolve_path(string cwd, string new_path)
 
     // User home prefixed.
     if( comp[0][0]=='~' ) {
-	if( comp[0]=="~" ) return user_home( geteuid(this_player()) );
-	cwd = user_home( geteuid(this_player()) );
-	comp = comp[1..];
+        if( comp[0]=="~" ) return user_home( geteuid(this_player()) );
+        cwd = user_home( geteuid(this_player()) );
+        comp = comp[1..];
     }
 
     comp = explode(cwd, "/") + comp;
     comp -= ({ "" });
 
     for( i=0; i < sizeof(comp); i++)
-	if (comp[i] == "..") {
-	    if (sizeof(comp) > 2) {
-		comp = comp[0..(i-2)] + comp[(i+1)..(sizeof(comp)-1)];
-		i -= 2;
-	    } else {
-		comp = comp[2 ..(sizeof(comp)-1)];
-		i = 0;
-	    }
-	}
+        if (comp[i] == "..") {
+            if (sizeof(comp) > 2) {
+                comp = comp[0..(i-2)] + comp[(i+1)..(sizeof(comp)-1)];
+                i -= 2;
+            } else {
+                comp = comp[2 ..(sizeof(comp)-1)];
+                i = 0;
+            }
+        }
 
      new_path = "/" + implode(comp,"/");
 
