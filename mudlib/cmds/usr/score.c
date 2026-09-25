@@ -55,7 +55,7 @@ int main (object me, string arg) {
                 ob->query ("humanoid") ? ob->rank (0, 1) : "",
                 ob->link() ? ob->link()->query ("karma") : 0
         ),
-        70) + "\n\n";
+        STD_WRAP_WIDTH) + "\n\n";
 
     if (wizardp (me) || (int)me->query_level() > 1) {
         line = sprintf (

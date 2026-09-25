@@ -22,7 +22,7 @@ varargs void message_vision (string msg, object me, object you) {
             str2 = replace_string (str2, "$p", gender_self(your_gender));
             str2 = replace_string (str2, "$N", my_name);
             str2 = replace_string (str2, "$n", gender_self(your_gender));
-            message("vision", cjk_wrap (str2, 70, -1), you); // second-person
+            message("vision", cjk_wrap (str2, STD_WRAP_WIDTH - 4, -1), you); // second-person
             str1 = replace_string (str1, "$p", gender_pronoun(your_gender));
             str1 = replace_string (str1, "$n", your_name);
         } else {
@@ -30,7 +30,7 @@ varargs void message_vision (string msg, object me, object you) {
             str1 = replace_string (str1, "$n", gender_self(my_gender) + "自己");
         }
     }
-    message ("vision", cjk_wrap (str1, 70, -1), me); // first-person
+    message ("vision", cjk_wrap (str1, STD_WRAP_WIDTH - 4, -1), me); // first-person
 
     if (environment(me)) {
         str3 = replace_string (msg,  "$P", my_name);
@@ -46,7 +46,7 @@ varargs void message_vision (string msg, object me, object you) {
                         gender_pronoun (my_gender) + "自己");
             }
         }
-        message ("vision", cjk_wrap (str3, 70, -1),  environment(me), ({ me, you }) ); // third-person
+        message ("vision", cjk_wrap (str3, STD_WRAP_WIDTH - 4, -1),  environment(me), ({ me, you }) ); // third-person
     }
 }
 

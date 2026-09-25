@@ -1,13 +1,13 @@
-/*---
-description: 定義全局常量。
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
+
 #define MUD_NAME "天朝帝國"
 #define MUD_NAME_INTERMUD "Celestial Empire"
 #define MUD_NAME_ABBR "es2"
 #define MUD_HOSTNAME "es2.muds.net"
 #define MUD_PORT 4000
 #define HTTP_PORT 4015
+#define STD_WRAP_WIDTH 76
 
 // Directories
 

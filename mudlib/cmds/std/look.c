@@ -10,8 +10,8 @@ author: Annihilator <taedlar@gmail.com>
 
 inherit F_CLEAN_UP;
 
-private int living_desc_wrap_width = 70;
-private int item_desc_wrap_width = 70;
+private int living_desc_wrap_width = STD_WRAP_WIDTH;
+private int item_desc_wrap_width = STD_WRAP_WIDTH;
 
 int look_item(object me, object obj);
 int look_living(object me, object obj);
@@ -45,7 +45,7 @@ int main (object me, string arg) {
 int look_item (object me, object obj) {
     mixed *inv;
 
-    me->start_more_if_needed (obj->long());
+    me->start_more_if_needed (cjk_wrap(obj->long(), item_desc_wrap_width)) ;
     inv = all_inventory(obj);
     if( sizeof(inv) ) {
         // if too many items, show a simple message -dragoon

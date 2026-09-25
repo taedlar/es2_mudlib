@@ -8,7 +8,9 @@ This include file is included by the help command (/cmds/usr/help).
  */
 
 #define PLAYER_HELP_DOC_PATHS ({\
+    HELP_DIR "player/"\
 })
 
 #define WIZ_HELP_DOC_PATHS ({\
+    HELP_DIR "wiz/"\
 })
