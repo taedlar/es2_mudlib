@@ -12,7 +12,7 @@ author: Annihilator <taedlar@gmail.com>
 inherit F_DBASE;
 inherit F_CLEAN_UP;
 
-static int room_desc_wrap_width = 70;
+static int room_desc_wrap_width = STD_WRAP_WIDTH;
 private mapping doors;
 private mapping guards;
 private mapping spawn_list = ([]);

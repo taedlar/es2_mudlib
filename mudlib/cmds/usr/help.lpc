@@ -7,21 +7,16 @@
 inherit F_CLEAN_UP;
 
 private string *player_doc_paths = PLAYER_HELP_DOC_PATHS;
-private string* wizard_doc_paths = PLAYER_HELP_DOC_PATHS + WIZ_HELP_DOC_PATHS;
+private string* wizard_doc_paths = WIZ_HELP_DOC_PATHS + PLAYER_HELP_DOC_PATHS; // search wiz docs before player docs
 
-string render_markdown (string previous, string node_type, string literal, mapping attrs);
+mapping render_markdown (mapping ret, string node_type, string literal, mapping attrs);
 
 int main (object me, string arg) {
     string file, *search;
 
     seteuid (getuid());
-    if (!arg) {
-        string topics = HELP_DIR + "topics.md";
-        if (file_size (topics) < 0)
-            return notify_fail ("沒有說明文件的主題列表。\n");
-        me->start_more_if_needed (cmark_parse ("render_markdown", read_file (topics)));
-        return 1;
-    }
+    if (!arg)
+        arg = "topics";
 
     // try if a command name is specified.
     arg = replace_string (arg, " ", "_");
@@ -42,7 +37,9 @@ int main (object me, string arg) {
             return 1;
         }
         if (file_size (file_path + ".md") >= 0) {
-            me->start_more_if_needed (cmark_parse ("render_markdown", read_file (file_path + ".md"))); 
+            mapping ret = cmark_parse ("render_markdown", read_file (file_path + ".md"));
+            ret["rendered"] += cjk_wrap (ret["text"], STD_WRAP_WIDTH) + NOR "\n";
+            me->start_more_if_needed (ret["rendered"]); 
             return 1;
         }
     }
@@ -55,7 +52,9 @@ int main (object me, string arg) {
             return 1;
         }
         if (file_size (help_file + ".md") >= 0) {
-            me->start_more_if_needed (cmark_parse ("render_markdown", read_file (help_file + ".md")));
+            mapping ret = cmark_parse ("render_markdown", read_file (help_file + ".md"));
+            ret["rendered"] += cjk_wrap (ret["text"], STD_WRAP_WIDTH) + NOR "\n";
+            me->start_more_if_needed (ret["rendered"]);
             return 1;
         }
         return notify_fail ("沒有針對這項主題的說明文件。\n");
@@ -64,25 +63,38 @@ int main (object me, string arg) {
     return notify_fail ("沒有針對這項主題的說明文件。\n");
 }
 
-string render_markdown (string previous, string node_type, string literal, mapping attrs) {
-    if (!previous)
-        previous = "";
+mapping render_markdown (mapping ret, string node_type, string literal, mapping attrs) {
+    if (!ret)
+        ret = ([ "rendered": "", "text": "" ]);
     //write(node_type + ": " + literal + "\n");
+    if (ret["text"] != "" && (node_type == "heading" || node_type == "paragraph" || node_type == "code_block")) {
+        // flush the accumulated text before handling a new block
+        ret["rendered"] += cjk_wrap (ret["text"], STD_WRAP_WIDTH) + NOR;
+        ret["text"] = "";
+    }
     switch (node_type) {
         case "heading":
-            previous += HIY;
+            if (ret["rendered"] != "")
+                ret["rendered"] += "\n\n"; // insert a blank line before heading
+            ret["rendered"] += HIY;
             break;
         case "paragraph":
-            previous += NOR "\n\n";
+            ret["rendered"] += "\n\n";
             break;
         case "code_block":
-            previous += "\n" + literal + "\n";
+            ret["rendered"] += "\n\n" + cjk_wrap (literal, STD_WRAP_WIDTH) + NOR;
+            break;
+        case "code":
+            ret["text"] += HIC + literal + NOR;
             break;
         case "text":
-            previous += literal;
+            ret["text"] += literal;
+            break;
+        case "softbreak":
+            ret["text"] += "\n";
             break;
     }
-    return previous;
+    return ret;
 }
 
 int help (object me) {

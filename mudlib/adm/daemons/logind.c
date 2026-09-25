@@ -272,7 +272,7 @@ void authorize (object ob) {
 可能的原因包括您在創造角色時斷線，或者因為其他原因導致角色資料被刪除。
 如果您認為並沒有上述這些情況，請中斷連線並且用 guest 帳號洽線上巫師確認。
 NOTICE
-            , 70) + "\n\n");
+            , STD_WRAP_WIDTH) + "\n\n");
             destruct (user);
             mapping opts = ([
                 "prompt": "您要重新創造這個角色嗎? ",
@@ -284,7 +284,7 @@ NOTICE
             write (cjk_wrap (@NOTICE
 系統目前無法讀取您的人物資料，可能的原因包括系統正在備分或整理使用者資料，請稍候再試。
 NOTICE
-            , 70));
+            , STD_WRAP_WIDTH));
             destruct (user);
             destruct (ob);
         }
@@ -414,7 +414,7 @@ private void retype_password (string pass, object ob) {
 這個電子郵件地址除了巫師以外﹐不會被其他使用者看到。
 如果您同意的話，請提供一個可供接收認證用電子郵件的地址。
 TEXT
-    , 70));
+    , STD_WRAP_WIDTH));
     write ("\n\n您的電子郵件地址 (或 none): ");
     input_to ("get_email", ob);
 }
