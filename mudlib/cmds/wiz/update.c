@@ -26,45 +26,50 @@ int main(object me, string file)
 
     if( file_size(file) < 0 )
     {
-	switch(file)
-	{
-	case "here" : file = file_name(environment(me)); break;
-	case "me" : return update_player(me);
-	default:
-	    if( (obj = present(file, environment(me)))
-	    &&	interactive(obj) )
-		return update_player(obj);
-	}
+        switch(file)
+        {
+        case "here" : file = file_name(environment(me)); break;
+        case "me" : return update_player(me);
+        default:
+            if( (obj = present(file, environment(me)))
+            &&	interactive(obj) )
+                return update_player(obj);
+        }
 
-	file = resolve_path(me->query("cwd"), file);
+        file = resolve_path(me->query("cwd"), file);
 
-	if( file_size(file) < 0 && file[<2..<1] != ".c" ) file += ".c";
-	if( file_size(file) < 0 )
-	    return notify_fail("沒有 " + file + " 這個檔案。\n");
+        if (file_size(file) < 0) {
+            if (file_size(file + ".c") >= 0)
+                file += ".c";
+            if (file_size(file + ".lpc") >= 0)
+                file += ".lpc";
+        }
+        if( file_size(file) < 0 )
+            return notify_fail("沒有 " + file + " 這個檔案。\n");
     }
 
     if( file==__FILE__ ) {
-	write("下一次使用 update 指令將會重新編譯 update 指令。\n");
-	destruct(this_object());
-	return 1;
+        write("下一次使用 update 指令將會重新編譯 update 指令。\n");
+        destruct(this_object());
+        return 1;
     }
 
     me->set("cwf", file);
 
     if (obj = find_object(file)) {
-	if( obj==environment(me) ) {
-	    if( file_name(obj)==VOID_OB )
-		return notify_fail("你不能在 VOID_OB 裡重新編譯 VOID_OB。\n");
-	    inv = all_inventory(obj);
-	    i = sizeof(inv);
-	    while(i--)
-		if( userp(inv[i]) ) {
-		    inv[i]->set_temp("last_location", file);
-		    inv[i]->move(VOID_OB, 1);
-		}
-		else inv[i] = 0;
-	}
-	destruct(obj);
+        if( obj==environment(me) ) {
+            if( file_name(obj)==VOID_OB )
+                return notify_fail("你不能在 VOID_OB 裡重新編譯 VOID_OB。\n");
+            inv = all_inventory(obj);
+            i = sizeof(inv);
+            while(i--)
+                if( userp(inv[i]) ) {
+                    inv[i]->set_temp("last_location", file);
+                    inv[i]->move(VOID_OB, 1);
+                }
+                else inv[i] = 0;
+        }
+        destruct(obj);
     }
 
     if (obj) return notify_fail("無法清除舊程式碼。\n");
@@ -76,12 +81,12 @@ int main(object me, string file)
     err = catch(obj = load_object(file));
 
     if(!err) {
-	write("成功。\n");
-	i = sizeof(inv);
-	while(i--)
-	    if( inv[i] && userp(inv[i]) ) inv[i]->move(obj, 1);
+        write("成功。\n");
+        i = sizeof(inv);
+        while(i--)
+            if( inv[i] && userp(inv[i]) ) inv[i]->move(obj, 1);
     } else
-	write("編譯失敗﹕" + err);
+        write("編譯失敗﹕" + err);
                 
     return 1;
 }
@@ -94,23 +99,23 @@ int update_player(object me)
 
     link_ob = me->link();
     if( !link_ob ) {
-	// If update a linkdead player, simply destruct it.
-	me->save();
-	seteuid(getuid());
-	destruct(me);
-	return 1;
+        // If update a linkdead player, simply destruct it.
+        me->save();
+        seteuid(getuid());
+        destruct(me);
+        return 1;
     }
 
     seteuid(getuid());
     if( !(obj = LOGIN_D->make_body(link_ob)) )
-	return notify_fail("無法複製新的身體物件﹗\n");
+        return notify_fail("無法複製新的身體物件﹗\n");
 
     exec(link_ob, me);
 
     // Make a careful check before copying body.
     if( (string)me->query_save_file() == (string)obj->query_save_file() ) {
-	me->save();
-	obj->restore();
+        me->save();
+        obj->restore();
     }
     seteuid(getuid());
     destruct(me);
