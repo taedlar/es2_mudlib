@@ -2,7 +2,7 @@ ES2 TODO items
 =====
 
 ## Rewrite in-game help documents
-Documents in `/doc` are out-of-date and needs re-write for current state.
+Update documents in `mudlib/docs/help` for current state.
 
 ### Import LPC, apply, efuns documentations from Neolith
 Neolith repository has the up-to-date LPC, apply, and efuns documentations.
