@@ -5,6 +5,7 @@
 
 inherit F_CLEAN_UP;
 
+string help_file() { return __DIR__ "update.md"; }
 int update_player (object me);
 
 int main (object me, string file) {
@@ -131,18 +132,5 @@ int update_player (object me) {
     obj->move (env);
     obj->write_prompt();
 
-    return 1;
-}
-
-int help (object me) {
-    write (@HELP
-指令格式：update <檔名|here|me|玩家名>
- 
-這個指令可以更新檔案, 並將新檔的內容載入記憶體內. 若目標為
-'here' 則更新所在環境. 若目標為 'me' 則更新自己的人物. 若目
-標為玩家則可更新玩家物件.
- 
-HELP
-    );
     return 1;
 }
