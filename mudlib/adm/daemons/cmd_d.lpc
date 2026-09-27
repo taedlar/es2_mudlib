@@ -60,10 +60,10 @@ string find_command (string verb, string *path) {
             rehash (dir);
     }
 
-    if (pointerp(p = cache[verb + ".c"]) && sizeof (p & path))
+    if (pointerp(p = cache[verb + ".lpc"]) && sizeof (p & path))
         return p[0] + verb;
 
-    if (pointerp(p = cache[verb + ".lpc"]) && sizeof (p & path))
+    if (pointerp(p = cache[verb + ".c"]) && sizeof (p & path))
         return p[0] + verb;
 
     return 0;
