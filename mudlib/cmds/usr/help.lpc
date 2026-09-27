@@ -21,8 +21,15 @@ int main (object me, string arg) {
     // try if a command name is specified.
     arg = replace_string (arg, " ", "_");
     if (stringp (file = me->find_command (arg))) {
-        notify_fail ("有這個指令存在﹐但是並沒有詳細的說明文件。\n");
-        return file->help (me);
+        if (!file->help (me)) {
+            string help_file = file->help_file();
+            if (!help_file || file_size (help_file) < 0)
+                return notify_fail ("有這個指令存在﹐但是並沒有詳細的說明文件。\n");
+            mapping ret = cmark_parse ("render_markdown", read_file (help_file));
+            ret["rendered"] += cjk_wrap (ret["text"], STD_WRAP_WIDTH) + NOR "\n";
+            me->start_more_if_needed (ret["rendered"]); 
+        }
+        return 1;
     }
 
     // support efun/lfun help with same name as other topics such as
@@ -82,7 +89,7 @@ mapping render_markdown (mapping ret, string node_type, string literal, mapping 
             ret["rendered"] += "\n\n";
             break;
         case "code_block":
-            ret["rendered"] += "\n\n" + cjk_wrap (literal, STD_WRAP_WIDTH) + NOR;
+            ret["rendered"] += "\n\n" + cjk_wrap (literal, STD_WRAP_WIDTH);
             break;
         case "code":
             ret["text"] += HIC + literal + NOR;
