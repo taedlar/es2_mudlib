@@ -1,8 +1,3 @@
----
-description: "ES2 administrator space"
-author: "Annihilator <taedlar@gmail.com>"
-created: 1995-06-17
----
 管理者工作區
 ====
 - `/adm` 這個目錄下的所有檔案和目錄必須具有系統管理者權限 `(admin)` 才允許修改。

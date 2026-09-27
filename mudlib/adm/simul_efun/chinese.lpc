@@ -1,7 +1,5 @@
-/*---
-descrition: Chinese related efuns
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
 
 string chinese_number(int i) {
     return CHINESE_D->chinese_number(i);

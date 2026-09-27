@@ -1,7 +1,3 @@
----
-description: "ES2 mudlib README"
-author: "Annihilator <taedlar@gmail.com>"
----
 ES2 mudlib README
 =====
 ## Folder Structure

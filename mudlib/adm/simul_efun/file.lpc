@@ -1,7 +1,5 @@
-/*---
-description: Filesystem access simul_efuns.
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
 
 void cat (string file) {
     seteuid (getuid (previous_object ()));
