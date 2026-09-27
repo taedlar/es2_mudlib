@@ -1,7 +1,5 @@
-/*---
-description: UTF-8 utilities
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
 
 varargs string cjk_wrap (string str, int width, int indent, int first_line_indent) {
     string* mbch;

@@ -1,4 +1,5 @@
-// atoi.c
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
 
 int atoi(string str)
 {

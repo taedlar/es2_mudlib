@@ -1,7 +1,5 @@
-/*---
-description: 這裡定義了訊息相關的模組函數。
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
 
 // Write vision message to first-person, second-person and third-person.
 varargs void message_vision (string msg, object me, object you) {

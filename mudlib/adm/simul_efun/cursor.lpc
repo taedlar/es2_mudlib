@@ -1,7 +1,5 @@
-/*---
-description: Cursor support for input prompt.
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2026 Annihilator <taedlar@gmail.com>
 
 #include <ansi.h>
 
