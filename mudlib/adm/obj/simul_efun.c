@@ -5,7 +5,7 @@ description: Mudlib simul efuns
 #include "/adm/simul_efun/atoi.c"
 #include "/adm/simul_efun/chinese.c"
 #include "/adm/simul_efun/cursor.c"
-#include "/adm/simul_efun/file.c"
+#include "/adm/simul_efun/file.lpc"
 #include "/adm/simul_efun/gender.c"
 #include "/adm/simul_efun/object.c"
 #include "/adm/simul_efun/path.c"
