@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
+
+#include <origin.h>
+
+// We don't want this command be cleaned up while typing long string.
+// inherit F_CLEAN_UP;
+
+string help_file() { return __DIR__ "to.md"; }
+
+int main (object me, string arg) {
+    me->edit ((: call_other, __FILE__, "do_to", me, arg :));
+    return 1;
+}
+
+void do_to (object me, string arg, string str) {
+    if (previous_object() != me)
+        return;
+    if (str.len() > 4096) {
+        write ("輸入的字串過長, 不能超過 4096 個字元。\n");
+        return;
+    }
+    seteuid (getuid());
+    if (arg)
+        me->force_me (arg + " " + str);
+    else
+        me->force_me (str);
+}
