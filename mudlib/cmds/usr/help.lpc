@@ -89,7 +89,7 @@ mapping render_markdown (mapping ret, string node_type, string literal, mapping 
             ret["rendered"] += "\n\n";
             break;
         case "code_block":
-            ret["rendered"] += "\n\n" + cjk_wrap (literal, STD_WRAP_WIDTH);
+            ret["rendered"] += "\n\n" CYN + literal + NOR; // preserve formatting for code blocks
             break;
         case "code":
             ret["text"] += HIC + literal + NOR;
