@@ -1,7 +1,5 @@
-/*---
-description: The look command
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
 
 #pragma save_binary
 
@@ -13,8 +11,8 @@ inherit F_CLEAN_UP;
 private int living_desc_wrap_width = STD_WRAP_WIDTH;
 private int item_desc_wrap_width = STD_WRAP_WIDTH;
 
-int look_item(object me, object obj);
-int look_living(object me, object obj);
+int look_item (object me, object obj);
+int look_living (object me, object obj);
 
 void create() {
     seteuid (getuid());
@@ -130,4 +128,3 @@ HELP
 );
     return 1;
 }
-
