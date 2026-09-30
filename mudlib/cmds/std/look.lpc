@@ -4,15 +4,14 @@
 #pragma save_binary
 
 #include <room.h>
-#include <ansi.h>
 
 inherit F_CLEAN_UP;
 
 private int living_desc_wrap_width = STD_WRAP_WIDTH;
 private int item_desc_wrap_width = STD_WRAP_WIDTH;
 
-int look_item (object me, object obj);
-int look_living (object me, object obj);
+private int look_item (object me, object obj);
+private int look_living (object me, object obj);
 
 void create() {
     seteuid (getuid());
@@ -22,7 +21,7 @@ int main (object me, string arg) {
     object obj;
     int result;
 
-    if (me->query_temp("block_msg/vision"))
+    if (me->query_temp ("block_msg/vision"))
         return notify_fail ("你現在什麼也看不到﹗\n");
 
     if (arg) {
@@ -45,13 +44,14 @@ int look_item (object me, object obj) {
 
     me->start_more_if_needed (cjk_wrap(obj->long(), item_desc_wrap_width)) ;
     inv = all_inventory(obj);
-    if( sizeof(inv) ) {
+    if (sizeof(inv)) {
         // if too many items, show a simple message -dragoon
-        if( sizeof(inv) < 30 ) {
-            inv = map_array(inv, "inventory_look", this_object() );
-            message("vision", sprintf("裡面有﹕\n  %s\n",
-                implode(inv, "\n  ") ), me); }
-        else tell_object(me, YEL"裡面雜七雜八的放著許多東西..\n"NOR);
+        if (sizeof(inv) < 30) {
+            inv = map_array (inv, "inventory_look", this_object());
+            message ("vision", sprintf("裡面有﹕\n  %s\n",
+                implode (inv, "\n  ") ), me); }
+        else
+            tell_object (me, "裡面雜七雜八的放著許多東西..\n");
     }
     return 1;
 }
@@ -92,7 +92,7 @@ int look_living (object me, object obj) {
 
     inv = all_inventory (obj);
     if (sizeof(inv)) {
-        inv = map_array(inv, "inventory_look", this_object(), obj->is_corpse()? 0 : 1 );
+        inv = map_array(inv, "inventory_look", this_object(), obj->is_corpse() ? 0 : 1 );
         inv -= ({ 0 });
         if (sizeof(inv))
             str += sprintf (obj->is_corpse() ? "%s的遺物有﹕\n%s\n" : "%s身上帶著﹕\n%s\n",
@@ -105,14 +105,12 @@ int look_living (object me, object obj) {
     return 1;
 }
 
-string inventory_look(object obj, int flag) {
-    string str;
-
-    str = obj->short();
+private string inventory_look (object obj, int hide_nonequip) {
+    string str = obj->short();
     if (obj->query("equipped"))
-        str = HIY "[v] " + str + NOR;
-    else if( !flag )
-        str = "    " + str;
+        str = "✓ " + str;
+    else if (!hide_nonequip)
+        str = "  " + str;
     else
         return 0;
 

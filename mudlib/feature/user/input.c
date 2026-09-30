@@ -34,9 +34,9 @@ void input_prompt (mixed func, int flags, mixed data, mixed arg1) {
         string ansi_menu = "\r" CLR "\n"; // placeholder for prompt
         foreach (string opt in data["options"]) {
             if (pos == data["cursor"])
-                ansi_menu += "-> " BLK BWHT;
+                ansi_menu += "> " BLK BWHT;
             else
-                ansi_menu += "   ";
+                ansi_menu += "  ";
             ansi_menu += " " + opt + " ";
             if (pos == data["cursor"]) {
                 ansi_menu += NOR;

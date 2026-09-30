@@ -1,7 +1,5 @@
-/*---
-description: The score command, used to display character's basic information and statistics.
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
 
 #include <ansi.h>
 #include <combat.h>
@@ -15,7 +13,7 @@ string status_color (int current, int max);
 string tribar_graph (string fill_char, string sep, string empty_char, int val, int eff, int max);
 
 private void create() {
-    seteuid(getuid());
+    seteuid (getuid());
 }
 
 int main (object me, string arg) {
@@ -39,7 +37,7 @@ int main (object me, string arg) {
             return notify_fail ("你要察看誰的狀態﹖\n");
     }
     if (!ob->query("birthday"))
-        ob->set("birthday", random (1892160000));
+        ob->set ("birthday", random (1892160000));
     birth = ((int)ob->query ("birthday") - 14*365*24*60) * 60 % 1892160000;
 
     line = sprintf (HIW "【 %s 】" NOR "%s\n\n", ob->rank(), ob->short(1));
