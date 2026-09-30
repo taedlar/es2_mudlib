@@ -1,7 +1,6 @@
-/*---
-description: quit command, used to handle player logout and cleanup.
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
+
 #include <action.h>
 #include <command.h>
 #include <login.h>

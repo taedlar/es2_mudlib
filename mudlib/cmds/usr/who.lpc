@@ -1,7 +1,6 @@
-/*---
-description: who command, used to display online players and their information.
-author: Annihilator <taedlar@gmail.com>
----*/
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 1994-2026 Annihilator <taedlar@gmail.com>
+
 #include <ansi.h>
 
 inherit F_CLEAN_UP;
@@ -10,17 +9,13 @@ object *all, *target;
 string msg;
 int i, j;
 
-void msg_format(string arg);
+void msg_format (string arg);
 
-private void
-create()
-{
-  seteuid(getuid());
+private void create() {
+    seteuid (getuid());
 }
 
-mixed
-main(object me, string arg, int remote)
-{
+mixed main (object me, string arg, int remote) {
     int center_lv;
 
     target = ({});
@@ -29,7 +24,7 @@ main(object me, string arg, int remote)
     /* 先過濾尚未登入完成的使用者，與隱形的上級巫師。
      * 注意在被 rwho_q 呼叫的狀況下，this_player() 為 0。
      */
-    if( this_player(1) )
+    if (this_player(1))
         all = filter(users(), (:
             objectp(environment($1))
             && (!wizardp($1) || wiz_level($2)>wiz_level($1) || $1->visible($2))
@@ -37,22 +32,22 @@ main(object me, string arg, int remote)
     else
         all = filter(users(), (: objectp(environment($1)) && !wizardp($1) :));
 
-    i = sizeof(all);
+    i = sizeof (all);
     
-    if( !arg || arg=="" ) {
+    if (!arg || arg=="") {
         center_lv = me->query_level();
-        while( i-- ) {
+        while (i--) {
             if (all[i]->query("level") - center_lv < 6 &&
                 center_lv - all[i]->query("level") < 6 &&
                 (!wizardp(all[i]) || all[i]==this_player(1))
             )
                 target += ({ all[i] });
         }
-        msg_format("1");
+        msg_format ("1");
     } else {
-        switch(arg){
+        switch (arg) {
         case "-l":
-            if( me->is_character() && !wizardp(me) ) {
+            if (me->is_character() && !wizardp(me)) {
                 write("為了減低系統負荷, 目前只有巫師可以使用 who -l。\n");
                 return 1;
             }
@@ -158,58 +153,56 @@ main(object me, string arg, int remote)
             msg_format("50");
             break;
         default :
-            if( objectp(me) && wizardp(me) &&  arg[0]=='@' ) {
+            if (objectp(me) && wizardp(me) &&  arg[0]=='@') {
                 //RWHO_Q->send_rwho_q(arg[1..sizeof(arg)], me, 0);
                 //write("網路訊息已送往 " + arg[1..sizeof(arg)] + " 請稍候。\n");
-                return notify_fail("遠端查詢功能已關閉。\n");
+                return notify_fail ("遠端查詢功能已關閉。\n");
             }
-            return notify_fail("指令格式更新﹕請看 help who。\n");
+            return notify_fail ("指令格式更新﹕請看 help who。\n");
         }
     }
 
-    msg = sprintf("◎ %s\n"
+    msg = sprintf ("◎ %s\n"
         "──────────────────────────────────────────────────────────────────────────────\n"
         "%s──────────────────────────────────────────────────────────────────────────────\n"
         "共列出 %d/%d 位使用者﹐系統負荷﹕%s\n",
         MUD_NAME, msg, sizeof(target), sizeof(all), query_load_average());
 
-    if( me && me->query_stat_current("sen") > 5 )
+    if (me && me->query_stat_current("sen") > 5)
         me->consume_stat("sen", 5);
     
-    if( remote ) return msg;
+    if (remote)
+        return msg;
 
     me->start_more_if_needed (msg);
     return 1;
 }
 
-int
-sort_user(object ob1, object ob2)
-{
+int sort_user(object ob1, object ob2) {
     int ord;
 
     ord = wiz_level(ob1) - wiz_level(ob2);
-    if( ord==0 )
+    if (ord == 0)
         ord = (int)ob1->query_level() - (int)ob2->query_level();
     return ord;
 }
 
-void
-msg_format(string arg)
-{
-    if( !arg || arg=="" )    return;
+void msg_format(string arg) {
+    if (!arg || arg=="")
+        return;
 
-    j = sizeof(target);
-    target = sort_array(target, "sort_user", this_object());
+    j = sizeof (target);
+    target = sort_array (target, "sort_user", this_object());
 
-    switch(arg){
+    switch (arg) {
     case "1":
     case "5":
     case "50":
         // detail message
-        while( j-- ) {
+        while (j--) {
             // <ansi.h> will confuse sprintf's format
-            if( wizardp(target[j]) )
-                msg = sprintf("%s%s【 %|10s 】%+42s %-14s%s\n",
+            if (wizardp(target[j]))
+                msg = sprintf ("%s%s【 %|10s 】%+42s %-14s%s\n",
                     msg,
                     BOLD,
                     target[j]->rank(),
@@ -218,7 +211,7 @@ msg_format(string arg)
                     NOR
                 );
             else
-                      msg = sprintf("%s【 %2d%|8s 】%-12s%30s %-14s\n",
+                msg = sprintf ("%s【 %2d%|8s 】%-12s%30s %-14s\n",
                     msg,
                     target[j]->query_level(),
                     target[j]->rank(),
@@ -231,38 +224,38 @@ msg_format(string arg)
         break;
     case "41":
         // who i, id of all
-        target = sort_array(all, "sort_user", this_object());
-        j = sizeof(target);
-        while( j-- ) {
+        target = sort_array (all, "sort_user", this_object());
+        j = sizeof (target);
+        while (j--) {
             msg = sprintf("%s%-13s%s",
                 msg,
                 capitalize(target[j]->query("id")),
                 (( i - j ) % 6 ) ? "" : "\n"
             );
         }
-        if( i % 6 )    msg += "\n";
+        if (i % 6)
+            msg += "\n";
         break;
     case "42":
         // who n, name of all
-        target = sort_array(all, "sort_user", this_object());
-        j = sizeof(target);
-        while( j-- ) {
-            msg = sprintf("%s%-13s%s",
+        target = sort_array (all, "sort_user", this_object());
+        j = sizeof (target);
+        while (j--) {
+            msg = sprintf ("%s%-13s%s",
                 msg,
                 target[j]->query("name", 1),
-                (( i - j ) % 6 ) ? "" : "\n"
+                ((i - j) % 6) ? "" : "\n"
             );
         }
-        if( i % 6 )    msg += "\n";
+        if (i % 6)
+            msg += "\n";
         break;
     default:
         msg = "Error at msg_format.\n";
     }
 }
 
-int
-help(object me)
-{
+int help(object me) {
     write(@HELP
 指令格式 : who [選項]
 這個指令可以列出在線上的使用者及其等它相關資訊。神 > 5 時會損神。
@@ -287,11 +280,11 @@ help(object me)
 相關指令﹕ finger
 HELP
     );
-    if( wizardp(me) )
-        write(@HELP
+    if (wizardp(me))
+        write (@HELP
 巫師可以利用 who @celestial.empire  來得知其他連線站之線上人數, 已連線站可
 以mudlist 得知。
 HELP
-        );
+    );
     return 1;
 }
